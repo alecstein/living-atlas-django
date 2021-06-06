@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<h1>dees-living-atlas</h1>
+
+<p> [This is where the basic description goes.] </p>
+
+<ul class='navbar'>
+<li><a href="{% url 'search' %}">search the database</a>
+<li><a href="{% url 'about' %}">about this page</a>
+<li><a href="{% url 'howto' %}">how to use the search</a>
+</ul>
+
+{% block content %}
+{% endblock content %}

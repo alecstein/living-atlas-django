@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="get" action="">
+  Search:<input type="text" name="q" id="id_q" value="{{ query }}"/>
+  <input type="submit" value="Search" />
+</form>
+
+{% if show_search %}
+  {% if results %}
+   Results found:
+  <ol>
+    <li class="search-group">
+      <p class="sticky lemma"><input type="checkbox" name="{{query}}" checked/>{{query}} (lemma) </p>
+        <ul>
+          {% for result in results %}
+          <li class="lemma-variant"><input type="checkbox" name"{{result.form}}" checked/>{{result.form}}</li>
+          {% endfor %}
+        </ul>
+    </li>
+  </ol>
+  {% else %}
+  No results found.
+  {% endif %}
+{% endif %}
+
+
+{% endblock content %}
+
+
