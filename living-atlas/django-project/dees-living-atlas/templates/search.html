@@ -1,34 +1,66 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<script type="text/javascript">
+  function togglecheckboxes(ckboxname) {
+    var isAllCheck = true
+    var ckboxarray = document.getElementsByName(ckboxname);
+    for (var i = 0; i < ckboxarray.length; i++) {
+      if (ckboxarray[i].checked != true) {
+        var isAllCheck = false;
+      }
+    }
+    for (var i = 0; i < ckboxarray.length; i++) {
+      ckboxarray[i].checked = !isAllCheck
+    }
+    isAllCheck = !isAllCheck;
+  }
+</script>
+
 <form method="get" action="" class='searchbox'>
-  <input type="text" name="q" id="id_q" placeholder="enter query here"/>
-  <input type="submit" value="enter query" />
+  <input type="text" name="q" id="id_q" placeholder="enter query here" />
+  <input type="submit" value="search" />
 </form>
 
 {% if show_search %}
-  {% if results %}
-   Results found:
+{% if results %}
+Results found:
+<form method="post" action="/">
+  {% csrf_token %}
   <ol>
     <li class="search-group">
       {% for lemma in querylist %}
-      <p class="sticky lemma"><input type="checkbox" name="{{lemma}}" checked/>{{lemma}} (lemma) </p>
-        <ul>
-          {% for result in results %}
-            {% if result.lemma == lemma %}
-              <li class="lemma-variant"><input type="checkbox" name"{{result.form}}" checked/>{{result.form}}</li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+      <p class="lemma">
+        <input type="checkbox" class="large-ckbox" name="ckbox-{{lemma}}" value="{{lemma}}" checked />
+        {{lemma}} (lemma)
+        <input type="Button" onclick="togglecheckboxes('ckbox-{{lemma}}')" value="toggle all" />
+      </p>
+      <ul>
+        {% for result in results %}
+        {% if result.lemma == lemma and result.form != lemma %}
+        <li class="variant">
+          <input type="checkbox" class="large-ckbox" name="ckbox-{{lemma}}" value="{{result.form}}" checked />
+          <label>{{result.form}}</label>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
       {% endfor %}
     </li>
   </ol>
-  {% else %}
-  No results found.
-  {% endif %}
+  <br>
+  <button type="submit">continue to geography</button>
+</form>
+{% else %}
+No results found.
+{% endif %}
 {% endif %}
 
+{% if selected_checkboxes %}
+{% for selection in selected_checkboxes %}
+{{ selection }}
+{% endfor %}
+{% endif %}
 
 {% endblock content %}
-
-
