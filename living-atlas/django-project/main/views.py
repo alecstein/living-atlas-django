@@ -5,6 +5,17 @@ from .models import FrolexEntry
 # Create your views here.
 
 def search_view(request):
+    """
+    The app revolves around this view, which is also the homepage.
+    show_search: bool. whether or not to show the search results
+    querylist: list of strings that are queried
+    query: whatever someone types in the searchbox
+    input_keys: list of keys that I use to get the checkboxes that have been selected
+    selected_checkboxes: what it sounds like
+    
+    The filter selects all database objects with their lemma equal to
+    the lemma(s) selected by the user
+    """
 
     show_search = False
     querylist = None

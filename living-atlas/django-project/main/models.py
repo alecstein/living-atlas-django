@@ -3,6 +3,10 @@ from django.db import models
 # Create your models here.
 
 class FrolexEntry(models.Model):
+    """
+    Frolex is the database that contains all the information about
+    the lemmas and their associated variants.
+    """
     form = models.CharField(max_length=100, primary_key = True, blank=True)
     f_bfm = models.CharField(db_column='F_bfm', max_length=100, blank=True, null=True)  # Field name made lowercase.
     f_dmf = models.CharField(db_column='F_dmf', max_length=100, blank=True, null=True)  # Field name made lowercase.
