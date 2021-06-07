@@ -2,22 +2,6 @@
 
 {% block content %}
 
-<script type="text/javascript">
-  function togglecheckboxes(ckboxname) {
-    var isAllCheck = true
-    var ckboxarray = document.getElementsByName(ckboxname);
-    for (var i = 0; i < ckboxarray.length; i++) {
-      if (ckboxarray[i].checked != true) {
-        var isAllCheck = false;
-      }
-    }
-    for (var i = 0; i < ckboxarray.length; i++) {
-      ckboxarray[i].checked = !isAllCheck
-    }
-    isAllCheck = !isAllCheck;
-  }
-</script>
-
 <form method="get" action="" class='searchbox'>
   <input type="text" name="q" id="id_q" placeholder="enter query here" />
   <input type="submit" value="search" />
@@ -34,7 +18,7 @@ Results found:
       <p class="lemma">
         <input type="checkbox" class="large-ckbox" name="ckbox-{{lemma}}" value="{{lemma}}" checked />
         {{lemma}} (lemma)
-        <input type="Button" onclick="togglecheckboxes('ckbox-{{lemma}}')" value="toggle all" />
+        <input type="bPutton" onclick="togglecheckboxes('ckbox-{{lemma}}')" value="toggle all" />
       </p>
       <ul>
         {% for result in results %}
