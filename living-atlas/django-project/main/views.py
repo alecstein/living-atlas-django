@@ -1,11 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import FrolexEntry
-# from .forms import ChoiceSelectForm
-
-# from .forms import VariantForm
-# from django.forms import formset_factory
-# VariantFormSet = formset_factory(VariantForm)
 
 # Create your views here.
 

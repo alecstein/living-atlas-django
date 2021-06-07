@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<form method="get" action="" class='searchbox'>
-  <input type="text" name="q" id="id_q" placeholder="enter query here" />
+<form method="get" action="">
+  <span id="pointer"> ☞ </span> <input type="text" name="q" id="id_q" placeholder="enter query here" />
   <input type="submit" value="search" />
 </form>
 
@@ -18,7 +18,7 @@ Results found:
       <p class="lemma">
         <input type="checkbox" class="large-ckbox" name="ckbox-{{lemma}}" value="{{lemma}}" checked />
         {{lemma}} (lemma)
-        <input type="bPutton" onclick="togglecheckboxes('ckbox-{{lemma}}')" value="toggle all" />
+        <input type="button" onclick="togglecheckboxes('ckbox-{{lemma}}')" value="toggle all" />
       </p>
       <ul>
         {% for result in results %}
