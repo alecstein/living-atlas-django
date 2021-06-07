@@ -27,7 +27,7 @@ def search_view(request):
         selected_checkboxes.extend(request.POST.getlist(key))
 
     if query:
-        querylist = [query.strip() for query in query.split(',')]
+        querylist = [query.strip('\n').strip() for query in query.strip().split('\n')]
         search_results = True
         results = []
         for lemma in querylist:
@@ -36,12 +36,17 @@ def search_view(request):
         found_lemmas = set([result.lemma for result in results if result.lemma == result.form])
         # Note: NOT a django form -- linguistic "form"
         found_forms = set([result for result in results if result.lemma != result.form])
+
+        previous_query = ''
+        for queryitem in querylist:
+            previous_query += queryitem + '\n'
     else:
         results = None
         search_results = False
         querylist = None
         found_lemmas = None
         found_forms = None
+        previous_query = None
 
     context = {
         'results':results, 
@@ -51,6 +56,7 @@ def search_view(request):
         'selected_checkboxes':selected_checkboxes,
         'found_lemmas':found_lemmas,
         'found_forms':found_forms,
+        'previous_query':previous_query,
         }
 
     return render(request, 'search.html', context)
