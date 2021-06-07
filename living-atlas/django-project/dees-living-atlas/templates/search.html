@@ -2,44 +2,59 @@
 
 {% block content %}
 
+<script>
+  function hideList(lemma) {
+    var myList = document.getElementById(lemma);
+    console.log(myList);
+    console.log(myList[0]);
+    myList.style.display = "none";
+  }
+</script>
+
 <form method="get" action="">
-  <span id="pointer"> ☞ </span> <input type="text" name="q" id="id_q" placeholder="enter query here" />
+  <span id="pointing-hand"> ☞ </span> <input type="text" name="q" id="id_q" placeholder="enter query here" />
   <input type="submit" value="search" />
 </form>
 
-{% if show_search %}
-{% if results %}
-Results found:
+{% if search_results %}
 <form method="post" action="/">
   {% csrf_token %}
-  <ol>
-    <li class="search-group">
-      {% for lemma in querylist %}
-      <p class="lemma">
-        <input type="checkbox" class="large-ckbox" name="ckbox-{{lemma}}" value="{{lemma}}" checked />
-        {{lemma}} (lemma)
-        <input type="button" onclick="togglecheckboxes('ckbox-{{lemma}}')" value="toggle all" />
-      </p>
+  <div class="flex-container">
+    <div class="results-box">
+      {% comment %} This box contains the lemmas {% endcomment %}
       <ul>
-        {% for result in results %}
-        {% if result.lemma == lemma and result.form != lemma %}
-        <li class="variant">
-          <input type="checkbox" class="large-ckbox" name="ckbox-{{lemma}}" value="{{result.form}}" checked />
-          <label>{{result.form}}</label>
+        {% for lemma in found_lemmas %}
+        <li onclick="hideList('{{lemma}}')">
+          <input type="checkbox" class="lemma-ckbox" name="ckbox-{{lemma}}-base" value="{{lemma}}"
+            onclick="togglecheckboxes('ckbox-{{lemma}}')" checked />
+          <label>{{lemma}}</label>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="results-box">
+      {% comment %} This box contains the forms {% endcomment %}
+      {% for lemma in found_lemmas %}
+      <ul id="{{lemma}}">
+        {% comment %} <span class="lemma"> {{lemma}} </span> {% endcomment %}
+        {% for form in found_forms %}
+        {% if form.lemma == lemma %}
+        <li>
+          <input type="checkbox" class="form-ckbox" name="ckbox-{{form.lemma}}" value="{{form.form}}" display="visible" checked />
+          <label>{{form.form}}</label>
         </li>
         {% endif %}
         {% endfor %}
       </ul>
       {% endfor %}
-    </li>
-  </ol>
+    </div>
+  </div>
   <br>
   <button type="submit">continue to geography</button>
 </form>
-{% else %}
-No results found.
+</div>
 {% endif %}
-{% endif %}
+
 
 {% if selected_checkboxes %}
 {% for selection in selected_checkboxes %}

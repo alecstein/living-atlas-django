@@ -17,8 +17,6 @@ def search_view(request):
     the lemma(s) selected by the user
     """
 
-    show_search = False
-    querylist = None
     query = request.GET.get('q')
 
     # This is the logic used for getting the selected checkboxes
@@ -30,18 +28,29 @@ def search_view(request):
 
     if query:
         querylist = [query.strip() for query in query.split(',')]
-        show_search = True
+        search_results = True
         results = []
         for lemma in querylist:
             results.extend(FrolexEntry.objects.filter(lemma = lemma))
+
+        found_lemmas = set([result.lemma for result in results if result.lemma == result.form])
+        # Note: NOT a django form -- linguistic "form"
+        found_forms = set([result for result in results if result.lemma != result.form])
     else:
         results = None
+        search_results = False
+        querylist = None
+        found_lemmas = None
+        found_forms = None
+
     context = {
         'results':results, 
-        'show_search':show_search,
+        'search_results':search_results,
         'query':query,
         'querylist':querylist,
         'selected_checkboxes':selected_checkboxes,
+        'found_lemmas':found_lemmas,
+        'found_forms':found_forms,
         }
 
     return render(request, 'search.html', context)
