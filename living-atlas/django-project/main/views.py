@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import FrolexEntry
+# from .models import FrolexEntry
+from .models import Form
 import json
-
+from time import time
 # Create your views here.
 
 # %%
@@ -36,19 +37,22 @@ def search_view(request):
 
             # Get all matching forms and lemmas
             context['valid_search'] = True
-            results = FrolexEntry.objects.filter(lemma__in = lemmas)
+            forms = Form.objects.filter(lemma__in = lemmas)
 
+            s = time()
             # Build a dictionary of the forms and lemmas
             # Lemmas are keys, a list of forms is the value
-            result_dict = {}
-            for result in results:
-                if result.form != result.lemma:
+            form_dict = {}
+            for form in forms:
+                if form.form != form.lemma:
                     # Only include forms
                     try:
-                        result_dict[result.lemma].append(result.form)
+                        form_dict[form.lemma].append(form.form)
                     except KeyError:
-                        result_dict[result.lemma] = [result.form]
-            context['result_dict'] = result_dict
+                        form_dict[form.lemma] = [form.form]
+            print(time()-s)
+
+            context['result_dict'] = form_dict
             return render(request, 'search.html', context)
 
         if request.GET.get('r'):
@@ -60,20 +64,21 @@ def search_view(request):
 
             # Get all matching forms and lemmas
             context['valid_search'] = True
-            results = FrolexEntry.objects.filter(lemma__regex=fr"{query}")
+            forms = Form.objects.filter(lemma__regex =fr"{query}")[:2000]
 
-            # Build a dictionary of the forms and lemmas
-            # Lemmas are keys, a list of forms is the value
-            result_dict = {}
-            for result in results:
-                if result.form != result.lemma:
+            s = time()
+            form_dict = {}
+            for form in forms:
+                if form.form != form.lemma:
                     # Only include forms
                     try:
-                        result_dict[result.lemma].append(result.form)
+                        form_dict[form.lemma].append(form.form)
                     except KeyError:
-                        result_dict[result.lemma] = [result.form]
-            context['result_dict'] = result_dict
-            print(result_dict)
+                        form_dict[form.lemma] = [form.form]
+            print(time()-s)
+
+            context['result_dict'] = form_dict
+            # print(result_dict)
             return render(request, 'search.html', context)
 
 
