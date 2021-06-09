@@ -3,64 +3,64 @@
 {% block content %}
 
 <div class="wrap-searchbox">
-<form method="get" action="" class="searchbox">
-  <span id="pointing-hand"> ☞ </span> 
-  <textarea type="text" name="q" placeholder="enter queries separated by lines" cols="40" rows="5">{%if previous_query %}{{previous_query}}{%endif%}</textarea>
-  {% comment %} <input type="text" name="q" id="id_q" placeholder="enter query here" /> {% endcomment %}
-  <br>
-  <input type="submit" value="search" />
-</form>
+  <form method="get" action="">
+    <span id="pointing-hand"> ☞ </span> 
+    <textarea type="text" name="q" placeholder="enter one word per line" cols="40" rows="5">{%if previous_query %}{{previous_query}}{%endif%}</textarea>
+    <br>
+    <input type="submit" value="search" id="search-button"/>
+  </form>
 </div>
 
-{% if search_results %}
+
+{% if valid_search %}
 <form method="post" action="/">
   {% csrf_token %}
   <div class="flex-container">
-    <div class="results-box">
-      {% comment %} This box contains the lemmas {% endcomment %}
-      <ul class="lemmas-list">
-        {% for lemma in found_lemmas %}
-        <li onclick="formSelector('{{lemma}}')" id="{{lemma}}-selector" >
-          <input type="checkbox" class="lemma-ckbox" name="ckbox-{{lemma}}-base" value="{{lemma}}"
-            onclick="toggleCheckboxes('ckbox-{{lemma}}')"/>
+
+    <div class="results">
+      <ol>
+        <li class="list-title">lemmas</li>
+        {% for lemma, forms in result_dict.items %}
+        <li id="{{lemma}}" onclick="selectForms(this)">
+          <input type="checkbox" id="checkbox-{{lemma}}" name="checkbox-{{lemma}}" value="{{lemma}}" onclick="lemmaToggleAll(this)">
           <label>{{lemma}}</label>
         </li>
         {% endfor %}
-      </ul>
+      </ol>
     </div>
-    <div class="results-box">
-      {% comment %} This box contains the forms {% endcomment %}
-      {% for lemma in found_lemmas %}
-      <ul id="{{lemma}}" class="forms-list">
-        {% comment %} <span class="lemma"> {{lemma}} </span> {% endcomment %}
-        {% for form in found_forms %}
-        {% if form.lemma == lemma %}
-        <li>
-          <input type="checkbox" class="form-ckbox" name="ckbox-{{form.lemma}}" value="{{form.form}}" display="visible"/>
-          <label>{{form.form}}</label>
+
+    <div class="results">
+      <ol>
+        <li class="list-title">forms</li>
+        {% for lemma, forms in result_dict.items %}
+        {% for form in forms %}
+        <li id="{{form}}" name="{{lemma}}-child" style="display:none">
+          <input type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
+          <label>{{form}}</label>
         </li>
-        {% endif %}
         {% endfor %}
-      </ul>
-      {% endfor %}
+        {% endfor %}
+      </ol>
     </div>
   </div>
+
   <br>
-  <button type="submit">continue to geography</button>
+  <button type="submit">continue to cartography</button>
 </form>
-</div>
 {% endif %}
 
-<script>
-document.querySelectorAll('.lemmas-list li')[0].style.backgroundColor = '#ffe600';
-</script>
-
-{% if selected_checkboxes %}
-<div>
-{% for selection in selected_checkboxes %}
-{{ selection }}
-{% endfor %}
+{% if valid_submission %}
+<div class="flex-container">
+  <ul class="results">
+    {% for selection in selections %}
+      <li>
+        {{selection}}
+      </li>      
+    {% endfor %}
+  </ul>
 </div>
+
 {% endif %}
 
 {% endblock content %}
+
