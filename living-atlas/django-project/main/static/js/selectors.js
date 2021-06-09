@@ -35,12 +35,21 @@ function lemmaToggleAll(item) {
   }
 }
 
-var searchType = 'q';
-var otherSearchType = 'r';
+var lemmaText = "enter one lemma per line";
+var regexText = "enter a regular expression";
 
-function toggleRegEx() {
-  document.getElementsByName(searchType)[0].setAttribute("name", otherSearchType);
-  var searchTypeTemp = searchType;
-  searchType = otherSearchType;
-  otherSearchType = searchTypeTemp;
+function toggleRegEx(item) {
+  // Toggles the placeholder text in the search box
+  // and toggles search type
+  const searchBox = document.getElementById("searchbox");
+  
+  if (item.checked) {
+    searchBox.setAttribute("placeholder", regexText);
+    searchBox.setAttribute("name", 'r');
+  }
+
+  else if (!item.checked) {
+    searchBox.setAttribute("placeholder", lemmaText);
+    searchBox.setAttribute("name", 'r');
+  }
 }
