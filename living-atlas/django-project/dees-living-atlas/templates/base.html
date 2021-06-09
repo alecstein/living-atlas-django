@@ -5,13 +5,15 @@
 
 <h1>dees living atlas</h1>
 
-<p> [This is where the basic description goes.] </p>
+<p> An application for searching through Dees's Living Atlas, and exploring Medieval French throughout space and time </p>
 
 <ul class='navbar'>
-<li><a href="{% url 'search1' %}">search the database</a>
-<li><a href="{% url 'about' %}">about this page</a>
-<li><a href="{% url 'howto' %}">how to use the search</a>
+<li><a href="{% url 'search1' %}">search</a>
+<li><a href="{% url 'howto' %}">how to</a>
+<li><a href="{% url 'about' %}">about</a>
 </ul>
+
+<hr>
 
 {% block content %}
 {% endblock content %}

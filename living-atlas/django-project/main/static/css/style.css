@@ -2,13 +2,58 @@ body {
     text-align: center;
     width: 700px;
     margin: auto;
+    font-size: 15pt;
     margin-top: 3rem;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: monospace;
 }
 
 .wrap-searchbox {
     position: relative;
     display: inline-block;
+}
+
+textarea {
+    margin-top: .5rem;
+    display:block;
+    font-size: 12pt;
+
+}
+
+::placeholder {
+  font-size: 12pt;
+}
+
+
+#search-button, #continue-button {
+  position: relative;
+  margin: auto;
+
+  /*bottom:10px;*/
+  /*right:10px;*/
+  background-color: #ffe600;
+  border: 1px solid #000;
+  color: black;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-family: monospace;
+}
+
+#search-button:hover, #continue-button:hover {
+  background-color: #ffe6ff;
+    text-decoration: underline;
+
+}
+
+#pointing-hand {
+    position: absolute;
+    top: 0rem;
+    left: -5rem;
+    font-size: 5rem;
+    /* margin-right: -.5rem; */
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .results {
@@ -36,8 +81,9 @@ body {
     font-weight: bolder;
 }
 
-#search-button {
-    margin: 1rem;
+.counter {
+    color: gray;
+    float: right;
 }
 
 .searchbox input {
@@ -46,29 +92,42 @@ body {
 }
 
 .flex-container {
+    margin-top: 1rem;
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
 .navbar li {
-    background-color: #ffe600;
+    /*background-color: #ffe600;*/
     display: inline;
-    justify-content: center;
-    text-align: center;
-}
-
-.navbar {
-    margin-top: 1rem;
-    margin-bottom: 2rem;
+    margin: 1rem;
+    font-weight: bolder;
+    /*display: inline;*/
+    /*justify-content: center;*/
+    /*text-align: center;*/
 }
 
 .navbar a {
-    padding: .5rem;
-    display: inline-block;
-    width: 100%;
-    font-weight: bolder;
+    font-size: 18pt;
+    text-decoration: none;
 }
+
+.navbar a:hover {
+    background-color: #ffe600;
+    text-decoration: underline;
+
+/*    text-decoration: underline;
+*/    /*display: inline;*/
+    /*justify-content: center;*/
+    /*text-align: center;*/
+}
+
+.navbar {
+    padding-bottom: 1rem;
+}
+
+
 
 
 /* Extra code for the look of the demo */
@@ -82,14 +141,4 @@ ul {
 input.checkbox {
     width: 1rem;
     height: 1rem;
-}
-
-#pointing-hand {
-    position: absolute;
-    top: .5rem;
-    left: -3rem;
-    font-size: 3rem;
-    line-height: 0rem;
-    /* margin-right: -.5rem; */
-    font-family: Georgia, 'Times New Roman', Times, serif;
 }

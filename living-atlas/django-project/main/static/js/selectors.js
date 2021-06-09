@@ -54,10 +54,46 @@ function toggleRegEx(item) {
   }
 }
 
-function freezeSelections() {
-  const checkboxes = document.getElementsByTagName('input');
-  console.log(checkboxes)
-  for (var i = checkboxes.length - 1; i >= 0; i--) {
-    checkboxes[i].setAttribute("style", "display:none");
+function boxCount(object) {
+  // Checkboxes have the form "checkbox-lemma-child"
+  // or "checkbox-lemma" if they are lemmas
+
+  // Here's a way to figure out if it was a child or parent
+  // that was toggled
+
+  const splitName = object.name.split("-");
+  const lemma = splitName[1];
+  var total = 0;
+
+  if (splitName.length == 2)  {
+    // lemma box was toggled
+    const formCheckboxes = document.getElementsByName(object.name.concat("-child"));
+    for (var i = formCheckboxes.length - 1; i >= 0; i--) {
+      if (formCheckboxes[i].checked) {
+        total = total + 1;
+      }
+    }
+    const lemmaCheckbox = document.getElementById(lemma.concat("-count"));
+    if (lemmaCheckbox.checked) {
+      total = total + 1;
+    }
   }
+
+  if (splitName.length == 3)  {
+    // form box was toggled
+    var total = 0;
+    
+    const formCheckboxes = document.getElementsByName(object.name);
+    for (var i = formCheckboxes.length - 1; i >= 0; i--) {
+      if (formCheckboxes[i].checked) {
+        total = total + 1;
+      }
+    }
+    const lemmaCheckbox = document.getElementById(lemma.concat("-count"));
+    if (lemmaCheckbox.checked) {
+      total = total + 1;
+    }
+  }
+
+  document.getElementById(lemma.concat("-count")).innerHTML = "(" + total + ")";
 }

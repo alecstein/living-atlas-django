@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from .models import Form
 import json
@@ -87,18 +87,25 @@ def search2_view(request):
 
     context = {}
     queryset = Form.objects.all()
-    
     # If we haven't succeeded with search1, return to search1
     if not request.session.get('search1_successful', False):
-        print('redirected')
+        request.session.flush()
         return redirect('/1/')
 
-    # If we have succeeded with both search1 and search2, complete
-    # if request.session.get('search2_successful', False):
-    #     request.session.flush()
-    #     return HttpResponse('data submitted')
-
     if request.method == 'POST':
+        print(request.POST)
+        # We need to make a dictionary out of the selected checkboxes
+        # lemma checkboxes are labeled as checkbox-lemma
+        # form checkboxes are labeled as checkbox-lemma-child
+
+        # lemma_selections = []
+        # selection_dict = {}
+        # for key in request.POST:
+        #     if key.startswith('checkbox'):
+        #         if 'child' not in key:
+        #             lemma_name = key.split('-')[1]
+        #             lemma_selections.append(key, lemma_name)
+
         keys = [key for key in request.POST if key.startswith('checkbox')]
         selections = []
         for key in keys:
@@ -116,13 +123,12 @@ def search2_view(request):
             context['search1_selections'] = selections
 
         else:
-            request.session['search2_selections'] = selections
-            context['search2_selections'] = selections
-            print(request.session['search2_selections'])
-            print(request.session['search1_selections'])
-            return HttpResponse('data submitted')
+            data = {}
+            data['search1_selections'] = request.session['search1_selections']
+            data['search2_selections'] = selections
+            request.session.flush()
+            return JsonResponse(data,status=200)
         
-        print("rendered post")
         return render(request, 'search2.html', context)
 
     if request.method == 'GET':
@@ -139,6 +145,7 @@ def search2_view(request):
                 # Get all matching forms and lemmas
                 context['valid_search'] = True
                 forms = queryset.filter(lemma__in = lemmas)
+
         elif request.GET.get('r'):
             # Regex query type
             query = request.GET.get('r')
@@ -150,7 +157,7 @@ def search2_view(request):
                 forms = queryset.filter(lemma__regex =fr"{query}")[:2000]
         else:
             # Should be unreachable
-            print("reached unreachable")
+            request.session.flush()
             return render(request, 'search1.html', context)
 
         form_dict = {}
@@ -165,7 +172,6 @@ def search2_view(request):
         request.session['search2_successful'] = True  
         context['result_dict'] = form_dict 
         context['search1_selections'] = request.session.get('search1_selections')
-        print(request.session.get('search1_selections'))
 
     return render(request, 'search2.html', context)
  
