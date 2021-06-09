@@ -24,6 +24,17 @@ function selectForms(item) {
   activeLemma = lemma;
 }
 
+function toggleParent(item) {
+  // lemma checkboxes have the name "checkbox-lemma"
+  // form checkboxes have the name "checkbox-lemma-child"
+  const lemma = item.name.split("-")[1];
+  var lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
+  console.log(lemmaCheckbox);
+  if (item.checked) {
+    lemmaCheckbox.checked = true;
+  }
+}
+
 function lemmaToggleAll(item) {
   // Toggles all the forms associated with a lemma when 
   // that lemma's checkbox is checked
@@ -55,8 +66,8 @@ function toggleRegEx(item) {
 }
 
 function boxCount(object) {
-  // Checkboxes have the form "checkbox-lemma-child"
-  // or "checkbox-lemma" if they are lemmas
+  // Checkboxes have the name "checkbox-lemma-child"
+  // or id:"checkbox-lemma" if they are lemmas
 
   // Here's a way to figure out if it was a child or parent
   // that was toggled
@@ -73,7 +84,7 @@ function boxCount(object) {
         total = total + 1;
       }
     }
-    const lemmaCheckbox = document.getElementById(lemma.concat("-count"));
+    const lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
     if (lemmaCheckbox.checked) {
       total = total + 1;
     }
@@ -89,7 +100,7 @@ function boxCount(object) {
         total = total + 1;
       }
     }
-    const lemmaCheckbox = document.getElementById(lemma.concat("-count"));
+    const lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
     if (lemmaCheckbox.checked) {
       total = total + 1;
     }

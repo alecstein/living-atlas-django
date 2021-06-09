@@ -98,20 +98,25 @@ def search2_view(request):
         # lemma checkboxes are labeled as checkbox-lemma
         # form checkboxes are labeled as checkbox-lemma-child
 
-        # lemma_selections = []
-        # selection_dict = {}
-        # for key in request.POST:
-        #     if key.startswith('checkbox'):
-        #         if 'child' not in key:
-        #             lemma_name = key.split('-')[1]
-        #             lemma_selections.append(key, lemma_name)
+        selections_dict = {}
 
-        keys = [key for key in request.POST if key.startswith('checkbox')]
-        selections = []
-        for key in keys:
-            selections.extend(request.POST.getlist(key))
+        lemma_selections = []
+        for key in request.POST:
+            if key.startswith('checkbox'):
+                if 'child' not in key:
+                    lemma_name = key.split('-')[1]
+                    lemma_selections.append((key, lemma_name))
 
-        if len(selections) == 0:
+        for key, lemma_name in lemma_selections:
+            key = key + "-child"
+            selections_dict[lemma_name] = request.POST.getlist(key)
+
+        print(selections_dict)
+
+        # flatten the list
+        selections_list = sorted({x for v in selections_dict.values() for x in v})
+
+        if len(selections_list) == 0:
             context['valid_submission'] = False
             print('no selections')
             return render(request, 'search2.html', context)
@@ -119,13 +124,13 @@ def search2_view(request):
         # If we have not completed search2, update the 
         # session data for search1
         if not request.session.get('search2_successful', False):
-            request.session['search1_selections'] = selections # save the selections
-            context['search1_selections'] = selections
+            request.session['search1_selections'] = selections_list # save the selections
+            context['search1_selections'] = selections_dict
 
         else:
             data = {}
             data['search1_selections'] = request.session['search1_selections']
-            data['search2_selections'] = selections
+            data['search2_selections'] = selections_list
             request.session.flush()
             return JsonResponse(data,status=200)
         
