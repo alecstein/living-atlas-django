@@ -53,3 +53,11 @@ function toggleRegEx(item) {
     searchBox.setAttribute("name", 'r');
   }
 }
+
+function freezeSelections() {
+  const checkboxes = document.getElementsByTagName('input');
+  console.log(checkboxes)
+  for (var i = checkboxes.length - 1; i >= 0; i--) {
+    checkboxes[i].setAttribute("style", "display:none");
+  }
+}
