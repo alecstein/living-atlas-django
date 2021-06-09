@@ -34,3 +34,13 @@ function lemmaToggleAll(item) {
     formsToToggle[i].checked = item.checked;
   }
 }
+
+var searchType = 'q';
+var otherSearchType = 'r';
+
+function toggleRegEx() {
+  document.getElementsByName(searchType)[0].setAttribute("name", otherSearchType);
+  var searchTypeTemp = searchType;
+  searchType = otherSearchType;
+  otherSearchType = searchTypeTemp;
+}

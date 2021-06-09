@@ -24,7 +24,7 @@ def search_view(request):
     context = {}
 
     if request.method == 'GET':
-        # Check to see if a query was submitted
+        # Check to see if a non-regex query was submitted
         if request.GET.get('q'):
             query = request.GET.get('q')
             # Only accept lemmas which are not the empty string ''
@@ -51,6 +51,32 @@ def search_view(request):
             context['result_dict'] = result_dict
             return render(request, 'search.html', context)
 
+        if request.GET.get('r'):
+            # Check to see if a regex query was submitted
+            query = request.GET.get('r')
+            if query == '':
+                context['valid_search'] == False
+                return render(request, 'search.html', context)
+
+            # Get all matching forms and lemmas
+            context['valid_search'] = True
+            results = FrolexEntry.objects.filter(lemma__regex=fr"{query}")
+
+            # Build a dictionary of the forms and lemmas
+            # Lemmas are keys, a list of forms is the value
+            result_dict = {}
+            for result in results:
+                if result.form != result.lemma:
+                    # Only include forms
+                    try:
+                        result_dict[result.lemma].append(result.form)
+                    except KeyError:
+                        result_dict[result.lemma] = [result.form]
+            context['result_dict'] = result_dict
+            print(result_dict)
+            return render(request, 'search.html', context)
+
+
     if request.method == 'POST':
         # Form was submitted
         keys = [key for key in request.POST if key.startswith('checkbox')]
@@ -66,7 +92,7 @@ def search_view(request):
         context['selections'] = selections
 
         return render(request, 'search.html', context)
-        
+
     return render(request, 'search.html', context)
  
 def about_view(request):

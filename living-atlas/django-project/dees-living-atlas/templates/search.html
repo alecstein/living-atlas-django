@@ -2,15 +2,20 @@
 
 {% block content %}
 
-<div class="wrap-searchbox">
-  <form method="get" action="">
-    <span id="pointing-hand"> ☞ </span> 
-    <textarea type="text" name="q" placeholder="enter one word per line" cols="40" rows="5">{%if previous_query %}{{previous_query}}{%endif%}</textarea>
-    <br>
-    <input type="submit" value="search" id="search-button"/>
-  </form>
+<div>
+  <input type="checkbox" onclick="toggleRegEx()"><label>toggle regex search</label>
 </div>
 
+
+
+<div class="wrap-searchbox" name="lemma-search">
+  <form method="get" action="">
+    <!-- <span id="pointing-hand"> ☞ </span>  -->
+    <textarea type="text" name="q" placeholder="enter one word per line" cols="40" rows="5">{%if previous_query %}{{previous_query}}{%endif%}</textarea>
+    <br>
+    <input type="submit" value="submit list of values"/>
+  </form>
+</div>
 
 {% if valid_search %}
 <form method="post" action="/">
@@ -33,18 +38,16 @@
       <ol>
         <li class="list-title">forms</li>
         {% for lemma, forms in result_dict.items %}
-        {% for form in forms %}
-        <li id="{{form}}" name="{{lemma}}-child" style="display:none">
-          <input type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
-          <label>{{form}}</label>
-        </li>
-        {% endfor %}
+          {% for form in forms %}
+          <li id="{{form}}" name="{{lemma}}-child" style="display:none">
+            <input type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
+            <label>{{form}}</label>
+          </li>
+          {% endfor %}
         {% endfor %}
       </ol>
     </div>
   </div>
-
-  <br>
   <button type="submit">continue to cartography</button>
 </form>
 {% endif %}
