@@ -5,6 +5,7 @@ body {
     font-size: .8rem;
     margin-top: 3rem;
     font-family: monospace;
+    background-color: #F4E7C1;
 }
 
 .radios {
@@ -60,6 +61,7 @@ textarea {
 }
 
 .results {
+    background-color: white;
     width: 50%;
     overflow: auto;
     height: 14rem;
@@ -119,13 +121,17 @@ textarea {
 }
 
 .navbar a {
+    color: black;
     font-size: 1.5rem;
+    padding: .5rem;
     text-decoration: none;
+    border: 1px solid transparent;
 }
 
 .navbar a:hover {
     background-color: #ffe600;
     text-decoration: underline;
+    border: 1px solid black;
 
 /*    text-decoration: underline;
 */    /*display: inline;*/
