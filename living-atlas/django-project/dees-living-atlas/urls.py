@@ -15,14 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main.views import search_view, search1_view, search2_view, howto_view, about_view 
+from main.views import search_view, howto_view, about_view 
 from django.shortcuts import redirect
 
 urlpatterns = [
-    path('', lambda req: redirect('/1/')), # redirect home to /1/
     path('admin/', admin.site.urls),
-    path('1/', search_view, name = 'search1'),
-    path('2/', search2_view, name = 'search2'),
+    path('', search_view, name = 'search'),
     path('howto/', howto_view, name = 'howto'),
     path('about/', about_view, name = 'about'),
 ]

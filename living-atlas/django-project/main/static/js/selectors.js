@@ -85,15 +85,15 @@ function toggleRegEx(item) {
   // Toggles the placeholder text in the search box
   // and toggles search type
   const searchBox = document.getElementById("searchbox");
-  
-  if (item.checked) {
+
+  if (item.value == 'r') {
     searchBox.setAttribute("placeholder", regexText);
     searchBox.setAttribute("name", 'r');
   }
 
-  else if (!item.checked) {
+  else if (item.value == 'q') {
     searchBox.setAttribute("placeholder", lemmaText);
-    searchBox.setAttribute("name", 'r');
+    searchBox.setAttribute("name", 'q');
   }
 }
 
@@ -138,3 +138,15 @@ function boxCount(object) {
   parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').innerHTML = "(" + total + ")";
   // document.getElementById(lemma.concat("-count")).innerHTML = "(" + total + ")";
 }
+
+// Stackoverflow https://stackoverflow.com/questions/45577740/how-to-save-dynamic-checkbox-state-after-page-refresh
+
+var checkboxes = document.getElementsByTagName("checkbox");
+if(localStorage['checkboxes']){
+  $scope.checkBoxes = JSON.parse(localStorage.getItem("checkboxes"));
+  console.log(localStorage['checkboxes'].length);
+}
+
+$scope.valueChange =function(){
+  localStorage.setItem("checkboxes", JSON.stringify($scope.checkboxes));
+};
