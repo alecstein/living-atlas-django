@@ -93,7 +93,6 @@ def search2_view(request):
         return redirect('/1/')
 
     if request.method == 'POST':
-        print(request.POST)
         # We need to make a dictionary out of the selected checkboxes
         # lemma checkboxes are labeled as checkbox-lemma
         # form checkboxes are labeled as checkbox-lemma-child
@@ -111,20 +110,17 @@ def search2_view(request):
             key = key + "-child"
             selections_dict[lemma_name] = request.POST.getlist(key)
 
-        print(selections_dict)
-
         # flatten the list
         selections_list = sorted({x for v in selections_dict.values() for x in v})
 
         if len(selections_list) == 0:
             context['valid_submission'] = False
-            print('no selections')
             return render(request, 'search2.html', context)
 
         # If we have not completed search2, update the 
         # session data for search1
         if not request.session.get('search2_successful', False):
-            request.session['search1_selections'] = selections_list # save the selections
+            request.session['search1_selections'] = selections_dict # save the selections
             context['search1_selections'] = selections_dict
 
         else:

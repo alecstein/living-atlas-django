@@ -26,7 +26,8 @@ textarea {
 
 #search-button, #continue-button {
   position: relative;
-  margin: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 
   /*bottom:10px;*/
   /*right:10px;*/
@@ -42,7 +43,7 @@ textarea {
 }
 
 #search-button:hover, #continue-button:hover {
-  background-color: #ffe6ff;
+    background-color: #ffe6ff;
     text-decoration: underline;
 
 }
@@ -92,7 +93,6 @@ textarea {
 }
 
 .flex-container {
-    margin-top: 1rem;
     display: flex;
     flex-direction: row;
     justify-content: center;
