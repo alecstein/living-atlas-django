@@ -14,9 +14,9 @@ function selectForms(item) {
   if (group == "A") {
     if (activeLemma_A != null) {
       // If no lemma has been selected before
-      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma +']');
+      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma_A +']');
       lemmaToDehighlight.setAttribute("style", "background-color:white");
-      const formsToDisable = parentDiv.querySelectAll('[name=' + activeLemma_A.concat("-child") + ']');
+      const formsToDisable = parentDiv.querySelectorAll('[name=' + activeLemma_A.concat("-child") + ']');
       for (var i = formsToDisable.length - 1; i >= 0; i--) {
         formsToDisable[i].setAttribute("style", "display:none");
       }
@@ -29,13 +29,14 @@ function selectForms(item) {
     for (var i = formsToEnable.length - 1; i >= 0; i--) {
       formsToEnable[i].setAttribute("style", "display:visible");
     }
-    activeLemma = lemma;
+    activeLemma_A = lemma;
+    console.log(activeLemma_A);
   }
 
   else {
     if (activeLemma_B != null) {
       // If no lemma has been selected before
-      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma +']');
+      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma_B +']');
       lemmaToDehighlight.setAttribute("style", "background-color:white");
       const formsToDisable = parentDiv.querySelectAll('[name=' + activeLemma_B.concat("-child") + ']');
       for (var i = formsToDisable.length - 1; i >= 0; i--) {
@@ -50,7 +51,7 @@ function selectForms(item) {
     for (var i = formsToEnable.length - 1; i >= 0; i--) {
       formsToEnable[i].setAttribute("style", "display:visible");
     }
-    activeLemma = lemma;
+    activeLemma_B = lemma;
   }
 }
 

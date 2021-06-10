@@ -8,11 +8,11 @@ from time import time
 
 
 def search_view(request):
-
     context = {}
     queryset = Form.objects.all()
 
     if request.method == 'GET':
+
         if request.GET.get('clear'):
             request.session.flush()
             return render(request, 'search.html', context)
@@ -50,6 +50,13 @@ def search_view(request):
             else: HttpResponse("Broken pipe")
 
         return render(request, 'search.html', context)
+
+    if request.method == 'POST':
+        data = {}
+        data['query_A'] = request.session['query_A']
+        data['query_B'] = request.session['query_B']
+        request.session.flush()
+        return JsonResponse(data,status=200)
 
 def search1_view(request):
     """

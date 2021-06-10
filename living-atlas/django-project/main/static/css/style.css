@@ -1,6 +1,6 @@
 body {
     text-align: center;
-    width: 700px;
+    width: 800px;
     margin: auto;
     font-size: 15pt;
     margin-top: 3rem;
@@ -61,7 +61,7 @@ textarea {
     width: 50%;
     margin: 1px;
     overflow: auto;
-    height: 300px;
+    height: 14rem;
     border: 1px solid #000;
 }
 
@@ -146,41 +146,9 @@ input.checkbox {
 
 .pushable {
   position: relative;
-  background: transparent;
-  border: none;
-  /*border: 1px solid black;*/
+  border: 1px solid black;
   padding: 0;
-  cursor: pointer;
   font-family: monospace;
-}
-.shadow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  background: hsl(0deg 0% 0% / 0.25);
-  transform: translateY(2px);
-}
-.edge {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  background: #ead300;
-}
-.front {
-  display: block;
-  position: relative;
-  padding: 12px 42px;
-  border-radius: 12px;
-  font-size: 1.25rem;
-  color: black;
-  background: #ffe600;
-  transform: translateY(-4px);
 }
 
 .pushable:hover .front {
@@ -188,14 +156,4 @@ input.checkbox {
 }
 .pushable:hover .shadow {
   transform: translateY(4px);
-}
-.pushable:active .front {
-  transform: translateY(-2px);
-}
-.pushable:active .shadow {
-  transform: translateY(1px);
-}
-
-.pushable:focus:not(:focus-visible) {
-  outline: none;
 }
