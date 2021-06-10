@@ -1,3 +1,19 @@
+window.onload = function(){
+  var allCheckboxes = document.getElementsByClassName("checkbox");
+  for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+    allCheckboxes[i].checked = JSON.parse(localStorage.getItem(allCheckboxes[i].id));
+
+  }
+  var allLabels = document.getElementsByTagName("label");
+  for (var i = allLabels.length - 1; i >= 0; i--) {
+    if (allLabels[i].id.includes("count")) {
+      allLabels[i].textContent = JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)));
+    }
+  }
+
+  localStorage.clear();
+}
+
 var activeLemma_A = null;
 var activeLemma_B = null;
 
@@ -54,7 +70,7 @@ function selectForms(item) {
   }
 }
 
-  function toggleParent(item) {
+function toggleParent(item) {
   // lemma checkboxes have the name "checkbox-lemma"
   // form checkboxes have the name "checkbox-lemma-child"
   const lemma = item.name.split("-")[1];
@@ -101,9 +117,9 @@ function saveCheckboxes() {
 
   // This saves all the checkbox values
   var allCheckboxes = document.getElementsByClassName("checkbox");
-    for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+  for (var i = allCheckboxes.length - 1; i >= 0; i--) {
     localStorage.setItem(allCheckboxes[i].id, allCheckboxes[i].checked);
-    }
+  }
 
   // We also want to save the state of the lemmas
   var allLabels = document.getElementsByTagName("label");

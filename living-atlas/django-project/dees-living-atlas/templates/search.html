@@ -108,23 +108,6 @@
 	</div>
 	<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/>
 </form>
-
-<script type="text/javascript">
-var allCheckboxes = document.getElementsByClassName("checkbox");
-for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-	allCheckboxes[i].checked = JSON.parse(localStorage.getItem(allCheckboxes[i].id));
-
-}
-
-var allLabels = document.getElementsByTagName("label");
-for (var i = allLabels.length - 1; i >= 0; i--) {
-	if (allLabels[i].id.includes("count")) {
-		allLabels[i].textContent = JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)));
-	}
-}
-
-localStorage.clear();
-</script>
 {%endblock content%}
 
 
