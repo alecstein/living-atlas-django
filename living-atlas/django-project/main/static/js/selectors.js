@@ -7,9 +7,13 @@ window.onload = function(){
   var allLabels = document.getElementsByTagName("label");
   for (var i = allLabels.length - 1; i >= 0; i--) {
     if (allLabels[i].id.includes("count")) {
-      allLabels[i].textContent = JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)));
-    }
+
+      if (JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)))) {
+        allLabels[i].textContent = JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)));
+      }
+    }  
   }
+  
 
   localStorage.clear();
 }

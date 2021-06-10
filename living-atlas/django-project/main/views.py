@@ -15,6 +15,7 @@ def search_view(request):
         # Searchbox submission
 
         if request.GET.get('clear'):
+            # Return a blank page
             request.session.flush()
             return render(request, 'search.html', context)
 
@@ -76,11 +77,41 @@ def search_view(request):
 
         if not request.session.get('query_B', False):
             context['invalid_submission'] = True
-            return render(request, 'search.html', context) 
+            return render(request, 'search.html', context)
+
+        selections_dict_A = {}
+        selections_dict_B = {}
+
+        lemma_selections_A = []
+        lemma_selections_B = []
+
+        print(request.POST)
+
+        for key in request.POST:
+            if key.startswith('checkbox'):
+                if 'child' not in key:
+                    if key[-1] == 'A':
+                        lemma_name = key.split('-')[1].strip('A')
+                        lemma_selections_A.append((key, lemma_name))                        
+                        print(lemma_name, key[-1])
+
+                    elif key[-1] == 'B':
+                        lemma_name = key.split('-')[1].strip('B')
+                        lemma_selections_B.append((key, lemma_name))   
+                        print(lemma_name, key[-1])
+
+        for key, lemma_name in lemma_selections_A:
+            key = key + "-child"
+            selections_dict_A[lemma_name] = request.POST.getlist(key)
+
+        for key, lemma_name in lemma_selections_B:
+            key = key + "-child"
+            selections_dict_B[lemma_name] = request.POST.getlist(key)
+
 
         data = {}
-        data['query_A'] = request.session['query_A']
-        data['query_B'] = request.session['query_B']
+        data['query_A'] = selections_dict_A
+        data['query_B'] = selections_dict_B
         request.session.flush()
         return JsonResponse(data,status=200)
  

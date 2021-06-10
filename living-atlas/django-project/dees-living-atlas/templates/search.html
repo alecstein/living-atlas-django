@@ -23,8 +23,9 @@
 	</div>
 	<div class="wrap-searchbox" name="lemma-search">
 
-<!-- <span id="pointing-hand"> ☞ </span> -->
+
 <div>
+	<!-- <span id="pointing-hand"> ☞ </span> -->
 	<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line" cols="40" rows="5">{% if request.session.query %}{{request.session.query}}{% endif %}</textarea>
 </div>
 <div class="button-array">
@@ -37,13 +38,13 @@
 
 {% if no_results %}
 <div class="error">
-	No results were found in the database.
+	no results for that query were found in the database
 </div>
 {% endif %}
 
 {% if invalid_submission %}
 <div class="error">
-	To compare results you must select from both groups.
+	to compare results you must select from both groups
 </div>
 {% endif %}
 
