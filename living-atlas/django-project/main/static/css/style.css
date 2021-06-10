@@ -94,6 +94,7 @@ textarea {
 
 .flex-container {
     display: flex;
+    /*background-color: blue;*/
     flex-direction: row;
     justify-content: center;
 }
@@ -119,8 +120,8 @@ textarea {
 
 /*    text-decoration: underline;
 */    /*display: inline;*/
-    /*justify-content: center;*/
-    /*text-align: center;*/
+/*justify-content: center;*/
+/*text-align: center;*/
 }
 
 .navbar {

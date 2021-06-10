@@ -93,6 +93,7 @@ def search2_view(request):
         return redirect('/1/')
 
     if request.method == 'POST':
+
         # We need to make a dictionary out of the selected checkboxes
         # lemma checkboxes are labeled as checkbox-lemma
         # form checkboxes are labeled as checkbox-lemma-child
@@ -109,6 +110,7 @@ def search2_view(request):
         for key, lemma_name in lemma_selections:
             key = key + "-child"
             selections_dict[lemma_name] = request.POST.getlist(key)
+
 
         # flatten the list
         selections_list = sorted({x for v in selections_dict.values() for x in v})
