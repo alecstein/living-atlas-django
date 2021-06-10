@@ -6,9 +6,51 @@ import json
 from time import time
 # Create your views here.
 
-# %%
 
-# %%
+def search_view(request):
+
+    context = {}
+    queryset = Form.objects.all()
+
+    if request.method == 'GET':
+        if request.GET.get('clear'):
+            request.session.flush()
+            return render(request, 'search.html', context)
+
+        if request.GET.get('q'):
+            # Normal query type
+            query = request.GET.get('q')
+            # Only accept lemmas which are not the empty string ''
+            lemmas = set([lemma for lemma in query.strip().splitlines() if lemma.strip()])
+            if len(lemmas) == 0:
+                # If no valid queries are found, return same page
+                return render(request, 'search.html', context)
+
+            # Get all matching forms and lemmas
+            forms = queryset.filter(lemma__in = lemmas)
+            if len(forms) == 0:
+                context['no_results'] = True
+                return render(request, 'search.html', context)
+
+            form_dict = {}
+            for form in forms:
+                if form.form != form.lemma:
+                    # Only include forms
+                    try:
+                        form_dict[form.lemma].append(form.form)
+                    except KeyError:
+                        form_dict[form.lemma] = [form.form]
+
+            if request.GET.get('query_A'):
+                request.session['query_A'] = form_dict
+
+            elif request.GET.get('query_B'):
+                request.session['query_B'] = form_dict
+
+            else: HttpResponse("Broken pipe")
+
+        return render(request, 'search.html', context)
+
 def search1_view(request):
     """
     The first search that the user makes is called 'search1'.

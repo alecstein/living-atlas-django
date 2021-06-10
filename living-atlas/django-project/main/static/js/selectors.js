@@ -1,30 +1,60 @@
-var activeLemma = null;
+var activeLemma_A = null;
+var activeLemma_B = null;
 
 function selectForms(item) {
   // When a lemma is clicked, it reveals the forms associated with it
   // and highlights that lemma
 
-  if (activeLemma != null) {
-    const lemmaToDehighlight = document.getElementById(activeLemma);
-    lemmaToDehighlight.setAttribute("style", "background-color:white");
-    const formsToDisable = document.getElementsByName(activeLemma.concat("-child"));
-    for (var i = formsToDisable.length - 1; i >= 0; i--) {
-      formsToDisable[i].setAttribute("style", "display:none");
+  // First we need to tell whether the lemma is in group A or B
+
+  var parentDiv = item.parentNode.parentNode.parentNode;
+  var group = parentDiv.getAttribute("name");
+  // var parentDiv = item.parentNode.parentNode;
+
+  if (group == "A") {
+    if (activeLemma_A != null) {
+      // If no lemma has been selected before
+      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma +']');
+      lemmaToDehighlight.setAttribute("style", "background-color:white");
+      const formsToDisable = parentDiv.querySelectAll('[name=' + activeLemma_A.concat("-child") + ']');
+      for (var i = formsToDisable.length - 1; i >= 0; i--) {
+        formsToDisable[i].setAttribute("style", "display:none");
+      }
     }
+
+    const lemma = item.id;
+    const lemmaToHighlight = parentDiv.querySelector('[id=' + lemma + ']');
+    lemmaToHighlight.setAttribute("style", "background-color:#ffe600");
+    const formsToEnable = parentDiv.querySelectorAll('[name=' + lemma.concat("-child") + ']');
+    for (var i = formsToEnable.length - 1; i >= 0; i--) {
+      formsToEnable[i].setAttribute("style", "display:visible");
+    }
+    activeLemma = lemma;
   }
 
-  const lemma = item.id;
-  const lemmaToHighlight = document.getElementById(lemma);
-  lemmaToHighlight.setAttribute("style", "background-color:#ffe600");
-  const formsToEnable = document.getElementsByName(lemma.concat("-child"));
-  for (var i = formsToEnable.length - 1; i >= 0; i--) {
-    // forms[i].style.display = "visible";
-    formsToEnable[i].setAttribute("style", "display:visible");
+  else {
+    if (activeLemma_B != null) {
+      // If no lemma has been selected before
+      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma +']');
+      lemmaToDehighlight.setAttribute("style", "background-color:white");
+      const formsToDisable = parentDiv.querySelectAll('[name=' + activeLemma_B.concat("-child") + ']');
+      for (var i = formsToDisable.length - 1; i >= 0; i--) {
+        formsToDisable[i].setAttribute("style", "display:none");
+      }
+    }
+
+    const lemma = item.id;
+    const lemmaToHighlight = parentDiv.querySelector('[id=' + lemma + ']');
+    lemmaToHighlight.setAttribute("style", "background-color:#ffe600");
+    const formsToEnable = parentDiv.querySelectorAll('[name=' + lemma.concat("-child") + ']');
+    for (var i = formsToEnable.length - 1; i >= 0; i--) {
+      formsToEnable[i].setAttribute("style", "display:visible");
+    }
+    activeLemma = lemma;
   }
-  activeLemma = lemma;
 }
 
-function toggleParent(item) {
+  function toggleParent(item) {
   // lemma checkboxes have the name "checkbox-lemma"
   // form checkboxes have the name "checkbox-lemma-child"
   const lemma = item.name.split("-")[1];
