@@ -8,21 +8,31 @@ from time import time
 
 
 def search_view(request):
+    """
+    The app revolves around this view, which is also the homepage.
+    """
+
     context = {}
-    queryset = Form.objects.all()
+
+    print(request.GET)
 
     if request.method == 'GET':
         # Searchbox submission
+
+        if request.GET.get('lang') == 'french':
+            queryset = Form.objects.all()
+
+        elif request.GET.get('lang') == 'latin':
+            queryset = Form.objects.all()
 
         if request.GET.get('clear'):
             # Return a blank page
             request.session.flush()
             return render(request, 'search.html', context)
 
-        if request.GET.get('q'):
+        if request.GET.get('type') == 'list':
             # Normal query type
             query = request.GET.get('q')
-            request.session['querytype'] = 'q'
             # Only accept lemmas which are not the empty string ''
             lemmas = set([lemma for lemma in query.strip().splitlines() if lemma.strip()])
             if len(lemmas) == 0:
@@ -37,11 +47,10 @@ def search_view(request):
                 context['no_results'] = True
                 return render(request, 'search.html', context)
 
-        elif request.GET.get('r'):
+        elif request.GET.get('type') == 'regex':
             # Regex query type
-            query = request.GET.get('r')
+            query = request.GET.get('q')
             request.session['query'] = query
-            request.session['querytype'] = 'r'
             if query == '':
                 context['valid_search'] == False
             else:
