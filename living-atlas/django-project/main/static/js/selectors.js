@@ -69,8 +69,10 @@ function lemmaToggleAll(item) {
   // Toggles all the forms associated with a lemma when 
   // that lemma's checkbox is checked
 
+  var parentDiv = item.parentNode.parentNode.parentNode.parentNode;
+
   const lemma = item.id;
-  formsToToggle = document.getElementsByName(lemma.concat("-child"));
+  const formsToToggle = parentDiv.querySelectorAll('[name=' + lemma.concat("-child") + ']');
   for (var i = formsToToggle.length - 1; i >= 0; i--) {
     formsToToggle[i].checked = item.checked;
   }
@@ -102,21 +104,21 @@ function boxCount(object) {
   // Here's a way to figure out if it was a child or parent
   // that was toggled
 
+  var parentDiv = object.parentNode.parentNode.parentNode.parentNode;
+
   const splitName = object.name.split("-");
   const lemma = splitName[1];
   var total = 0;
+  const lemmaCheckbox = parentDiv.querySelector('[id=' + "checkbox-".concat(lemma) + ']');
 
   if (splitName.length == 2)  {
     // lemma box was toggled
-    const formCheckboxes = document.getElementsByName(object.name.concat("-child"));
+    const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name.concat("-child") + ']');
+    console.log(formCheckboxes);
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
       if (formCheckboxes[i].checked) {
         total = total + 1;
       }
-    }
-    const lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
-    if (lemmaCheckbox.checked) {
-      total = total + 1;
     }
   }
 
@@ -124,17 +126,15 @@ function boxCount(object) {
     // form box was toggled
     var total = 0;
     
-    const formCheckboxes = document.getElementsByName(object.name);
+    // const formCheckboxes = document.getElementsByName(object.name);
+    const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name + ']');
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
       if (formCheckboxes[i].checked) {
         total = total + 1;
       }
     }
-    const lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
-    if (lemmaCheckbox.checked) {
-      total = total + 1;
-    }
   }
 
-  document.getElementById(lemma.concat("-count")).innerHTML = "(" + total + ")";
+  parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').innerHTML = "(" + total + ")";
+  // document.getElementById(lemma.concat("-count")).innerHTML = "(" + total + ")";
 }
