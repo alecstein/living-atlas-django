@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="get" action="">
+	<div class="radios">
+		<div class="radio-group">
+			<input type="radio" name="latin" value="latin">
+			<label for="latin">latin</label>
+			<input type="radio" name="latin" value="french" checked>
+			<label for="latin">french</label>
+		</div>
+		<div class="radio-group">
+			<input type="radio" name="regex" value="r" onclick="toggleRegEx(this)">
+			<label for="regex">regex</label>
+			<input type="radio" name="regex" value="q" onclick="toggleRegEx(this)" checked>
+			<label for="regex">list</label>
+		</div>
+		
+	</div>
+	<div class="wrap-searchbox" name="lemma-search">
+
+<!-- <span id="pointing-hand"> ☞ </span> -->
+<div>
+	<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line" cols="40" rows="5">{% if request.session.query %}{{request.session.query}}{% endif %}</textarea>
+</div>
+<div class="button-array">
+	<input class="pushable" name="query_A" type="submit" value = "send query to group A"/>
+	<input class="pushable" name="query_B" type="submit" value = "send query to group B"/>
+	<input class="pushable" name="clear" type="submit" value = "clear all ❌" style="background-color: #ffe600;" />
+</div>
+</div>
+</form>
+
+{% if no_results %}
+<div class="error">
+	No results were found in the database.
+</div>
+{% endif %}
+
+{% if invalid_submission %}
+<div class="error">
+	To compare results you must select from both groups.
+</div>
+{% endif %}
+
+
+<form method="post" action="">
+	{% csrf_token %}
+
+	<div class="flex-container" name="A">
+		<div class="results">
+			<ol>
+				<li class="list-title">lemmas (group A)</li>
+				{% for lemma, forms in request.session.query_A.items %}
+				<li id="{{lemma}}" onclick="selectForms(this)">
+					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}" name="checkbox-{{lemma}}" value="{{lemma}}" onclick="lemmaToggleAll(this)">
+					<label>{{lemma}}</label><label id="{{lemma}}-count" class="counter">(0)</label>
+				</li>
+				{% endfor %}
+			</ol>
+		</div>
+
+		<div class="results">
+			<ol>
+				<li class="list-title">forms (group A)</li>
+				{% for lemma, forms in request.session.query_A.items %}
+				{% for form in forms %}
+				<li id="{{form}}" name="{{lemma}}-child" style="display:none">
+					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
+					<label>{{form}}</label>
+				</li>
+				{% endfor %}
+				{% endfor %}
+			</ol>
+		</div>
+	</div>
+
+	<div class="flex-container" name="B">
+		<div class="results">
+			<ol>
+				<li class="list-title">lemmas (group B)</li>
+				{% for lemma, forms in request.session.query_B.items %}
+				<li id="{{lemma}}" onclick="selectForms(this)">
+					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}" name="checkbox-{{lemma}}" value="{{lemma}}" onclick="lemmaToggleAll(this)">
+					<label>{{lemma}}</label><label id="{{lemma}}-count" class="counter">(0)</label>
+				</li>
+				{% endfor %}
+			</ol>
+		</div>
+
+		<div class="results">
+			<ol>
+				<li class="list-title">forms (group B)</li>
+				{% for lemma, forms in request.session.query_B.items %}
+				{% for form in forms %}
+				<li id="{{form}}" name="{{lemma}}-child" style="display:none">
+					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
+					<label>{{form}}</label>
+				</li>
+				{% endfor %}
+				{% endfor %}
+			</ol>
+		</div>
+	</div>
+	<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/>
+</form>
+{%endblock content%}
