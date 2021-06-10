@@ -59,7 +59,6 @@ function selectForms(item) {
   // form checkboxes have the name "checkbox-lemma-child"
   const lemma = item.name.split("-")[1];
   var lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
-  console.log(lemmaCheckbox);
   if (item.checked) {
     lemmaCheckbox.checked = true;
   }
@@ -97,6 +96,24 @@ function toggleRegEx(item) {
   }
 }
 
+function saveCheckboxes() {
+  // Saves checkboxes and counts in-between get requests
+
+  // This saves all the checkbox values
+  var allCheckboxes = document.getElementsByClassName("checkbox");
+    for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+    localStorage.setItem(allCheckboxes[i].id, allCheckboxes[i].checked);
+    }
+
+  // We also want to save the state of the lemmas
+  var allLabels = document.getElementsByTagName("label");
+  for (var i = allLabels.length - 1; i >= 0; i--) {
+    if (allLabels[i].id.includes("count")) {
+      localStorage.setItem(JSON.stringify(allLabels[i].id), JSON.stringify(allLabels[i].innerHTML));
+    }
+  }
+}
+
 function boxCount(object) {
   // Checkboxes have the name "checkbox-lemma-child"
   // or id:"checkbox-lemma" if they are lemmas
@@ -114,7 +131,6 @@ function boxCount(object) {
   if (splitName.length == 2)  {
     // lemma box was toggled
     const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name.concat("-child") + ']');
-    console.log(formCheckboxes);
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
       if (formCheckboxes[i].checked) {
         total = total + 1;
@@ -126,7 +142,6 @@ function boxCount(object) {
     // form box was toggled
     var total = 0;
     
-    // const formCheckboxes = document.getElementsByName(object.name);
     const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name + ']');
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
       if (formCheckboxes[i].checked) {
@@ -136,17 +151,4 @@ function boxCount(object) {
   }
 
   parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').innerHTML = "(" + total + ")";
-  // document.getElementById(lemma.concat("-count")).innerHTML = "(" + total + ")";
 }
-
-// Stackoverflow https://stackoverflow.com/questions/45577740/how-to-save-dynamic-checkbox-state-after-page-refresh
-
-var checkboxes = document.getElementsByTagName("checkbox");
-if(localStorage['checkboxes']){
-  $scope.checkBoxes = JSON.parse(localStorage.getItem("checkboxes"));
-  console.log(localStorage['checkboxes'].length);
-}
-
-$scope.valueChange =function(){
-  localStorage.setItem("checkboxes", JSON.stringify($scope.checkboxes));
-};

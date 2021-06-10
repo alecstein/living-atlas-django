@@ -2,6 +2,9 @@
 
 {% block content %}
 
+</head>
+<body>
+
 <form method="get" action="">
 	<div class="radios">
 		<div class="radio-group">
@@ -25,8 +28,8 @@
 	<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line" cols="40" rows="5">{% if request.session.query %}{{request.session.query}}{% endif %}</textarea>
 </div>
 <div class="button-array">
-	<input class="pushable" name="query_A" type="submit" value = "send query to group A"/>
-	<input class="pushable" name="query_B" type="submit" value = "send query to group B"/>
+	<input class="pushable" name="query_A" type="submit" onclick="saveCheckboxes()" value = "send query to group A"/>
+	<input class="pushable" name="query_B" type="submit" onclick="saveCheckboxes()" value = "send query to group B"/>
 	<input class="pushable" name="clear" type="submit" value = "clear all ❌" style="background-color: #ffe600;" />
 </div>
 </div>
@@ -53,9 +56,9 @@
 			<ol>
 				<li class="list-title">lemmas (group A)</li>
 				{% for lemma, forms in request.session.query_A.items %}
-				<li id="{{lemma}}" onclick="selectForms(this)">
-					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}" name="checkbox-{{lemma}}" value="{{lemma}}" onclick="lemmaToggleAll(this)">
-					<label>{{lemma}}</label><label id="{{lemma}}-count" class="counter">(0)</label>
+				<li id="{{lemma}}A" onclick="selectForms(this)">
+					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}A" name="checkbox-{{lemma}}A" value="{{lemma}}" onclick="lemmaToggleAll(this)">
+					<label>{{lemma}}</label><label id="{{lemma}}A-count" class="counter">(0)</label>
 				</li>
 				{% endfor %}
 			</ol>
@@ -66,8 +69,8 @@
 				<li class="list-title">forms (group A)</li>
 				{% for lemma, forms in request.session.query_A.items %}
 				{% for form in forms %}
-				<li id="{{form}}" name="{{lemma}}-child" style="display:none">
-					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
+				<li id="{{form}}A" name="{{lemma}}A-child" style="display:none">
+					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}A-child" id="checkbox-{{form}}A" value="{{form}}">
 					<label>{{form}}</label>
 				</li>
 				{% endfor %}
@@ -81,9 +84,9 @@
 			<ol>
 				<li class="list-title">lemmas (group B)</li>
 				{% for lemma, forms in request.session.query_B.items %}
-				<li id="{{lemma}}" onclick="selectForms(this)">
-					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}" name="checkbox-{{lemma}}" value="{{lemma}}" onclick="lemmaToggleAll(this)">
-					<label>{{lemma}}</label><label id="{{lemma}}-count" class="counter">(0)</label>
+				<li id="{{lemma}}B" onclick="selectForms(this)">
+					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}B" name="checkbox-{{lemma}}B" value="{{lemma}}" onclick="lemmaToggleAll(this)">
+					<label>{{lemma}}</label><label id="{{lemma}}B-count" class="counter">(0)</label>
 				</li>
 				{% endfor %}
 			</ol>
@@ -94,8 +97,8 @@
 				<li class="list-title">forms (group B)</li>
 				{% for lemma, forms in request.session.query_B.items %}
 				{% for form in forms %}
-				<li id="{{form}}" name="{{lemma}}-child" style="display:none">
-					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}-child" value="{{form}}">
+				<li id="{{form}}B" name="{{lemma}}B-child" style="display:none">
+					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}B-child" id="checkbox-{{form}}B" value="{{form}}">
 					<label>{{form}}</label>
 				</li>
 				{% endfor %}
@@ -105,4 +108,25 @@
 	</div>
 	<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/>
 </form>
+
+<script type="text/javascript">
+var allCheckboxes = document.getElementsByClassName("checkbox");
+for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+	allCheckboxes[i].checked = JSON.parse(localStorage.getItem(allCheckboxes[i].id));
+
+}
+
+var allLabels = document.getElementsByTagName("label");
+for (var i = allLabels.length - 1; i >= 0; i--) {
+	if (allLabels[i].id.includes("count")) {
+		allLabels[i].textContent = JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)));
+	}
+}
+
+localStorage.clear();
+</script>
 {%endblock content%}
+
+
+
+
