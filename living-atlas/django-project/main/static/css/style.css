@@ -7,16 +7,20 @@ body {
     font-family: monospace;
 }
 
+.button-array {
+    /*margin-top: .5rem;*/
+    display: inline-block;
+    /*margin-bottom: .5rem;*/
+}
+
 .wrap-searchbox {
-    position: relative;
+    /*position: relative;*/
+    text-align: center;ND
     display: inline-block;
 }
 
 textarea {
-    margin-top: .5rem;
-    display:block;
     font-size: 12pt;
-
 }
 
 ::placeholder {
@@ -129,8 +133,6 @@ textarea {
 }
 
 
-
-
 /* Extra code for the look of the demo */
 ul {
     padding: 0;
@@ -147,7 +149,9 @@ input.checkbox {
 .pushable {
   position: relative;
   border: 1px solid black;
-  padding: 0;
+  padding: .5rem;
+  font-size: 10pt;
+  margin: .5rem;
   font-family: monospace;
 }
 

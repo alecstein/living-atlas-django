@@ -30,15 +30,14 @@ function selectForms(item) {
       formsToEnable[i].setAttribute("style", "display:visible");
     }
     activeLemma_A = lemma;
-    console.log(activeLemma_A);
   }
 
-  else {
+  if (group == "B") {
     if (activeLemma_B != null) {
       // If no lemma has been selected before
       const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma_B +']');
       lemmaToDehighlight.setAttribute("style", "background-color:white");
-      const formsToDisable = parentDiv.querySelectAll('[name=' + activeLemma_B.concat("-child") + ']');
+      const formsToDisable = parentDiv.querySelectorAll('[name=' + activeLemma_B.concat("-child") + ']');
       for (var i = formsToDisable.length - 1; i >= 0; i--) {
         formsToDisable[i].setAttribute("style", "display:none");
       }
