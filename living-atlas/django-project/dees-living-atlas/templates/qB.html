@@ -1,0 +1,25 @@
+<div class="results">
+	<ol>
+		<li class="list-title">lemmas (group B)</li>
+		{% for lemma, forms in results.items %}
+		<li id="{{lemma}}B" onclick="selectForms(this)">
+			<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}B" name="checkbox-{{lemma}}B" value="{{lemma}}" onclick="lemmaToggleAll(this)" checked>
+			<label>{{lemma}}</label><label id="{{lemma}}B-count" class="counter">(0)</label>
+		</li>
+		{% endfor %}
+	</ol>
+</div>
+
+<div class="results">
+	<ol>
+		<li class="list-title">forms (group B)</li>
+		{% for lemma, forms in results.items %}
+		{% for form in forms %}
+		<li id="{{form}}B" name="{{lemma}}B-child" style="display:none">
+			<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}B-child" id="checkbox-{{form}}B" value="{{form}}">
+			<label>{{form}}</label>
+		</li>
+		{% endfor %}
+		{% endfor %}
+	</ol>
+</div>

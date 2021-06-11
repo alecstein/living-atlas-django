@@ -4,7 +4,42 @@ from django.shortcuts import redirect
 from .models import Form
 import json
 from time import time
+from django.core import serializers
 # Create your views here.
+
+def ajax_view(request):
+    context = {}
+    queryset = Form.objects.all()
+    if request.method == 'GET':
+        query = request.GET.get('q')
+        lemmas = set(query.split(' '))
+
+        if request.GET.get('type') == 'list':
+            forms = queryset.filter(lemma__in = lemmas)
+        elif request.GET.get('type') == 'regex':
+            forms = queryset.filter(lemma__regex =fr"{query}")[:2000]
+
+        form_dict = {}
+        for form in forms:
+            if form.form != form.lemma:
+                # Only include forms
+                try:
+                    form_dict[form.lemma].append(form.form)
+                except KeyError:
+                    form_dict[form.lemma] = [form.form]
+
+        context['results'] = form_dict
+
+        if request.GET.get('AorB') == 'qA':
+            return render(request, "qA.html", context)
+
+        elif request.GET.get('AorB') == 'qB':
+            return render(request, "qB.html", context)
+
+        elif request.GET.get('AorB') == 'clear':
+            return render(request, "clear.html", {})
+
+    # return render(request, "searchA.html", context)
 
 
 def search_view(request):
@@ -13,8 +48,6 @@ def search_view(request):
     """
 
     context = {}
-
-    print(request.GET)
 
     if request.method == 'GET':
         # Searchbox submission

@@ -116,24 +116,6 @@ function toggleRegEx(item) {
   }
 }
 
-function saveCheckboxes() {
-  // Saves checkboxes and counts in-between get requests
-
-  // This saves all the checkbox values
-  var allCheckboxes = document.getElementsByClassName("checkbox");
-  for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-    localStorage.setItem(allCheckboxes[i].id, allCheckboxes[i].checked);
-  }
-
-  // We also want to save the state of the lemmas
-  var allLabels = document.getElementsByTagName("label");
-  for (var i = allLabels.length - 1; i >= 0; i--) {
-    if (allLabels[i].id.includes("count")) {
-      localStorage.setItem(JSON.stringify(allLabels[i].id), JSON.stringify(allLabels[i].innerHTML));
-    }
-  }
-}
-
 function boxCount(object) {
   // Checkboxes have the name "checkbox-lemma-child"
   // or id:"checkbox-lemma" if they are lemmas
@@ -146,7 +128,11 @@ function boxCount(object) {
   const splitName = object.name.split("-");
   const lemma = splitName[1];
   var total = 0;
+
   const lemmaCheckbox = parentDiv.querySelector('[id=' + "checkbox-".concat(lemma) + ']');
+  if (lemmaCheckbox.checked) {
+    total = total + 1;
+  }
 
   if (splitName.length == 2)  {
     // lemma box was toggled
@@ -160,8 +146,6 @@ function boxCount(object) {
 
   if (splitName.length == 3)  {
     // form box was toggled
-    var total = 0;
-    
     const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name + ']');
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
       if (formCheckboxes[i].checked) {

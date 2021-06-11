@@ -2,10 +2,50 @@
 
 {% block content %}
 
-</head>
+<script type="text/javascript">
+
+	function getQuery() {
+		var request = new XMLHttpRequest(),
+		method = 'GET',
+		url = '/ajax/';
+		request.open(method, url);
+		request.onload = function () {
+			let myHTML = request.response;
+			document.getElementById('test').innerHTML = myHTML;
+		};
+		request.send();
+	}
+
+	function queryGroup(item) {
+		let request = new XMLHttpRequest();
+		let method = 'GET';
+		let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');;
+		let AorB = 'AorB=' + item.id;
+		var type = "type=list";
+		if (document.getElementById("radio-regex").checked) {
+			var type = "type=regex";
+			console.log('regex checked');
+		}
+		let url = '/ajax/?' + query + '&' + AorB + '&' + type;
+		request.open(method, url);
+		request.onload = function () {
+			let myHTML = request.response;
+			if (item.id == 'qA') {
+				document.getElementById('flex-container-A').innerHTML = myHTML;
+			}
+			else if (item.id == 'qB') {
+				document.getElementById('flex-container-B').innerHTML = myHTML;
+			}
+			else if (item.id == 'clear') {
+				document.getElementById('main-table').innerHTML = myHTML;
+			}
+		};
+		request.send();
+	}	
+</script>
+
 <body>
 
-<form method="get" action="">
 	<div class="radios">
 		<div class="radio-group">
 			<input type="radio" name="lang" value="latin">
@@ -14,27 +54,25 @@
 			<label for="latin">french</label>
 		</div>
 		<div class="radio-group">
-			<input type="radio" name="type" value="regex" onclick="toggleRegEx(this)">
+			<input type="radio" name="type" id="radio-regex" value="regex" onclick="toggleRegEx(this)">
 			<label for="regex">regex</label>
-			<input type="radio" name="type" value="list" onclick="toggleRegEx(this)" checked>
+			<input type="radio" name="type" id="radio-list" value="list" onclick="toggleRegEx(this)" checked>
 			<label for="regex">list</label>
 		</div>
-		
+
 	</div>
 	<div class="wrap-searchbox" name="lemma-search">
 
 
-<div>
-	<!-- <span id="pointing-hand"> ☞ </span> -->
-	<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line" cols="40" rows="5">{% if request.session.query %}{{request.session.query}}{% endif %}</textarea>
-</div>
-<div class="button-array">
-	<input class="pushable" name="query_A" type="submit" onclick="saveCheckboxes()" value = "send query to group A"/>
-	<input class="pushable" name="query_B" type="submit" onclick="saveCheckboxes()" value = "send query to group B"/>
-	<input class="pushable" name="clear" type="submit" value = "clear all ❌" style="background-color: #ffe600;" />
-</div>
-</div>
-</form>
+		<div>
+			<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line" cols="40" rows="5"></textarea>
+		</div>
+		<div class="button-array">
+			<input class="pushable" name="query_A" id="qA" type="submit" onclick="queryGroup(this)" value = "send query to group A"/>
+			<input class="pushable" name="query_B" id="qB" type="submit" onclick="queryGroup(this)" value = "send query to group B"/>
+			<input class="pushable" name="clear" id="clear" type="submit" onclick="queryGroup(this)" value = "clear all ❌" style="background-color: #ffe600;" />
+		</div>
+	</div>
 
 {% if no_results %}
 <div class="error">
@@ -49,61 +87,32 @@
 {% endif %}
 
 
-<form method="post" action="">
+<form method="post" id="main-table" action="">
 	{% csrf_token %}
 
-	<div class="flex-container" name="A">
+	<div class="flex-container" id="flex-container-A" name="A">
 		<div class="results">
 			<ol>
 				<li class="list-title">lemmas (group A)</li>
-				{% for lemma, forms in request.session.query_A.items %}
-				<li id="{{lemma}}A" onclick="selectForms(this)">
-					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}A" name="checkbox-{{lemma}}A" value="{{lemma}}" onclick="lemmaToggleAll(this)">
-					<label>{{lemma}}</label><label id="{{lemma}}A-count" class="counter">(0)</label>
-				</li>
-				{% endfor %}
 			</ol>
 		</div>
-
 		<div class="results">
 			<ol>
 				<li class="list-title">forms (group A)</li>
-				{% for lemma, forms in request.session.query_A.items %}
-				{% for form in forms %}
-				<li id="{{form}}A" name="{{lemma}}A-child" style="display:none">
-					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}A-child" id="checkbox-{{form}}A" value="{{form}}">
-					<label>{{form}}</label>
-				</li>
-				{% endfor %}
-				{% endfor %}
 			</ol>
 		</div>
 	</div>
 
-	<div class="flex-container" name="B">
+	<div class="flex-container" id="flex-container-B" name="B">
 		<div class="results">
 			<ol>
 				<li class="list-title">lemmas (group B)</li>
-				{% for lemma, forms in request.session.query_B.items %}
-				<li id="{{lemma}}B" onclick="selectForms(this)">
-					<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}B" name="checkbox-{{lemma}}B" value="{{lemma}}" onclick="lemmaToggleAll(this)">
-					<label>{{lemma}}</label><label id="{{lemma}}B-count" class="counter">(0)</label>
-				</li>
-				{% endfor %}
 			</ol>
 		</div>
 
 		<div class="results">
 			<ol>
-				<li class="list-title">forms (group B)</li>
-				{% for lemma, forms in request.session.query_B.items %}
-				{% for form in forms %}
-				<li id="{{form}}B" name="{{lemma}}B-child" style="display:none">
-					<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}B-child" id="checkbox-{{form}}B" value="{{form}}">
-					<label>{{form}}</label>
-				</li>
-				{% endfor %}
-				{% endfor %}
+				<li class="list-title">forms (group B)</li>		
 			</ol>
 		</div>
 	</div>
