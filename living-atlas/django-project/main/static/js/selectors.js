@@ -1,23 +1,3 @@
-window.onload = function(){
-  var allCheckboxes = document.getElementsByClassName("checkbox");
-  for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-    allCheckboxes[i].checked = JSON.parse(localStorage.getItem(allCheckboxes[i].id));
-
-  }
-  var allLabels = document.getElementsByTagName("label");
-  for (var i = allLabels.length - 1; i >= 0; i--) {
-    if (allLabels[i].id.includes("count")) {
-
-      if (JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)))) {
-        allLabels[i].textContent = JSON.parse(localStorage.getItem(JSON.stringify(allLabels[i].id)));
-      }
-    }  
-  }
-  
-
-  localStorage.clear();
-}
-
 var activeLemma_A = null;
 var activeLemma_B = null;
 
@@ -52,7 +32,7 @@ function selectForms(item) {
     activeLemma_A = lemma;
   }
 
-  if (group == "B") {
+  else if (group == "B") {
     if (activeLemma_B != null) {
       // If no lemma has been selected before
       const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma_B +']');
@@ -97,31 +77,26 @@ function lemmaToggleAll(item) {
   }
 }
 
-var lemmaText = "enter one lemma per line";
-var regexText = "enter a regular expression";
+var lemmaText = "enter one lemma per line, as in\nfirst_lemma\nsecond_lemma\nthird_lemma";
+var regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with mun)";
 
 function toggleRegEx(item) {
   // Toggles the placeholder text in the search box
   // and toggles search type
   const searchBox = document.getElementById("searchbox");
 
-  if (item.value == 'r') {
+  if (item.value == 'regex') {
     searchBox.setAttribute("placeholder", regexText);
-    searchBox.setAttribute("name", 'r');
   }
 
-  else if (item.value == 'q') {
+  else if (item.value == 'list') {
     searchBox.setAttribute("placeholder", lemmaText);
-    searchBox.setAttribute("name", 'q');
   }
 }
 
 function boxCount(object) {
   // Checkboxes have the name "checkbox-lemma-child"
   // or id:"checkbox-lemma" if they are lemmas
-
-  // Here's a way to figure out if it was a child or parent
-  // that was toggled
 
   var parentDiv = object.parentNode.parentNode.parentNode.parentNode;
 
@@ -133,6 +108,10 @@ function boxCount(object) {
   if (lemmaCheckbox.checked) {
     total = total + 1;
   }
+
+  // Here's a way to figure out if it was a child or parent
+  // that was toggled. splitName has length 2 for lemmas,
+  // and length 3 for forms
 
   if (splitName.length == 2)  {
     // lemma box was toggled
@@ -156,3 +135,106 @@ function boxCount(object) {
 
   parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').innerHTML = "(" + total + ")";
 }
+
+function validateForm() {
+  // Now check to see if at least one checkbox is selected from this div
+  // If no boxes are selected, the form is considered invalid
+
+  let allCheckboxesA = document.getElementById('flex-container-A').querySelectorAll('[class="checkbox"]');
+
+  var formAValid = false;
+
+  for (var i = allCheckboxesA.length - 1; i >= 0; i--) {
+    if (allCheckboxesA[i].checked) {
+      console.log("Group A valid");
+      formAValid = true;
+      break;
+    }
+  }
+
+  if (!formAValid) {
+    console.log("Select at least one item from group A");
+    document.getElementById("invalid-submission").setAttribute("style", "display:visible");
+    return false;
+  }
+
+  var formBValid = false;
+
+  let allCheckboxesB = document.getElementById('flex-container-B').querySelectorAll('[class="checkbox"]');
+
+  for (var i = allCheckboxesB.length - 1; i >= 0; i--) {
+    if (allCheckboxesB[i].checked) {
+      console.log("Group B valid");
+      formBValid = true;
+      break;
+    }
+  }
+
+  if (!formBValid) {
+    console.log("Select at least one item from group B");
+    document.getElementById("invalid-submission").setAttribute("style", "display:visible");
+    return false;
+  }
+
+  console.log("Form valid");
+  document.getElementById("invalid-submission").setAttribute("style", "display:none");
+  return true;
+}
+
+function queryGroup(item) {
+  // Sends a request to the API endpoint to fetch data
+  // for either group A or group B.
+  // If the user selects "clear" this tells the endpoint
+  // to render empty HTML.
+
+
+  let allButtons = document.querySelectorAll('[class="pushable"]');
+  for (var i = allButtons.length - 1; i >= 0; i--) {
+    allButtons[i].disabled = true;
+  }
+
+  let request = new XMLHttpRequest();
+  let method = 'GET';
+  let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');;
+  let AorB = 'AorB=' + item.id;
+  var type = "type=list";
+  if (document.getElementById("radio-regex").checked) {
+    var type = "type=regex";
+  }
+  let url = '/ajax/?' + query + '&' + AorB + '&' + type;
+  request.open(method, url);
+  request.onload = function () {
+
+    let allButtons = document.querySelectorAll('[class="pushable"]');
+    for (var i = allButtons.length - 1; i >= 0; i--) {
+      allButtons[i].disabled = false;
+    }
+
+    if (request.status == "404") {
+      // If we get a 404 from the AJAX endpoint
+      // that means no results were found
+      console.log(request.response);
+      document.getElementById("no-results").setAttribute("style", "display:visible");
+
+      return false;
+    }
+
+    //  Whenever we return a new, valid search we clear the error messages
+    document.getElementById("invalid-submission").setAttribute("style", "display:none");
+    document.getElementById("no-results").setAttribute("style", "display:none");
+
+    let myHTML = request.response;
+    if (item.id == 'qA') {
+      document.getElementById('flex-container-A').innerHTML = myHTML;
+      activeLemma_A = null;
+    }
+    else if (item.id == 'qB') {
+      document.getElementById('flex-container-B').innerHTML = myHTML;
+      activeLemma_B = null;
+    }
+    else if (item.id == 'clear') {
+      document.getElementById('main-table').innerHTML = myHTML;
+    }
+  };
+  request.send();
+} 

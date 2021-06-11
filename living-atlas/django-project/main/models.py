@@ -7,34 +7,9 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-# class Lemma(models.Model):
-#     lemma = models.CharField(max_length=100, primary_key = True)
-
 class Form(models.Model):
     form = models.CharField(max_length=100, primary_key = True)
     lemma = models.CharField(max_length=100, db_index = True)
-    
-    # f_bfm = models.CharField(db_column='F_bfm', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    # f_dmf = models.CharField(db_column='F_dmf', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    # msd_afrlex = models.CharField(max_length=100, blank=True, null=True)
-    # msd_bfm = models.CharField(max_length=100, blank=True, null=True)
-    # msd_cattex_conv1 = models.CharField(max_length=100, blank=True, null=True)
-    # msd_cattex_conv2 = models.CharField(max_length=100, blank=True, null=True)
-    # lemma_src = models.CharField(max_length=100, blank=True, null=True)
 
-# class FrolexEntry(models.Model):
-#     form = models.CharField(max_length=100, primary_key = True, blank=True)
-#     f_bfm = models.CharField(db_column='F_bfm', max_length=100, blank=True, null=True)  # Field name made lowercase.
-#     f_dmf = models.CharField(db_column='F_dmf', max_length=100, blank=True, null=True)  # Field name made lowercase
-#     msd_bfm = models.CharField(max_length=100, blank=True, null=True)
-#     msd_cattex_conv1 = models.CharField(max_length=100, blank=True, null=True)
-#     msd_cattex_conv2 = models.CharField(max_length=100, blank=True, null=True)
-#     lemma = models.CharField(max_length=100, blank=True, null=True)
-#     lemma_src = models.CharField(max_length=100, blank=True, null=True)
-
-#     def __str__(self):
-#         return self.form
-
-#     class Meta:
-#         managed = False
-#         db_table = 'main_frolexentry'
+    class Meta:
+        ordering = ['lemma']

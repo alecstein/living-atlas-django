@@ -4,7 +4,7 @@
 		{% for lemma, forms in results.items %}
 		<li id="{{lemma}}A" onclick="selectForms(this)">
 			<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}A" name="checkbox-{{lemma}}A" value="{{lemma}}" onclick="lemmaToggleAll(this)" checked>
-			<label>{{lemma}}</label><label id="{{lemma}}A-count" class="counter">(0)</label>
+			<label>{{lemma}}</label><label id="{{lemma}}A-count" class="counter">(1)</label>
 		</li>
 		{% endfor %}
 	</ol>

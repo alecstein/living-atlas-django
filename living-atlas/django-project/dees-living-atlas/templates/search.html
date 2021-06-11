@@ -1,93 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<script type="text/javascript">
-
-	function getQuery() {
-		var request = new XMLHttpRequest(),
-		method = 'GET',
-		url = '/ajax/';
-		request.open(method, url);
-		request.onload = function () {
-			let myHTML = request.response;
-			document.getElementById('test').innerHTML = myHTML;
-		};
-		request.send();
-	}
-
-	function queryGroup(item) {
-		let request = new XMLHttpRequest();
-		let method = 'GET';
-		let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');;
-		let AorB = 'AorB=' + item.id;
-		var type = "type=list";
-		if (document.getElementById("radio-regex").checked) {
-			var type = "type=regex";
-			console.log('regex checked');
-		}
-		let url = '/ajax/?' + query + '&' + AorB + '&' + type;
-		request.open(method, url);
-		request.onload = function () {
-			let myHTML = request.response;
-			if (item.id == 'qA') {
-				document.getElementById('flex-container-A').innerHTML = myHTML;
-			}
-			else if (item.id == 'qB') {
-				document.getElementById('flex-container-B').innerHTML = myHTML;
-			}
-			else if (item.id == 'clear') {
-				document.getElementById('main-table').innerHTML = myHTML;
-			}
-		};
-		request.send();
-	}	
-</script>
-
-<body>
-
-	<div class="radios">
-		<div class="radio-group">
-			<input type="radio" name="lang" value="latin">
-			<label for="latin">latin</label>
-			<input type="radio" name="lang" value="french" checked>
-			<label for="latin">french</label>
-		</div>
-		<div class="radio-group">
-			<input type="radio" name="type" id="radio-regex" value="regex" onclick="toggleRegEx(this)">
-			<label for="regex">regex</label>
-			<input type="radio" name="type" id="radio-list" value="list" onclick="toggleRegEx(this)" checked>
-			<label for="regex">list</label>
-		</div>
-
+<div class="radios">
+	<div class="radio-group">
+		<input type="radio" name="lang" value="latin">
+		<label for="latin">latin</label>
+		<input type="radio" name="lang" value="french" checked>
+		<label for="latin">french</label>
 	</div>
-	<div class="wrap-searchbox" name="lemma-search">
-
-
-		<div>
-			<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line" cols="40" rows="5"></textarea>
-		</div>
-		<div class="button-array">
-			<input class="pushable" name="query_A" id="qA" type="submit" onclick="queryGroup(this)" value = "send query to group A"/>
-			<input class="pushable" name="query_B" id="qB" type="submit" onclick="queryGroup(this)" value = "send query to group B"/>
-			<input class="pushable" name="clear" id="clear" type="submit" onclick="queryGroup(this)" value = "clear all ❌" style="background-color: #ffe600;" />
-		</div>
+	<div class="radio-group">
+		<input type="radio" name="type" id="radio-regex" value="regex" onclick="toggleRegEx(this)">
+		<label for="regex">regex</label>
+		<input type="radio" name="type" id="radio-list" value="list" onclick="toggleRegEx(this)" checked>
+		<label for="regex">list</label>
 	</div>
 
-{% if no_results %}
-<div class="error">
-	no results for that query were found in the database
 </div>
-{% endif %}
+<div class="wrap-searchbox" name="lemma-search">
 
-{% if invalid_submission %}
-<div class="error">
+
+	<div>
+		<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line, as in&#10;first_lemma&#10;second_lemma&#10;third_lemma" cols="40" rows="5"></textarea>
+	</div>
+	<div class="button-array">
+		<input class="pushable" name="query_A" id="qA" type="submit" onclick="queryGroup(this)" value = "send query to group A"/>
+		<input class="pushable" name="query_B" id="qB" type="submit" onclick="queryGroup(this)" value = "send query to group B"/>
+		<input class="pushable" name="clear" id="clear" type="submit" onclick="queryGroup(this)" value = "clear all ❌" style="background-color: #ffe600;" />
+	</div>
+</div>
+
+<div class="error" id="invalid-submission" style="display:none">
 	to compare results you must select from both groups
 </div>
-{% endif %}
 
+<div class="error" id="no-results" style="display:none">
+	no results were found for that search
+</div>
 
-<form method="post" id="main-table" action="">
+<form method="post" id="main-table" onsubmit="return validateForm()" action="">
 	{% csrf_token %}
 
 	<div class="flex-container" id="flex-container-A" name="A">
