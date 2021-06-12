@@ -21,7 +21,8 @@ def ajax_view(request):
             forms = queryset.filter(lemma__in = lemmas)[:2000]
 
         elif request.GET.get('type') == 'regex':
-            forms = queryset.filter(lemma__regex =fr"{query}")[:2000]
+            forms = queryset.filter(lemma__regex =fr"{query}")[:2]
+
 
         if len(forms) == 0:
             return HttpResponseNotFound("No results found")
@@ -43,8 +44,11 @@ def ajax_view(request):
         elif request.GET.get('AorB') == 'qB':
             return render(request, "qB.html", context)
 
-        elif request.GET.get('AorB') == 'clear':
-            return render(request, "clear.html", {})
+def clear_view(request):
+    """
+    Returns a blank page
+    """
+    return render(request, "clear.html", {})
 
 
 def search_view(request):
@@ -96,5 +100,6 @@ def about_view(request):
     return render(request, 'about.html', {})
 
 def howto_view(request):
+    print('test')
     return render(request, 'howto.html', {})
 

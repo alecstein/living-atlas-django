@@ -186,9 +186,8 @@ function queryGroup(item) {
   // for either group A or group B.
   // If the user selects "clear" this tells the endpoint
   // to render empty HTML.
-
-
   let allButtons = document.querySelectorAll('[class="pushable"]');
+
   for (var i = allButtons.length - 1; i >= 0; i--) {
     allButtons[i].disabled = true;
   }
@@ -205,7 +204,6 @@ function queryGroup(item) {
   request.open(method, url);
   request.onload = function () {
 
-    let allButtons = document.querySelectorAll('[class="pushable"]');
     for (var i = allButtons.length - 1; i >= 0; i--) {
       allButtons[i].disabled = false;
     }
@@ -215,7 +213,6 @@ function queryGroup(item) {
       // that means no results were found
       console.log(request.response);
       document.getElementById("no-results").setAttribute("style", "display:visible");
-
       return false;
     }
 
@@ -224,6 +221,7 @@ function queryGroup(item) {
     document.getElementById("no-results").setAttribute("style", "display:none");
 
     let myHTML = request.response;
+
     if (item.id == 'qA') {
       document.getElementById('flex-container-A').innerHTML = myHTML;
       activeLemma_A = null;
@@ -232,9 +230,36 @@ function queryGroup(item) {
       document.getElementById('flex-container-B').innerHTML = myHTML;
       activeLemma_B = null;
     }
-    else if (item.id == 'clear') {
-      document.getElementById('main-table').innerHTML = myHTML;
+  };
+  request.send();
+}
+
+function clearAll() {
+  // Gets new html template from server to clear the screen
+
+  let allButtons = document.querySelectorAll('[class="pushable"]'); 
+
+  let request = new XMLHttpRequest();
+  let method = 'GET';
+  let url = '/clear/';
+  request.open(method, url);
+  request.onload = function () {
+
+    for (var i = allButtons.length - 1; i >= 0; i--) {
+      allButtons[i].disabled = false;
+    }
+
+    let myHTML = request.response;
+
+    //  Clear the error messages
+    document.getElementById("invalid-submission").setAttribute("style", "display:none");
+    document.getElementById("no-results").setAttribute("style", "display:none");
+
+    // Endable all the buttons
+    for (var i = allButtons.length - 1; i >= 0; i--) {
+      allButtons[i].disabled = false;
+    document.getElementById('main-table').innerHTML = myHTML;
     }
   };
   request.send();
-} 
+}

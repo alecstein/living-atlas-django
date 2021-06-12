@@ -10,6 +10,7 @@ from django.db import models
 class Form(models.Model):
     form = models.CharField(max_length=100, primary_key = True)
     lemma = models.CharField(max_length=100, db_index = True)
+    # latin = models.CharField(max_length=100, blank = True, null = True)
 
     class Meta:
         ordering = ['lemma']

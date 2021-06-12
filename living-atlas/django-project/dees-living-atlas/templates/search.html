@@ -19,22 +19,26 @@
 <div class="wrap-searchbox" name="lemma-search">
 
 
-	<div>
+	<div id="textarea">
 		<textarea type="text" name="q" id="searchbox" placeholder="enter one lemma per line, as in&#10;first_lemma&#10;second_lemma&#10;third_lemma" cols="40" rows="5"></textarea>
 	</div>
 	<div class="button-array">
 		<input class="pushable" name="query_A" id="qA" type="submit" onclick="queryGroup(this)" value = "send query to group A"/>
 		<input class="pushable" name="query_B" id="qB" type="submit" onclick="queryGroup(this)" value = "send query to group B"/>
-		<input class="pushable" name="clear" id="clear" type="submit" onclick="queryGroup(this)" value = "clear all ❌" style="background-color: #ffe600;" />
+		<input class="pushable" name="clear" id="clear" type="submit" onclick="clearAll()" value = "clear all ❌" style="background-color: #ffe600;" />
 	</div>
 </div>
 
-<div class="error" id="invalid-submission" style="display:none">
+<div class="error-container">
+	<div class="error" id="invalid-submission" style="display:none">
 	to compare results you must select from both groups
+	</div>
 </div>
 
+<div class="error-container">
 <div class="error" id="no-results" style="display:none">
 	no results were found for that search
+</div>
 </div>
 
 <form method="post" id="main-table" onsubmit="return validateForm()" action="">
@@ -66,7 +70,9 @@
 			</ol>
 		</div>
 	</div>
-	<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/>
+	<div id="cartography-button">
+		<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/>
+	</div>
 </form>
 {%endblock content%}
 

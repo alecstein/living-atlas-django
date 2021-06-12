@@ -5,16 +5,24 @@
     --gray: #f3f3f3; // buttons
     --font-size: .9rem;
     --font-family: "Menlo", "Courier New", "Courier", monospace;
+    font-family: "Menlo", "Courier New", "Courier", monospace;
+    font-size: .9rem; 
+    background-color: #fff6da;
+    padding-bottom: 300px;
 }
 
 body {
-    background-color: #fff6da;
-    font-family: "Menlo", "Courier New", "Courier", monospace;
-    font-size: .9rem; 
-    text-align: center;
     width: 800px;
     margin: auto;
     margin-top: 3rem;
+}
+
+#subtitle {
+    text-align: center;
+}
+
+#title {
+    text-align: center;
 }
 
 .radios {
@@ -34,13 +42,35 @@ input[type='radio'] {
    transform: scale(1.5); 
 }
 
+#textarea {
+    margin: auto;
+
+}
+
 .button-array {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+}
+
+/*Pushables are buttons*/
+.pushable {
+    background-color: #f3f3f3;
+  position: relative;
+  border: 1px solid black;
+  padding: .5rem;
+  font-size: .9rem;
+  margin: .5rem;
+  font-family: "Menlo", "Courier New", "Courier", monospace;
+}
+
+.pushable:active {
+  transform: translateY(2px);
 }
 
 .wrap-searchbox {
-    text-align: center;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
 textarea {
@@ -51,12 +81,15 @@ textarea {
   font-size: var(--font-size);
 }
 
+.error-container {
+    display: flex;
+    justify-content: center;
+}
 .error {
+    display: inline-block;
     border: 2px solid red;
     margin-bottom: .5rem;
     padding: .5rem;
-    display: inline-block;
-    text-align: center;
 }
 
 #pointing-hand {
@@ -109,37 +142,38 @@ textarea {
 
 .flex-container {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    /*flex-direction: row;*/
+    /*justify-content: center;*/
 }
 
 .flex-container[name="B"] {
     margin-top: .5rem;
 }
 
-.navbar li {
-    display: inline;
+.navbar {
+    /*display: inline-block;*/
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: .5rem;
 }
 
 .navbar a {
     font-weight: bolder;
     color: black;
     font-size: 1.2rem;
-    padding: .3rem;
-    text-decoration: none;
+    padding: .5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    text-decoration: underline;
     border: 1px solid transparent;
 }
 
 .navbar a:hover {
+    text-decoration: none;
     background-color: var(--yellow);
-    text-decoration: underline;
     border: 1px solid black;
 }
-
-.navbar {
-    padding-bottom: .5rem;
-}
-
 
 ul {
     padding: 0;
@@ -154,17 +188,22 @@ input.checkbox {
     vertical-align: middle;
 }
 
-
-.pushable {
-    background-color: #f3f3f3;
-  position: relative;
-  border: 1px solid black;
-  padding: .5rem;
-  font-size: .9rem;
-  margin: .5rem;
-  font-family: "Menlo", "Courier New", "Courier", monospace;
+#cartography-button {
+    display: flex;
+    justify-content: center;
+    /*align-items: center;*/
 }
 
-.pushable:active {
-  transform: translateY(2px);
+.article {
+    font-size: 1.1rem;
+    line-height: 1.6rem;
+    width: 80%;
+    margin: auto;
+    padding: 2rem;
+    background-color: white;
+    border: 2px solid black;
+}
+
+.article h2 {
+    margin: 0;
 }
