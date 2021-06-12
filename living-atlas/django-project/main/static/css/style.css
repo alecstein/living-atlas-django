@@ -130,6 +130,15 @@ textarea {
     font-weight: bolder;
 }
 
+.list-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.all-none-selectors-container input {
+    margin: 0;
+}
+
 .counter {
     color: gray;
     float: right;

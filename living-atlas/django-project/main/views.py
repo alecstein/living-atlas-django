@@ -58,6 +58,8 @@ def search_view(request):
 
     if request.method == 'POST':
 
+        print(request.POST)
+
         selections_dict_A = {}
         selections_dict_B = {}
 

@@ -6,12 +6,34 @@ window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
 }
 
+function selectAllThisBox(item, tf, lemma) {
+  // This is used for the "all" and "none" buttons that appear
+  // at the top of the lists
+  // "tf" stands for true or false
+  // Checks or unchecks every checkbox in the parent div
+  // "lemma" is a boolean. Lemma logic is slightly different -- each time
+  // the lemma is called, we count the boxes
+  const parentDiv = item.parentNode.parentNode.parentNode.parentNode;
+  const allCheckboxes = parentDiv.querySelectorAll('.list-element:not([style="display:none"]) .checkbox');
+  if (lemma) {
+    for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+    allCheckboxes[i].checked = tf;
+    allCheckboxes[i].onchange();
+    }
+  }
+  if (!lemma) {
+    for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+    allCheckboxes[i].checked = tf;
+    }
+    allCheckboxes[0].onchange();
+  }
+}
+
 function selectForms(item) {
   // When a lemma is clicked, it reveals the forms associated with it
   // and highlights that lemma
 
   // First we need to tell whether the lemma is in group A or B
-
   var parentDiv = item.parentNode.parentNode.parentNode;
   var group = parentDiv.getAttribute("name");
   // var parentDiv = item.parentNode.parentNode;
@@ -83,7 +105,7 @@ function lemmaToggleAll(item) {
 }
 
 var lemmaText = "enter one lemma per line, as in\nfirst_lemma\nsecond_lemma\nthird_lemma";
-var regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with mun)";
+var regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with 'mun')";
 
 function toggleRegEx(item) {
   // Toggles the placeholder text in the search box
@@ -103,12 +125,28 @@ function boxCount(object) {
   // Checkboxes have the name "checkbox-lemma-child"
   // or id:"checkbox-lemma" if they are lemmas
 
+  // Sometimes lemmas are hyphenated, so we have to be
+  // careful when extracting the name
+
+  // Extract the name
   var parentDiv = object.parentNode.parentNode.parentNode.parentNode;
 
-  const splitName = object.name.split("-");
-  const lemma = splitName[1];
-  var total = 0;
+  var splitName = object.name.split("-");
 
+  var formChanged;
+  if (splitName[splitName.length - 1] == "child") {
+    splitName = splitName.slice(1, splitName.length-1);
+    formChanged = true;
+  }
+  else {
+    splitName = splitName.slice(1, splitName.length);
+    formChanged = false;
+  }
+
+  const lemma = splitName.join('-');
+
+  // Calculate the total
+  var total = 0;
   const lemmaCheckbox = parentDiv.querySelector('[id=' + "checkbox-".concat(lemma) + ']');
   if (lemmaCheckbox.checked) {
     total = total + 1;
@@ -118,7 +156,7 @@ function boxCount(object) {
   // that was toggled. splitName has length 2 for lemmas,
   // and length 3 for forms
 
-  if (splitName.length == 2)  {
+  if (!formChanged)  {
     // lemma box was toggled
     const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name.concat("-child") + ']');
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
@@ -128,7 +166,7 @@ function boxCount(object) {
     }
   }
 
-  if (splitName.length == 3)  {
+  if (formChanged)  {
     // form box was toggled
     const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name + ']');
     for (var i = formCheckboxes.length - 1; i >= 0; i--) {
@@ -138,7 +176,7 @@ function boxCount(object) {
     }
   }
 
-  parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').innerHTML = "(" + total + ")";
+  parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').children[0].innerHTML = total;
 }
 
 function validateForm() {
@@ -189,8 +227,7 @@ function validateForm() {
 function queryGroup(item) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
-  // If the user selects "clear" this tells the endpoint
-  // to render empty HTML.
+
   let allButtons = document.querySelectorAll('[class="pushable"]');
 
   for (var i = allButtons.length - 1; i >= 0; i--) {
@@ -199,7 +236,7 @@ function queryGroup(item) {
 
   let request = new XMLHttpRequest();
   let method = 'GET';
-  let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');;
+  let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');
   let AorB = 'AorB=' + item.id;
   var type = "type=list";
   if (document.getElementById("radio-regex").checked) {
