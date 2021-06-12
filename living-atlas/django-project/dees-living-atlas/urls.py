@@ -15,12 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from main.views import search_view, howto_view, about_view, ajax_view, clear_view
+from main.views import search_view, howto_view, about_view, ajax_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ajax/', ajax_view, name = 'ajax'), # API endpoint
-    path('clear/', clear_view, name = 'clear'), # clears the screen
     path('', search_view, name = 'search'), # main page
     path('howto/', howto_view, name = 'howto'),
     path('about/', about_view, name = 'about'),

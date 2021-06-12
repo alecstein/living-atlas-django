@@ -63,7 +63,7 @@ input[type='radio'] {
   font-family: "Menlo", "Courier New", "Courier", monospace;
 }
 
-.pushable:active {
+.pushable:enabled:active {
   transform: translateY(2px);
 }
 
@@ -105,7 +105,7 @@ textarea {
     background-color: white;
     width: 50%;
     overflow: auto;
-    height: 12rem;
+    height: 14rem;
     border: 2px solid #000;
 }
 

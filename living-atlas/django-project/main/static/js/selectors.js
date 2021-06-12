@@ -1,5 +1,10 @@
 var activeLemma_A = null;
 var activeLemma_B = null;
+var originalHTML;
+
+window.onload = function() {
+  originalHTML = document.getElementById("main-table").innerHTML;
+}
 
 function selectForms(item) {
   // When a lemma is clicked, it reveals the forms associated with it
@@ -236,30 +241,8 @@ function queryGroup(item) {
 
 function clearAll() {
   // Gets new html template from server to clear the screen
+  document.getElementById("invalid-submission").setAttribute("style", "display:none");
+  document.getElementById("no-results").setAttribute("style", "display:none");
+  document.getElementById("main-table").innerHTML = originalHTML;
 
-  let allButtons = document.querySelectorAll('[class="pushable"]'); 
-
-  let request = new XMLHttpRequest();
-  let method = 'GET';
-  let url = '/clear/';
-  request.open(method, url);
-  request.onload = function () {
-
-    for (var i = allButtons.length - 1; i >= 0; i--) {
-      allButtons[i].disabled = false;
-    }
-
-    let myHTML = request.response;
-
-    //  Clear the error messages
-    document.getElementById("invalid-submission").setAttribute("style", "display:none");
-    document.getElementById("no-results").setAttribute("style", "display:none");
-
-    // Endable all the buttons
-    for (var i = allButtons.length - 1; i >= 0; i--) {
-      allButtons[i].disabled = false;
-    document.getElementById('main-table').innerHTML = myHTML;
-    }
-  };
-  request.send();
 }
