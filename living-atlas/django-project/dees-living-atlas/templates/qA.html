@@ -5,17 +5,17 @@
 				<div class="list-title">
 					lemmas (group A)
 				</div>
-				<div class="all-none-selectors-container">
+				<div class="all-none-container" group="A">
 					<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true, true)"></input>
 					<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false, true)"></input>
-				</div>  
+				</div>
 			</div>		
 		</li>	
 		{% for lemma, forms in results.items %}
-		<li class="list-element" id="{{lemma}}A" onclick="selectForms(this)">
-			<input onchange="boxCount(this)" class="checkbox" type="checkbox" id="checkbox-{{lemma}}A" name="checkbox-{{lemma}}A" value="{{lemma}}" onclick="lemmaToggleAll(this)" checked>
+		<li class="lemma-item" lemma="{{lemma}}" group="A" onclick="showForms(this)">
+			<input type="checkbox" name="{{lemma}}A" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
 			<label>{{lemma}}</label>
-			<span id="{{lemma}}A-count" class="counter">(<span>1</span>/<span>{{forms|length|add:1}}</span>)</span>
+			<span class="counter">(<span class="total">1</span>/<span>{{forms|length|add:1}}</span>)</span>
 		</li>
 		{% endfor %}
 	</ol>
@@ -28,7 +28,7 @@
 				<div class="list-title">
 					forms (group A)
 				</div>
-				<div class="all-none-selectors-container">
+				<div class="all-none-container" group="A">
 					<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true)"></input>
 					<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false)"></input>
 				</div>
@@ -36,8 +36,8 @@
 		</li>	
 		{% for lemma, forms in results.items %}
 		{% for form in forms %}
-		<li class="list-element" id="{{form}}A" name="{{lemma}}A-child" style="display:none">
-			<input onchange="boxCount(this)" onclick="toggleParent(this)" class="checkbox" type="checkbox" name="checkbox-{{lemma}}A-child" id="checkbox-{{form}}A" value="{{form}}">
+		<li class="form-item" lemma="{{lemma}}" group="A" style="display:none">
+			<input type="checkbox" onchange="countCheckboxes(this)" onclick="toggleParent(this)" name="{{lemma}}A-child">
 			<label>{{form}}</label>
 		</li>
 		{% endfor %}

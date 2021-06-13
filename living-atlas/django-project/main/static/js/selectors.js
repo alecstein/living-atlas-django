@@ -1,107 +1,122 @@
-var activeLemma_A = null;
-var activeLemma_B = null;
 var originalHTML;
 
 window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
 }
 
-function selectAllThisBox(item, tf, lemma) {
-  // This is used for the "all" and "none" buttons that appear
-  // at the top of the lists
-  // "tf" stands for true or false
-  // Checks or unchecks every checkbox in the parent div
-  // "lemma" is a boolean. Lemma logic is slightly different -- each time
-  // the lemma is called, we count the boxes
-  const parentDiv = item.parentNode.parentNode.parentNode.parentNode;
-  const allCheckboxes = parentDiv.querySelectorAll('.list-element:not([style="display:none"]) .checkbox');
+function selectAllThisBox(element, tf, lemma) {
+  // "all" and "none" buttons select or de-select
+  // everything within one box.
+  const group = element.parentNode.getAttribute("group");
   if (lemma) {
-    for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-    allCheckboxes[i].checked = tf;
-    allCheckboxes[i].onchange();
+    const allLemmas = document.querySelectorAll('li[group="'+group+'"].lemma-item > input');
+    var i = 0, len = allLemmas.length;
+    while (i < len) {
+      allLemmas[i].checked = tf;
+      allLemmas[i].onchange();
+      i++;
     }
   }
-  if (!lemma) {
-    for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-    allCheckboxes[i].checked = tf;
+  else {
+    const allForms = document.querySelectorAll('li:not([style="display:none"])[group="'+group+'"].form-item > input');
+    console.log(allForms);
+    var i = 0, len = allForms.length;
+    while (i < len) {
+      allForms[i].checked = tf;
+      i++;
     }
-    allCheckboxes[0].onchange();
+    allForms[0].onchange();
   }
 }
 
-function selectForms(item) {
-  // When a lemma is clicked, it reveals the forms associated with it
-  // and highlights that lemma
+var activeLemma_A;
+var activeLemma_B;
 
-  // First we need to tell whether the lemma is in group A or B
-  var parentDiv = item.parentNode.parentNode.parentNode;
-  var group = parentDiv.getAttribute("name");
-  // var parentDiv = item.parentNode.parentNode;
+function showForms(element) {
+  // Shows all the forms when you click on a lemma
+  const lemma = element.getAttribute("lemma");
+  const group = element.getAttribute("group");
+  const formItems = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"].form-item');
 
   if (group == "A") {
-    if (activeLemma_A != null) {
-      // If no lemma has been selected before
-      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma_A +']');
-      lemmaToDehighlight.setAttribute("style", "background-color:white");
-      const formsToDisable = parentDiv.querySelectorAll('[name=' + activeLemma_A.concat("-child") + ']');
-      for (var i = formsToDisable.length - 1; i >= 0; i--) {
-        formsToDisable[i].setAttribute("style", "display:none");
+    if (activeLemma_A != undefined) {
+      activeLemma_A.style = "";     
+      var activeLemmaName = activeLemma_A.getAttribute("lemma"); 
+      const formItems = document.querySelectorAll('li[lemma="'+activeLemmaName+'"][group="'+group+'"].form-item');
+      var i = 0, len = formItems.length;
+      while (i < len) {
+        formItems[i].setAttribute("style", "display:none");
+        i++;
       }
     }
-
-    const lemma = item.id;
-    const lemmaToHighlight = parentDiv.querySelector('[id=' + lemma + ']');
-    lemmaToHighlight.setAttribute("style", "background-color:#ffe600");
-    const formsToEnable = parentDiv.querySelectorAll('[name=' + lemma.concat("-child") + ']');
-    for (var i = formsToEnable.length - 1; i >= 0; i--) {
-      formsToEnable[i].setAttribute("style", "display:visible");
-    }
-    activeLemma_A = lemma;
+    activeLemma_A = element;
   }
 
-  else if (group == "B") {
-    if (activeLemma_B != null) {
-      // If no lemma has been selected before
-      const lemmaToDehighlight = parentDiv.querySelector('[id=' + activeLemma_B +']');
-      lemmaToDehighlight.setAttribute("style", "background-color:white");
-      const formsToDisable = parentDiv.querySelectorAll('[name=' + activeLemma_B.concat("-child") + ']');
-      for (var i = formsToDisable.length - 1; i >= 0; i--) {
-        formsToDisable[i].setAttribute("style", "display:none");
+  if (group == "B") {
+    if (activeLemma_B != undefined) {
+      activeLemma_B.style = "";
+      var activeLemmaName = activeLemma_B.getAttribute("lemma");
+      const formItems = document.querySelectorAll('li[lemma="'+activeLemmaName+'"][group="'+group+'"].form-item');
+      var i = 0, len = formItems.length;
+      while (i < len) {
+        formItems[i].style = "display:none";
+        i++;
       }
     }
+    activeLemma_B = element;
+  }
 
-    const lemma = item.id;
-    const lemmaToHighlight = parentDiv.querySelector('[id=' + lemma + ']');
-    lemmaToHighlight.setAttribute("style", "background-color:#ffe600");
-    const formsToEnable = parentDiv.querySelectorAll('[name=' + lemma.concat("-child") + ']');
-    for (var i = formsToEnable.length - 1; i >= 0; i--) {
-      formsToEnable[i].setAttribute("style", "display:visible");
-    }
-    activeLemma_B = lemma;
+  element.style = "background-color:#ffe600";
+
+  var i = 0, len = formItems.length;
+  while (i < len) {
+    formItems[i].style = "display:visible";
+    i++;
+  }
+
+}
+
+function lemmaToggleAll(element) {
+  // If a lemma is checked, it checks all the forms
+  // If a form is unchecked, it unchecks all the forms
+  const lemma = element.parentNode.getAttribute("lemma");
+  const group = element.parentNode.getAttribute("group");
+  const formItems = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"].form-item > input');
+  var i = 0, len = formItems.length;
+  while (i < len) {
+    formItems[i].checked = element.checked;
+    i++;
   }
 }
 
-function toggleParent(item) {
-  // lemma checkboxes have the name "checkbox-lemma"
-  // form checkboxes have the name "checkbox-lemma-child"
-  const lemma = item.name.split("-")[1];
-  var lemmaCheckbox = document.getElementById("checkbox-".concat(lemma));
-  if (item.checked) {
+function toggleParent(element) {
+  // If a form is checked, it automatically toggles 
+  // the parent lemma
+  const lemma = element.parentNode.getAttribute("lemma");
+  const group = element.parentNode.getAttribute("group");
+  const lemmaItem = document.querySelector('li[lemma="'+lemma+'"][group="'+group+'"].lemma-item');
+  const lemmaCheckbox = lemmaItem.querySelector('input');
+  if (element.checked) {
     lemmaCheckbox.checked = true;
   }
 }
 
-function lemmaToggleAll(item) {
-  // Toggles all the forms associated with a lemma when 
-  // that lemma's checkbox is checked
+function countCheckboxes(element) {
+  // Whenever a form or lemma is changed, count the new
+  // checkbox totals
+  const lemma = element.parentNode.getAttribute("lemma");
+  const group = element.parentNode.getAttribute("group");
+  const allCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] > input');
+  var total = 0;
 
-  var parentDiv = item.parentNode.parentNode.parentNode.parentNode;
-
-  const lemma = item.id;
-  const formsToToggle = parentDiv.querySelectorAll('[name=' + lemma.concat("-child") + ']');
-  for (var i = formsToToggle.length - 1; i >= 0; i--) {
-    formsToToggle[i].checked = item.checked;
+  var i = 0, len = allCheckboxes.length;
+  while (i < len) {
+    total = total + allCheckboxes[i].checked;
+    i++;
   }
+  const lemmaItem = document.querySelector('li[lemma="'+lemma+'"][group="'+group+'"].lemma-item');
+  const lemmaTotal = lemmaItem.querySelector('[class="total"');
+  lemmaTotal.innerHTML = total;
 }
 
 var lemmaText = "enter one lemma per line, as in\nfirst_lemma\nsecond_lemma\nthird_lemma";
@@ -119,64 +134,6 @@ function toggleRegEx(item) {
   else if (item.value == 'list') {
     searchBox.setAttribute("placeholder", lemmaText);
   }
-}
-
-function boxCount(object) {
-  // Checkboxes have the name "checkbox-lemma-child"
-  // or id:"checkbox-lemma" if they are lemmas
-
-  // Sometimes lemmas are hyphenated, so we have to be
-  // careful when extracting the name
-
-  // Extract the name
-  var parentDiv = object.parentNode.parentNode.parentNode.parentNode;
-
-  var splitName = object.name.split("-");
-
-  var formChanged;
-  if (splitName[splitName.length - 1] == "child") {
-    splitName = splitName.slice(1, splitName.length-1);
-    formChanged = true;
-  }
-  else {
-    splitName = splitName.slice(1, splitName.length);
-    formChanged = false;
-  }
-
-  const lemma = splitName.join('-');
-
-  // Calculate the total
-  var total = 0;
-  const lemmaCheckbox = parentDiv.querySelector('[id=' + "checkbox-".concat(lemma) + ']');
-  if (lemmaCheckbox.checked) {
-    total = total + 1;
-  }
-
-  // Here's a way to figure out if it was a child or parent
-  // that was toggled. splitName has length 2 for lemmas,
-  // and length 3 for forms
-
-  if (!formChanged)  {
-    // lemma box was toggled
-    const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name.concat("-child") + ']');
-    for (var i = formCheckboxes.length - 1; i >= 0; i--) {
-      if (formCheckboxes[i].checked) {
-        total = total + 1;
-      }
-    }
-  }
-
-  if (formChanged)  {
-    // form box was toggled
-    const formCheckboxes = parentDiv.querySelectorAll('[name=' + object.name + ']');
-    for (var i = formCheckboxes.length - 1; i >= 0; i--) {
-      if (formCheckboxes[i].checked) {
-        total = total + 1;
-      }
-    }
-  }
-
-  parentDiv.querySelector('[id=' + lemma.concat("-count") + ']').children[0].innerHTML = total;
 }
 
 function validateForm() {
