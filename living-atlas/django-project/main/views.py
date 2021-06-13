@@ -9,6 +9,7 @@ def ajax_view(request):
     """
     Server API endpoint for fetching data
     N: limit of number of queries to fetch
+    queryset: models in the database, lazily evaluated
     """
     N = 2000
 
@@ -48,17 +49,12 @@ def search_view(request):
     """
     The app revolves around this view, which is also the homepage.
     """
-
     context = {}
 
     if request.method == 'GET':
-
         return render(request, 'search.html', context)
 
     if request.method == 'POST':
-
-        print(request.POST)
-
         checked_A = {}
         checked_B = {}
 
@@ -84,11 +80,10 @@ def search_view(request):
                 else:
                     checked_B[lemma] = list(form)
 
-        data = {}
-        data['query_A'] = checked_A
-        data['query_B'] = checked_B
+        context['query_A'] = checked_A
+        context['query_B'] = checked_B
 
-        return JsonResponse(data, status=200)
+        return JsonResponse(context, status=200)
 
  
 def about_view(request):
