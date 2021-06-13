@@ -37,8 +37,8 @@
 		{% for lemma, forms in results.items %}
 		{% for form in forms %}
 		<li class="form-item" lemma="{{lemma}}" group="A" style="display:none">
-			<input type="checkbox" onchange="countCheckboxes(this)" onclick="toggleParent(this)" name="{{lemma}}A-child">
-			<label>{{form}}</label>
+			<input type="checkbox" id="{{lemma}}-{{form}}-A" onchange="countCheckboxes(this)" onclick="toggleParent(this)" name="{{lemma}}A-child">
+			<label for="{{lemma}}-{{form}}-A">{{form}}</label>
 		</li>
 		{% endfor %}
 		{% endfor %}

@@ -119,7 +119,7 @@ function countCheckboxes(element) {
   lemmaTotal.innerHTML = total;
 }
 
-var lemmaText = "enter one lemma per line, as in\nfirst_lemma\nsecond_lemma\nthird_lemma";
+var lemmaText = "enter one lemma per line, as in\naccommoder\nmobiliaire\npecine";
 var regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with 'mun')";
 
 function toggleRegEx(item) {

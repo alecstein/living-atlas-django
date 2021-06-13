@@ -6,7 +6,7 @@
     --font-size: .9rem;
     --font-family: "Menlo", "Courier New", "Courier", monospace;
     font-family: "Menlo", "Courier New", "Courier", monospace;
-    font-size: .9rem; 
+    font-size: 1rem; 
     background-color: #fff6da;
     padding-bottom: 300px;
 }
@@ -64,7 +64,7 @@ input[type='radio'] {
 }
 
 .pushable:enabled:active {
-  transform: translateY(2px);
+  transform: translateY(3px);
 }
 
 .wrap-searchbox {
@@ -85,20 +85,12 @@ textarea {
     display: flex;
     justify-content: center;
 }
+
 .error {
     display: inline-block;
     border: 2px solid red;
     margin-bottom: .5rem;
     padding: .5rem;
-}
-
-#pointing-hand {
-    position: absolute;
-    top: 0rem;
-    left: -5rem;
-    font-size: 5rem;
-    /* margin-right: -.5rem; */
-    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .results {
@@ -151,8 +143,6 @@ textarea {
 
 .flex-container {
     display: flex;
-    /*flex-direction: row;*/
-    /*justify-content: center;*/
 }
 
 .flex-container[name="B"] {
@@ -160,7 +150,6 @@ textarea {
 }
 
 .navbar {
-    /*display: inline-block;*/
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -190,17 +179,9 @@ ul {
     list-style: none;
 }
 
-
-input.checkbox {
-    width: var(--font-size);
-    height: var(--font-size);
-    vertical-align: middle;
-}
-
 #cartography-button {
     display: flex;
     justify-content: center;
-    /*align-items: center;*/
 }
 
 .article {
