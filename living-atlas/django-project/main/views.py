@@ -29,14 +29,14 @@ def ajax_view(request):
         if len(forms) == 0:
             return HttpResponseNotFound("No results found")
 
-        form_dict = {}
+        results = {}
         for form, lemma in forms.values_list()[:N]:
-            if form_dict.get(lemma):
-                form_dict[lemma].append(form)
+            if results.get(lemma):
+                results[lemma].append(form)
             else:
-                form_dict[lemma] = [form]
+                results[lemma] = [form]
 
-        context['results'] = form_dict
+        context['results'] = results
 
         if request.GET.get('AorB') == 'qA':
             return render(request, "qA.html", context)

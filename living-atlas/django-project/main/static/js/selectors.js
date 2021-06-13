@@ -19,13 +19,15 @@ function selectAllThisBox(element, tf, lemma) {
   }
   else {
     const allForms = document.querySelectorAll('li:not([style="display:none"])[group="'+group+'"].form-item > input');
-    console.log(allForms);
-    var i = 0, len = allForms.length;
-    while (i < len) {
-      allForms[i].checked = tf;
-      i++;
+    var len = allForms.length;
+    if (len > 0) {
+      var i = 0;
+      while (i < len) {
+        allForms[i].checked = tf;
+        i++;
+      }
+      allForms[0].onchange();
     }
-    allForms[0].onchange();
   }
 }
 
