@@ -140,7 +140,7 @@ function validateForm() {
   // Now check to see if at least one checkbox is selected from this div
   // If no boxes are selected, the form is considered invalid
 
-  let allCheckboxesA = document.getElementById('flex-container-A').querySelectorAll('[class="checkbox"]');
+  let allCheckboxesA = document.querySelectorAll('li[group="A"] > input');
 
   var formAValid = false;
 
@@ -160,7 +160,7 @@ function validateForm() {
 
   var formBValid = false;
 
-  let allCheckboxesB = document.getElementById('flex-container-B').querySelectorAll('[class="checkbox"]');
+  let allCheckboxesB = document.querySelectorAll('li[group="B"] > input');
 
   for (var i = allCheckboxesB.length - 1; i >= 0; i--) {
     if (allCheckboxesB[i].checked) {
@@ -222,11 +222,11 @@ function queryGroup(item) {
     let myHTML = request.response;
 
     if (item.id == 'qA') {
-      document.getElementById('flex-container-A').innerHTML = myHTML;
+      document.querySelector('.flex-container[name="A"]').innerHTML = myHTML;
       activeLemma_A = null;
     }
     else if (item.id == 'qB') {
-      document.getElementById('flex-container-B').innerHTML = myHTML;
+      document.querySelector('.flex-container[name="B"]').innerHTML = myHTML;
       activeLemma_B = null;
     }
   };

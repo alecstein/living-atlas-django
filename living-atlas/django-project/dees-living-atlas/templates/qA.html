@@ -13,7 +13,7 @@
 		</li>	
 		{% for lemma, forms in results.items %}
 		<li class="lemma-item" lemma="{{lemma}}" group="A" onclick="showForms(this)">
-			<input type="checkbox" name="{{lemma}}A" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
+			<input type="checkbox" name="{{lemma}}@A" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
 			<label>{{lemma}}</label>
 			<span class="counter">(<span class="total">1</span>/<span>{{forms|length|add:1}}</span>)</span>
 		</li>
@@ -37,8 +37,8 @@
 		{% for lemma, forms in results.items %}
 		{% for form in forms %}
 		<li class="form-item" lemma="{{lemma}}" group="A" style="display:none">
-			<input type="checkbox" id="{{lemma}}-{{form}}-A" onchange="countCheckboxes(this)" onclick="toggleParent(this)" name="{{lemma}}A-child">
-			<label for="{{lemma}}-{{form}}-A">{{form}}</label>
+			<input type="checkbox" name="{{lemma}}@A@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" id="{{lemma}}@A@{{form}}">
+			<label for="{{lemma}}@A@{{form}}">{{form}}</label>
 		</li>
 		{% endfor %}
 		{% endfor %}

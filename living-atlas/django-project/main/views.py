@@ -8,7 +8,9 @@ import json
 def ajax_view(request):
     """
     Server API endpoint for fetching data
+    N: limit of number of queries to fetch
     """
+    N = 2000
 
     context = {}
     queryset = Form.objects
@@ -18,19 +20,16 @@ def ajax_view(request):
         lemmas = set(query.split(' '))
 
         if request.GET.get('type') == 'list':
-            forms = queryset.filter(lemma__in = lemmas)[:2000]
+            forms = queryset.filter(lemma__in = lemmas)
 
         elif request.GET.get('type') == 'regex':
-            forms = queryset.filter(lemma__regex =fr"{query}")[:2000]
-
+            forms = queryset.filter(lemma__regex = fr"{query}")
 
         if len(forms) == 0:
             return HttpResponseNotFound("No results found")
 
         form_dict = {}
-        for x in forms.values():
-            form = x['form']
-            lemma = x['lemma']
+        for form, lemma in forms.values_list()[:N]:
             if form_dict.get(lemma):
                 form_dict[lemma].append(form)
             else:
@@ -60,37 +59,37 @@ def search_view(request):
 
         print(request.POST)
 
-        selections_dict_A = {}
-        selections_dict_B = {}
+        checked_A = {}
+        checked_B = {}
 
-        lemma_selections_A = []
-        lemma_selections_B = []
+        # All lemma keys are of the form {lemma}@{group}@
+        # All form keys are of the form {lemma}@{group}@{form}
+        # The "@" symbol should not appear in any other key
+        # Split the key_data into two parts, the lemma/group part
+        # and the form part. The form part is either [] or [form]
 
         for key in request.POST:
-            if key.startswith('checkbox'):
-                if 'child' not in key:
-                    if key[-1] == 'A':
-                        lemma_name = key.split('-')[1].strip('A')
-                        lemma_selections_A.append((key, lemma_name))                        
-
-                    elif key[-1] == 'B':
-                        lemma_name = key.split('-')[1].strip('B')
-                        lemma_selections_B.append((key, lemma_name))   
-
-        for key, lemma_name in lemma_selections_A:
-            key = key + "-child"
-            selections_dict_A[lemma_name] = request.POST.getlist(key)
-
-        for key, lemma_name in lemma_selections_B:
-            key = key + "-child"
-            selections_dict_B[lemma_name] = request.POST.getlist(key)
-
+            if "@" not in key:
+                continue
+            key_data = key.split("@")
+            (lemma, group), form = key_data[:2], key_data[2:]
+            if group == "A":
+                if checked_A.get(lemma):
+                    checked_A[lemma].extend(form)
+                else:
+                    checked_A[lemma] = list(form)
+            if group == "B":
+                if checked_B.get(lemma):
+                    checked_B[lemma].extend(form)
+                else:
+                    checked_B[lemma] = list(form)
 
         data = {}
-        data['query_A'] = selections_dict_A
-        data['query_B'] = selections_dict_B
+        data['query_A'] = checked_A
+        data['query_B'] = checked_B
 
-        return JsonResponse(data,status=200)
+        return JsonResponse(data, status=200)
+
  
 def about_view(request):
     return render(request, 'about.html', {})
