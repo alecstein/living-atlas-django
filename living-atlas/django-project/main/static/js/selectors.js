@@ -29,7 +29,7 @@ function selectAllThisBox(element, tf, lemma) {
       allForms[0].onchange();
     }
   }
-};
+}
 
 let activeLemma_A;
 let activeLemma_B;
