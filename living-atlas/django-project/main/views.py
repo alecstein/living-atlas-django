@@ -58,9 +58,9 @@ def search_view(request):
         checked_A = {}
         checked_B = {}
 
-        # All lemma keys are of the form {lemma}@{group}@
-        # All form keys are of the form {lemma}@{group}@{form}
-        # The "@" symbol should not appear in any other key
+        # All lemma keys are of the form {lemma}@{group}@.
+        # All form keys are of the form {lemma}@{group}@{form}.
+        # The "@" symbol will not appear in any other key.
         # Split the key_data into two parts, the lemma/group part
         # and the form part. The form part is either [] or [form]
 

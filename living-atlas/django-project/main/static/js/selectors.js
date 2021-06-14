@@ -1,8 +1,8 @@
-var originalHTML;
+let originalHTML = undefined;
 
 window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
-}
+};
 
 function selectAllThisBox(element, tf, lemma) {
   // "all" and "none" buttons select or de-select
@@ -10,7 +10,7 @@ function selectAllThisBox(element, tf, lemma) {
   const group = element.parentNode.getAttribute("group");
   if (lemma) {
     const allLemmas = document.querySelectorAll('li[group="'+group+'"].lemma-item > input');
-    var i = 0, len = allLemmas.length;
+    let i = 0, len = allLemmas.length;
     while (i < len) {
       allLemmas[i].checked = tf;
       allLemmas[i].onchange();
@@ -19,9 +19,9 @@ function selectAllThisBox(element, tf, lemma) {
   }
   else {
     const allForms = document.querySelectorAll('li:not([style="display:none"])[group="'+group+'"].form-item > input');
-    var len = allForms.length;
+    let len = allForms.length;
     if (len > 0) {
-      var i = 0;
+      let i = 0;
       while (i < len) {
         allForms[i].checked = tf;
         i++;
@@ -29,10 +29,10 @@ function selectAllThisBox(element, tf, lemma) {
       allForms[0].onchange();
     }
   }
-}
+};
 
-var activeLemma_A;
-var activeLemma_B;
+let activeLemma_A;
+let activeLemma_B;
 
 function showForms(element) {
   // Shows all the forms when you click on a lemma
@@ -43,9 +43,9 @@ function showForms(element) {
   if (group == "A") {
     if (activeLemma_A != undefined) {
       activeLemma_A.style = "";     
-      var activeLemmaName = activeLemma_A.getAttribute("lemma"); 
+      let activeLemmaName = activeLemma_A.getAttribute("lemma"); 
       const formItems = document.querySelectorAll('li[lemma="'+activeLemmaName+'"][group="'+group+'"].form-item');
-      var i = 0, len = formItems.length;
+      let i = 0, len = formItems.length;
       while (i < len) {
         formItems[i].setAttribute("style", "display:none");
         i++;
@@ -57,9 +57,9 @@ function showForms(element) {
   if (group == "B") {
     if (activeLemma_B != undefined) {
       activeLemma_B.style = "";
-      var activeLemmaName = activeLemma_B.getAttribute("lemma");
+      let activeLemmaName = activeLemma_B.getAttribute("lemma");
       const formItems = document.querySelectorAll('li[lemma="'+activeLemmaName+'"][group="'+group+'"].form-item');
-      var i = 0, len = formItems.length;
+      let i = 0, len = formItems.length;
       while (i < len) {
         formItems[i].style = "display:none";
         i++;
@@ -70,7 +70,7 @@ function showForms(element) {
 
   element.style = "background-color:#ffe600";
 
-  var i = 0, len = formItems.length;
+  let i = 0, len = formItems.length;
   while (i < len) {
     formItems[i].style = "display:visible";
     i++;
@@ -84,7 +84,7 @@ function lemmaToggleAll(element) {
   const lemma = element.parentNode.getAttribute("lemma");
   const group = element.parentNode.getAttribute("group");
   const formItems = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"].form-item > input');
-  var i = 0, len = formItems.length;
+  let i = 0, len = formItems.length;
   while (i < len) {
     formItems[i].checked = element.checked;
     i++;
@@ -109,9 +109,9 @@ function countCheckboxes(element) {
   const lemma = element.parentNode.getAttribute("lemma");
   const group = element.parentNode.getAttribute("group");
   const allCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] > input');
-  var total = 0;
+  let total = 0;
 
-  var i = 0, len = allCheckboxes.length;
+  let i = 0, len = allCheckboxes.length;
   while (i < len) {
     total = total + allCheckboxes[i].checked;
     i++;
@@ -121,8 +121,8 @@ function countCheckboxes(element) {
   lemmaTotal.innerHTML = total;
 }
 
-var lemmaText = "enter one lemma per line, as in\naccommoder\nmobiliaire\npecine";
-var regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with 'mun')";
+let lemmaText = "enter one lemma per line, as in\naccommoder\nmobiliaire\npecine";
+let regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with 'mun')";
 
 function toggleRegEx(item) {
   // Toggles the placeholder text in the search box
@@ -144,9 +144,9 @@ function validateForm() {
 
   let allCheckboxesA = document.querySelectorAll('li[group="A"] > input');
 
-  var formAValid = false;
+  let formAValid = false;
 
-  for (var i = allCheckboxesA.length - 1; i >= 0; i--) {
+  for (let i = allCheckboxesA.length - 1; i >= 0; i--) {
     if (allCheckboxesA[i].checked) {
       console.log("Group A valid");
       formAValid = true;
@@ -160,11 +160,11 @@ function validateForm() {
     return false;
   }
 
-  var formBValid = false;
+  let formBValid = false;
 
   let allCheckboxesB = document.querySelectorAll('li[group="B"] > input');
 
-  for (var i = allCheckboxesB.length - 1; i >= 0; i--) {
+  for (let i = allCheckboxesB.length - 1; i >= 0; i--) {
     if (allCheckboxesB[i].checked) {
       console.log("Group B valid");
       formBValid = true;
@@ -189,7 +189,7 @@ function queryGroup(item) {
 
   let allButtons = document.querySelectorAll('[class="pushable"]');
 
-  for (var i = allButtons.length - 1; i >= 0; i--) {
+  for (let i = allButtons.length - 1; i >= 0; i--) {
     allButtons[i].disabled = true;
   }
 
@@ -197,15 +197,15 @@ function queryGroup(item) {
   let method = 'GET';
   let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');
   let AorB = 'AorB=' + item.id;
-  var type = "type=list";
+  let type = "type=list";
   if (document.getElementById("radio-regex").checked) {
-    var type = "type=regex";
+    type = "type=regex";
   }
   let url = '/ajax/?' + query + '&' + AorB + '&' + type;
   request.open(method, url);
   request.onload = function () {
 
-    for (var i = allButtons.length - 1; i >= 0; i--) {
+    for (let i = allButtons.length - 1; i >= 0; i--) {
       allButtons[i].disabled = false;
     }
 
