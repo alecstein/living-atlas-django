@@ -229,13 +229,16 @@ function queryGroup(item) {
 
     if (group == 'A') {
       document.querySelector('.flex-container[name="A"]').innerHTML = responseHTML;
-      // Select the first element
-      activeLemma_A = document.querySelector('.lemma-item[group="A"]');
-      activeLemma_A.onclick();
+      // Select the first element ONLY if number of lemmas == 1
+      let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="A"]');
+      if (lemmaCheckboxes.length == 1)
+      {
+        activeLemma_A = document.querySelector('.lemma-item[group="A"]');
+        activeLemma_A.onclick();
+      }
     }
     else if (group == 'B') {
       document.querySelector('.flex-container[name="B"]').innerHTML = responseHTML;
-      // Select the first element ONLY if number of lemmas == 1
       let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="B"]');
       if (lemmaCheckboxes.length == 1)
       {
