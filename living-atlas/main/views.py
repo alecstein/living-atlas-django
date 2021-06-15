@@ -17,13 +17,16 @@ def ajax_view(request):
     queryset = Form.objects
 
     if request.method == 'GET':
-        query = request.GET.get('q')
 
-        if request.GET.get('type') == 'list':
+        query = request.GET.get('query')
+        query_type = request.GET.get('type')
+        group = request.GET.get('group')
+
+        if query_type == 'list':
             lemmas = set(query.split(' '))
             forms = queryset.filter(lemma__in = lemmas)
 
-        elif request.GET.get('type') == 'regex':
+        elif query_type == 'regex':
             forms = queryset.filter(lemma__regex = fr"{query}")
 
         if len(forms) == 0:
@@ -36,7 +39,7 @@ def ajax_view(request):
             else:
                 results[lemma] = [form]
 
-        if request.GET.get('type') == 'list':
+        if query_type == 'list':
             not_found = []
             for lemma in lemmas:
                 if lemma not in results.keys():
@@ -45,11 +48,11 @@ def ajax_view(request):
 
         context['results'] = results
 
-        if request.GET.get('AorB') == 'qA':
-            return render(request, "qA.html", context)
+        if group == 'A':
+            return render(request, "groupA.html", context)
 
-        elif request.GET.get('AorB') == 'qB':
-            return render(request, "qB.html", context)
+        elif group  == 'B':
+            return render(request, "groupB.html", context)
 
 
 def search_view(request):

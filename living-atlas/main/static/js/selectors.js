@@ -195,13 +195,17 @@ function queryGroup(item) {
 
   let request = new XMLHttpRequest();
   let method = 'GET';
-  let query = 'q=' + document.getElementById("searchbox").value.replace(/\s/gm, '+');
-  let AorB = 'AorB=' + item.id;
-  let type = "type=list";
+  let query = document.getElementById("searchbox").value.replace(/\s/gm, '+');
+  let group = item.getAttribute("group");
+  let type = "list";
   if (document.getElementById("radio-regex").checked) {
-    type = "type=regex";
+    type = "regex";
   }
-  let url = '/ajax/?' + query + '&' + AorB + '&' + type;
+  let lang = "french";
+  // if (document.getElementById("radio-lang").checked) {
+  //   lang = "latin";
+  // }
+  let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
   request.open(method, url);
   request.onload = function () {
 
@@ -221,16 +225,17 @@ function queryGroup(item) {
     document.getElementById("invalid-submission").setAttribute("style", "display:none");
     document.getElementById("no-results").setAttribute("style", "display:none");
 
-    let myHTML = request.response;
+    let responseHTML = request.response;
 
-    if (item.id == 'qA') {
-      document.querySelector('.flex-container[name="A"]').innerHTML = myHTML;
+    if (group == 'A') {
+      document.querySelector('.flex-container[name="A"]').innerHTML = responseHTML;
       // Select the first element
       activeLemma_A = document.querySelector('.lemma-item[group="A"]');
       activeLemma_A.onclick();
     }
-    else if (item.id == 'qB') {
-      document.querySelector('.flex-container[name="B"]').innerHTML = myHTML;
+    else if (group == 'B') {
+      document.querySelector('.flex-container[name="B"]').innerHTML = responseHTML;
+      // Select the first element ONLY if number of lemmas == 1
       let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="B"]');
       if (lemmaCheckboxes.length == 1)
       {
