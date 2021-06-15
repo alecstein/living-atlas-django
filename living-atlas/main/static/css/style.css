@@ -117,6 +117,10 @@ textarea {
     text-align: left;
 }
 
+.lemma-item-not-found {
+    color:  red;
+}
+
 .list-title {
     font-weight: bolder;
 }

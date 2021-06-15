@@ -3,7 +3,7 @@
 		<li>
 			<div class="list-title-container">
 				<div class="list-title">
-					lemmas (group B)
+					lemmas [{{results.items|length}}] (group B)
 				</div>
 				<div class="all-none-container" group="B">
 					<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true, true)"></input>
@@ -16,6 +16,11 @@
 			<input type="checkbox" name="{{lemma}}@B" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
 			<label>{{lemma}}</label>
 			<span class="counter">(<span class="total">1</span>/<span>{{forms|length|add:1}}</span>)</span>
+		</li>
+		{% endfor %}
+		{% for lemma in not_found %}
+		<li class="lemma-item-not-found">
+			{{lemma}} -- not found
 		</li>
 		{% endfor %}
 	</ol>
@@ -37,7 +42,7 @@
 		{% for lemma, forms in results.items %}
 		{% for form in forms %}
 		<li class="form-item" lemma="{{lemma}}" group="B" style="display:none">
-			<input type="checkbox" name="{{lemma}}@B@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" id="{{lemma}}@B@{{form}}">
+			<input type="checkbox" name="{{lemma}}@B@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" id="{{lemma}}@B@{{form}}" checked>
 			<label for="{{lemma}}@B@{{form}}">{{form}}</label>
 		</li>
 		{% endfor %}

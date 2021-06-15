@@ -225,11 +225,18 @@ function queryGroup(item) {
 
     if (item.id == 'qA') {
       document.querySelector('.flex-container[name="A"]').innerHTML = myHTML;
-      activeLemma_A = null;
+      // Select the first element
+      activeLemma_A = document.querySelector('.lemma-item[group="A"]');
+      activeLemma_A.onclick();
     }
     else if (item.id == 'qB') {
       document.querySelector('.flex-container[name="B"]').innerHTML = myHTML;
-      activeLemma_B = null;
+      let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="B"]');
+      if (lemmaCheckboxes.length == 1)
+      {
+        activeLemma_B = document.querySelector('.lemma-item[group="B"]');
+        activeLemma_B.onclick();
+      }
     }
   };
   request.send();

@@ -18,9 +18,9 @@ def ajax_view(request):
 
     if request.method == 'GET':
         query = request.GET.get('q')
-        lemmas = set(query.split(' '))
 
         if request.GET.get('type') == 'list':
+            lemmas = set(query.split(' '))
             forms = queryset.filter(lemma__in = lemmas)
 
         elif request.GET.get('type') == 'regex':
@@ -35,6 +35,13 @@ def ajax_view(request):
                 results[lemma].append(form)
             else:
                 results[lemma] = [form]
+
+        if request.GET.get('type') == 'list':
+            not_found = []
+            for lemma in lemmas:
+                if lemma not in results.keys():
+                    not_found.append(lemma)
+            context['not_found'] = not_found
 
         context['results'] = results
 
