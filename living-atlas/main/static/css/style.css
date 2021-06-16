@@ -40,6 +40,7 @@ body {
     overflow: auto;
     height: 14rem;
     border: 2px solid black;
+
 }
 
 .lemma-box ol {
@@ -93,6 +94,29 @@ body {
 
 .lemma-col-3 input {
     margin: 0;
+}
+
+.lemma-item-not-found {
+    color:  red;
+}
+
+.form-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-col-1 {
+    font-weight: bolder;
+}
+
+.form-col-2 input {
+    margin: 0;
+}
+
+.counter {
+    color: gray;
+    float: right;
 }
 
 #subtitle {
@@ -174,71 +198,19 @@ textarea {
     padding: .5rem;
 }
 
-.results {
-    background-color: white;
-    width: 50%;
-    overflow: auto;
-    height: 14rem;
-    border: 2px solid black;
-}
-
-.results ol {
-    padding: 0;
-    margin: 0;
-    /*list-style: none;*/
-}
-
-.results li {
-    border-bottom: 1px solid #e4e4e7;
-    padding: .5rem 1rem;
-    list-style: none;
-    text-align: left;
-}
-
-.lemma-item-not-found {
-    color:  red;
-}
-
-.form-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.form-col-1 {
-    font-weight: bolder;
-}
-
-.form-col-2 input {
-    margin: 0;
-}
-
-.counter {
-    color: gray;
-    float: right;
-}
-
 .searchbox input {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
 
-.flex-container {
-    display: flex;
-}
-
-.flex-container[name="B"] {
-    margin-top: .5rem;
-}
-
-.navbar {
+nav {
     display: flex;
     flex-direction: row;
     justify-content: center;
     padding-bottom: .5rem;
 }
 
-.navbar a {
+nav a {
     font-weight: bolder;
     color: black;
     font-size: 1.2rem;
@@ -249,19 +221,14 @@ textarea {
     border: 1px solid transparent;
 }
 
-.navbar a:hover {
+nav a:hover {
     text-decoration: none;
     background-color: var(--yellow);
     border: 1px solid black;
 }
 
-ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
 
-#cartography-button {
+#base-buttons {
     display: flex;
     justify-content: center;
 }

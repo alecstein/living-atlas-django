@@ -21,35 +21,60 @@ def ajax_view(request):
         query = request.GET.get('query')
         query_type = request.GET.get('type')
         group = request.GET.get('group')
+        lang = request.GET.get('lang')
 
-        if query_type == 'list':
-            lemmas = set(query.split(' '))
-            forms = queryset.filter(lemma__in = lemmas)
+        if lang == 'french':
+            if query_type == 'list':
+                items = set(query.split(' '))
+                forms = queryset.filter(lemma__in = items)
 
-        elif query_type == 'regex':
-            forms = queryset.filter(lemma__regex = fr"{query}")
+            elif query_type == 'regex':
+                forms = queryset.filter(lemma__regex = fr"{query}")
 
-        if len(forms) == 0:
-            return HttpResponseNotFound("No results found")
+            if len(forms) == 0:
+                return HttpResponseNotFound("No results found")
+
+        elif lang == 'latin':
+            if query_type == 'list':
+                items = set(query.split(' '))
+                forms = queryset.filter(latin__in = items)
+
+            elif query_type == 'regex':
+                forms = queryset.filter(latin__regex = fr"{query}")
+
+            if len(forms) == 0:
+                return HttpResponseNotFound("No results found")
 
         results = {}
-        for form, lemma in forms.values_list()[:N]:
-            if results.get(lemma):
-                results[(lemma, "latin-v")].append(form)
+        for form, lemma, latin in forms.values_list()[:N]:
+            if results.get((lemma, latin)):
+                results[(lemma, latin)].append(form)
             else:
-                results[(lemma, "latin-v")] = [form]
+                results[(lemma, latin)] = [form]
 
         if query_type == 'list':
             not_found = []
-            for lemma in lemmas:
-                if lemma not in results.keys():
-                    not_found.append(lemma)
+            if lang == 'french':
+                item_keys = [key[0] for key in results.keys()]
+            else:
+                # latin case
+                item_keys = [key[1] for key in results.keys()]
+
+            for item in items:
+                if item not in item_keys:
+                    not_found.append(item)
             context['not_found'] = not_found
 
         context['results'] = results
         context['group'] = group
 
-        return render(request, "query.html", context)
+        response = render(request, "query.html", context)
+        response['Limit'] = N
+
+        if len(forms) > N:
+            response['Exceeds-Limit'] = len(forms)
+
+        return response
 
 def search_view(request):
     """

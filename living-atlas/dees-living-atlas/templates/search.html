@@ -3,15 +3,15 @@
 {% block content %}
 <div class="radios">
 	<div class="radio-group">
-		<input type="radio" name="lang" value="latin" disabled>
+		<input type="radio" name="lang" value="latin">
 		<label for="latin">latin</label>
-		<input type="radio" name="lang" value="french" disabled>
+		<input type="radio" name="lang" value="french" checked>
 		<label for="latin">french</label>
 	</div>
 	<div class="radio-group">
-		<input type="radio" name="type" id="radio-regex" value="regex" onclick="toggleRegEx(this)">
+		<input type="radio" name="type" value="regex" onclick="toggleRegEx(this)">
 		<label for="regex">regex</label>
-		<input type="radio" name="type" id="radio-list" value="list" onclick="toggleRegEx(this)" checked>
+		<input type="radio" name="type" value="list" onclick="toggleRegEx(this)" checked>
 		<label for="regex">list</label>
 	</div>
 
@@ -27,25 +27,31 @@
 	</div>
 </div>
 
-<div class="error-container">
-	<div class="error" id="invalid-submission" style="display:none">
+<div class="error-container" id="invalid-submission" style="display:none">
+	<div class="error">
 		to compare results you must select from both groups
 	</div>
 </div>
 
-<div class="error-container">
-	<div class="error" id="no-results" style="display:none">
+<div class="error-container" id="no-results" style="display:none">
+	<div class="error">
 		no results were found for that search
 	</div>
 </div>
 
-<div class="error-container">
-	<div class="error" id="too-many-results" style="display:none">
-		> 2000 results were found, but only 2000 are shown. show them all?
+<div class="error-container" id="too-many-results" style="display:none">
+	<div class="error">
+		your search returned too many results (<span id="exceed-count"></span>) to display. showing <span id="exceed-limit">2000</span>
 	</div>
 </div>
 
-<form method="post" id="main-table" onsubmit="return validateForm()" action="">
+<div class="error-container" id="export-failed" style="display:none">
+	<div class="error">
+		select at least one item to export
+	</div>
+</div>
+
+<form method="post" id="main-table" onsubmit="return validateForm(this.submitted)" action="">
 	{% csrf_token %}
 
 	<div class="flex-container" name="A">
@@ -108,9 +114,9 @@
 			</ol>
 		</div>
 	</div>
-	<div id="cartography-button">
-		<button class="pushable" name="post_to" type="submit" value = "export"/>export to JSON</button>
-		<button class="pushable" name="post_to" type="submit" value = "carto"/>send to carto</button>
+	<div id="base-buttons">
+		<button class="pushable" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "export"/>export to JSON</button>
+		<button class="pushable" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "carto"/>send to carto</button>
 	</div>
 </form>
 {%endblock content%}

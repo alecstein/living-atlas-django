@@ -6,18 +6,17 @@ window.onload = function() {
 
 function selectAllThisBox(element, tf, lemma) {
   // "all" and "none" buttons select or de-select
-  // everything within one box.
+  // everything within one box
+
   const group = element.parentNode.getAttribute("group");
   if (lemma) {
     const allLemmas = document.querySelectorAll('.lemma-item[group="'+group+'"] input');
     let i = 0, len = allLemmas.length;
     while (i < len) {
-      console.log(allLemmas[i]);
       allLemmas[i].checked = tf;
       allLemmas[i].onchange();
       i++;
     }
-    allLemmas[0].onchange();
   }
   else {
     const allForms = document.querySelectorAll('li:not([style="display:none"])[group="'+group+'"].form-item > input');
@@ -38,18 +37,18 @@ let activeLemma_B;
 
 function showForms(element) {
   // Shows all the forms when you click on a lemma
+
   const lemma = element.getAttribute("lemma");
   const group = element.getAttribute("group");
-  const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
-  console.log(lemma, group);
+
   if (group == "A") {
     if (activeLemma_A != undefined) {
       activeLemma_A.style = "";     
       let activeLemmaName = activeLemma_A.getAttribute("lemma"); 
-      const formItems = document.querySelectorAll('li[lemma="'+activeLemmaName+'"][group="'+group+'"].form-item');
-      let i = 0, len = formItems.length;
+      const activeFormItems = document.querySelectorAll('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
+      let i = 0, len = activeFormItems.length;
       while (i < len) {
-        formItems[i].setAttribute("style", "display:none");
+        activeFormItems[i].setAttribute("style", "display:none");
         i++;
       }
     }
@@ -60,10 +59,10 @@ function showForms(element) {
     if (activeLemma_B != undefined) {
       activeLemma_B.style = "";
       let activeLemmaName = activeLemma_B.getAttribute("lemma");
-      const formItems = document.querySelectorAll('li[lemma="'+activeLemmaName+'"][group="'+group+'"].form-item');
-      let i = 0, len = formItems.length;
+      const activeFormItems = document.querySelectorAll('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
+      let i = 0, len = activeFormItems.length;
       while (i < len) {
-        formItems[i].style = "display:none";
+        activeFormItems[i].style = "display:none";
         i++;
       }
     }
@@ -71,7 +70,7 @@ function showForms(element) {
   }
 
   element.style = "background-color:#ffe600";
-
+  const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
   let i = 0, len = formItems.length;
   while (i < len) {
     formItems[i].style = "display:visible";
@@ -83,8 +82,9 @@ function showForms(element) {
 function lemmaToggleAll(element) {
   // If a lemma is checked, it checks all the forms
   // If a form is unchecked, it unchecks all the forms
-  const lemma = element.parentNode.getAttribute("lemma");
-  const group = element.parentNode.getAttribute("group");
+
+  const lemma = element.getAttribute("lemma");
+  const group = element.getAttribute("group");
   const formItems = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"].form-item > input');
   let i = 0, len = formItems.length;
   while (i < len) {
@@ -96,8 +96,9 @@ function lemmaToggleAll(element) {
 function toggleParent(element) {
   // If a form is checked, it automatically toggles 
   // the parent lemma
-  const lemma = element.parentNode.getAttribute("lemma");
-  const group = element.parentNode.getAttribute("group");
+
+  const lemma = element.getAttribute("lemma");
+  const group = element.getAttribute("group");
   const lemmaItem = document.querySelector('li[lemma="'+lemma+'"][group="'+group+'"].lemma-item');
   const lemmaCheckbox = lemmaItem.querySelector('input');
   if (element.checked) {
@@ -108,55 +109,61 @@ function toggleParent(element) {
 function countCheckboxes(element) {
   // Whenever a form or lemma is changed, count the new
   // checkbox totals
+
   const lemma = element.getAttribute("lemma");
   const group = element.getAttribute("group");
-  const allCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] input');
-  let total = 0;
+  const allCheckedCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] input:checked');
+  let total = allCheckedCheckboxes.length;
 
-  let i = 0, len = allCheckboxes.length;
-  while (i < len) {
-    total = total + allCheckboxes[i].checked;
-    i++;
-  }
-  console.log(lemma,group);
   const lemmaItem = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"]');
-  const lemmaTotal = lemmaItem.querySelector('[class="total"');
+  const lemmaTotal = lemmaItem.querySelector('.total');
   lemmaTotal.innerHTML = total;
 }
 
 let lemmaText = "enter one lemma per line, as in\naccommoder\nmobiliaire\npecine";
 let regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with 'mun')";
 
-function toggleRegEx(item) {
+function toggleRegEx(element) {
   // Toggles the placeholder text in the search box
   // and toggles search type
   const searchBox = document.getElementById("searchbox");
 
-  if (item.value == 'regex') {
+  if (element.value == 'regex') {
     searchBox.setAttribute("placeholder", regexText);
   }
 
-  else if (item.value == 'list') {
+  else if (element.value == 'list') {
     searchBox.setAttribute("placeholder", lemmaText);
   }
 }
 
-function validateForm() {
+function validateForm(value) {
   // Now check to see if at least one checkbox is selected from this div
   // If no boxes are selected, the form is considered invalid
 
-  let allCheckboxesA = document.querySelectorAll('li[group="A"] > input');
-
-  let formAValid = false;
-
-  for (let i = allCheckboxesA.length - 1; i >= 0; i--) {
-    if (allCheckboxesA[i].checked) {
-      console.log("Group A valid");
-      formAValid = true;
-      break;
+  if (value == "export") {
+    let allCheckedCheckboxes = document.querySelectorAll('li input:checked');
+    if (allCheckedCheckboxes.length > 0)
+    {
+      return true;
+    }
+    else {
+      document.getElementById("export-failed").setAttribute("style", "display:visible")
+      return false;
     }
   }
 
+  let formAValid;
+
+  let allCheckedCheckboxesA = document.querySelectorAll('li[group="A"] input:checked');
+  if (allCheckedCheckboxesA.length > 0)
+  {
+    formAValid = true;
+  }
+  else {
+    formAValid = false;
+  }
+  
   if (!formAValid) {
     console.log("Select at least one item from group A");
     document.getElementById("invalid-submission").setAttribute("style", "display:visible");
@@ -165,14 +172,13 @@ function validateForm() {
 
   let formBValid = false;
 
-  let allCheckboxesB = document.querySelectorAll('li[group="B"] > input');
-
-  for (let i = allCheckboxesB.length - 1; i >= 0; i--) {
-    if (allCheckboxesB[i].checked) {
-      console.log("Group B valid");
-      formBValid = true;
-      break;
-    }
+  let allCheckedCheckboxesB = document.querySelectorAll('li[group="B"] input:checked');
+  if (allCheckedCheckboxesB.length > 0)
+  {
+    formBValid = true;
+  }
+  else {
+    formBValid = false;
   }
 
   if (!formBValid) {
@@ -190,7 +196,8 @@ function queryGroup(item) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
 
-  let allButtons = document.querySelectorAll('[class="pushable"]');
+  let allButtons = document.querySelectorAll(".pushable");
+  let allErrors = document.querySelectorAll(".error-container");
 
   for (let i = allButtons.length - 1; i >= 0; i--) {
     allButtons[i].disabled = true;
@@ -198,17 +205,12 @@ function queryGroup(item) {
 
   let request = new XMLHttpRequest();
   let method = 'GET';
-  let query = document.getElementById("searchbox").value.replace(/\s/gm, '+');
+  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, '+');
   let group = item.getAttribute("group");
-  let type = "list";
-  if (document.getElementById("radio-regex").checked) {
-    type = "regex";
-  }
-  let lang = "french";
-  // if (document.getElementById("radio-lang").checked) {
-  //   lang = "latin";
-  // }
+  let type = document.querySelector("input[name='type'][type='radio']:checked").value
+  let lang = document.querySelector("input[name='lang'][type='radio']:checked").value
   let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
+  console.log(url);
   request.open(method, url);
   request.onload = function () {
 
@@ -217,22 +219,44 @@ function queryGroup(item) {
     }
 
     if (request.status == "404") {
-      // If we get a 404 from the AJAX endpoint
-      // that means no results were found
-      console.log(request.response);
       document.getElementById("no-results").setAttribute("style", "display:visible");
       return false;
     }
 
     //  Whenever we return a new, valid search we clear the error messages
-    document.getElementById("invalid-submission").setAttribute("style", "display:none");
-    document.getElementById("no-results").setAttribute("style", "display:none");
-
+    for (var i = 0; i < allErrors.length; i++) {
+      allErrors[i].setAttribute("style", "display:none");
+    }
+    
     let responseHTML = request.response;
+
+    let headers = request.getAllResponseHeaders();
+
+    // Convert the header string into an array
+    // of individual headers
+    let arr = headers.trim().split(/[\r\n]+/);
+
+    // Create a map of header names to values
+    let headerMap = {};
+    arr.forEach(function (line) {
+      let parts = line.split(': ');
+      let header = parts.shift();
+      let value = parts.join(': ');
+      headerMap[header] = value;
+    });
+
+    if (headerMap['exceeds-limit']) {   
+      // let errorExceedsLimit = document.getElementById("too-many-results");
+
+      document.getElementById("exceed-count").innerHTML = headerMap['exceeds-limit'];
+      document.getElementById("exceed-limit").innerHTML = headerMap['limit'];
+      document.getElementById("too-many-results").setAttribute("style", "display:visible");
+    }
 
     if (group == 'A') {
       document.querySelector('.flex-container[name="A"]').innerHTML = responseHTML;
       // Select the first element ONLY if number of lemmas == 1
+
       let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="A"]');
       if (lemmaCheckboxes.length == 1)
       {
@@ -255,8 +279,12 @@ function queryGroup(item) {
 
 function clearAll() {
   // Gets new html template from server to clear the screen
-  document.getElementById("invalid-submission").setAttribute("style", "display:none");
-  document.getElementById("no-results").setAttribute("style", "display:none");
+
+  let allErrors = document.querySelectorAll(".error-container");
+
+  for (var i = 0; i < allErrors.length; i++) {
+    allErrors[i].setAttribute("style", "display:none");
+  }
   document.getElementById("main-table").innerHTML = originalHTML;
 
 }
