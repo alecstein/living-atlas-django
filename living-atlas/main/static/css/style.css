@@ -11,6 +11,12 @@
     padding-bottom: 300px;
 }
 
+body {
+    width: 900px;
+    margin: auto;
+    margin-top: 3rem;
+}
+
 .flex-container {
     display: flex;
     justify-content: flex-grow;
@@ -87,12 +93,6 @@
 
 .lemma-col-3 input {
     margin: 0;
-}
-
-body {
-    width: 800px;
-    margin: auto;
-    margin-top: 3rem;
 }
 
 #subtitle {

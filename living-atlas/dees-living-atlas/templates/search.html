@@ -39,6 +39,12 @@
 	</div>
 </div>
 
+<div class="error-container">
+	<div class="error" id="too-many-results" style="display:none">
+		> 2000 results were found, but only 2000 are shown. show them all?
+	</div>
+</div>
+
 <form method="post" id="main-table" onsubmit="return validateForm()" action="">
 	{% csrf_token %}
 
@@ -104,7 +110,6 @@
 	</div>
 	<div id="cartography-button">
 		<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/></input>
-     	<a href="path_to_file" download="proposed_file_name">Download</a>
 	</div>
 </form>
 {%endblock content%}

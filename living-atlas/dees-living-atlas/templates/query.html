@@ -16,10 +16,10 @@
 		<li class="lemma-item" lemma="{{lemma}}" group="{{group}}" onclick="showForms(this)">
 			<div class="lemma-col-1">
 				<input type="checkbox" name="{{lemma}}@{{group}}" lemma="{{lemma}}" group="{{group}}" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
-				<label>{{lemma}}</label>
+				<label>{{lemma.0}}</label>
 			</div>
 			<div class="lemma-col-2">
-				latin
+				{{lemma.1}}
 			</div>
 			<div class="lemma-col-3">
 				<span class="counter">(<span class="total">{{forms|length|add:1}}</span>/<span>{{forms|length|add:1}}</span>)</span>

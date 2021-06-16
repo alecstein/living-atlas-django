@@ -11,7 +11,7 @@ def ajax_view(request):
     N: limit of number of queries to fetch
     queryset: models in the database, lazily evaluated
     """
-    N = 2000
+    N = 2_000
 
     context = {}
     queryset = Form.objects
@@ -35,9 +35,9 @@ def ajax_view(request):
         results = {}
         for form, lemma in forms.values_list()[:N]:
             if results.get(lemma):
-                results[lemma].append(form)
+                results[(lemma, "latin-v")].append(form)
             else:
-                results[lemma] = [form]
+                results[(lemma, "latin-v")] = [form]
 
         if query_type == 'list':
             not_found = []
@@ -50,7 +50,6 @@ def ajax_view(request):
         context['group'] = group
 
         return render(request, "query.html", context)
-
 
 def search_view(request):
     """
