@@ -9,13 +9,15 @@ function selectAllThisBox(element, tf, lemma) {
   // everything within one box.
   const group = element.parentNode.getAttribute("group");
   if (lemma) {
-    const allLemmas = document.querySelectorAll('li[group="'+group+'"].lemma-item > input');
+    const allLemmas = document.querySelectorAll('.lemma-item[group="'+group+'"] input');
     let i = 0, len = allLemmas.length;
     while (i < len) {
+      console.log(allLemmas[i]);
       allLemmas[i].checked = tf;
       allLemmas[i].onchange();
       i++;
     }
+    allLemmas[0].onchange();
   }
   else {
     const allForms = document.querySelectorAll('li:not([style="display:none"])[group="'+group+'"].form-item > input');
@@ -38,8 +40,8 @@ function showForms(element) {
   // Shows all the forms when you click on a lemma
   const lemma = element.getAttribute("lemma");
   const group = element.getAttribute("group");
-  const formItems = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"].form-item');
-
+  const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
+  console.log(lemma, group);
   if (group == "A") {
     if (activeLemma_A != undefined) {
       activeLemma_A.style = "";     
@@ -106,9 +108,9 @@ function toggleParent(element) {
 function countCheckboxes(element) {
   // Whenever a form or lemma is changed, count the new
   // checkbox totals
-  const lemma = element.parentNode.getAttribute("lemma");
-  const group = element.parentNode.getAttribute("group");
-  const allCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] > input');
+  const lemma = element.getAttribute("lemma");
+  const group = element.getAttribute("group");
+  const allCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] input');
   let total = 0;
 
   let i = 0, len = allCheckboxes.length;
@@ -116,7 +118,8 @@ function countCheckboxes(element) {
     total = total + allCheckboxes[i].checked;
     i++;
   }
-  const lemmaItem = document.querySelector('li[lemma="'+lemma+'"][group="'+group+'"].lemma-item');
+  console.log(lemma,group);
+  const lemmaItem = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"]');
   const lemmaTotal = lemmaItem.querySelector('[class="total"');
   lemmaTotal.innerHTML = total;
 }

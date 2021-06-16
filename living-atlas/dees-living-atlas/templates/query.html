@@ -1,0 +1,58 @@
+<div class="lemma-box">
+	<ol>
+		<li class="lemma-title">
+			<div class="lemma-col-1">
+				lemma [{{results.items|length}}] (group {{group}})
+			</div>
+			<div class="lemma-col-2">
+				latin
+			</div>
+			<div class="lemma-col-3" group="{{group}}">
+				<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true, true)"></input>
+				<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false, true)"></input>
+			</div>
+		</li>
+		{% for lemma, forms in results.items %}
+		<li class="lemma-item" lemma="{{lemma}}" group="{{group}}" onclick="showForms(this)">
+			<div class="lemma-col-1">
+				<input type="checkbox" name="{{lemma}}@{{group}}" lemma="{{lemma}}" group="{{group}}" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
+				<label>{{lemma.0}}</label>
+			</div>
+			<div class="lemma-col-2">
+				{{lemma.1}}
+			</div>
+			<div class="lemma-col-3">
+				<span class="counter">(<span class="total">{{forms|length|add:1}}</span>/<span>{{forms|length|add:1}}</span>)</span>
+			</div>
+		</li>
+		{% endfor %}
+		{% for lemma in not_found %}
+		<li class="lemma-item-not-found">
+			{{lemma}} -- not found
+		</li>
+		{% endfor %}
+	</ol>
+</div>
+<div class="form-box">
+	<ol>
+		<li>
+			<div class="form-title">
+				<div class="form-col-1">
+					forms (group {{group}})
+				</div>
+				<div class="form-col-2" group="{{group}}">
+					<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true)"></input>
+					<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false)"></input>
+				</div>
+			</div>		
+		</li>	
+		{% for lemma, forms in results.items %}
+		{% for form in forms %}
+		<li class="form-item" lemma="{{lemma}}" group="{{group}}" style="display:none">
+			<input type="checkbox" lemma="{{lemma}}" group="{{group}}" name="{{lemma}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" id="{{lemma}}@{{group}}@{{form}}" checked>
+			<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
+		</li>
+		{% endfor %}
+		{% endfor %}
+	</ol>
+</div>
