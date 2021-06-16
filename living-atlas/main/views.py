@@ -93,13 +93,20 @@ def search_view(request):
         context['query_A'] = checked_A
         context['query_B'] = checked_B
 
-        return JsonResponse(context, status=200)
+        response = JsonResponse(context, status=200)
+
+        post_to = request.POST['post_to']
+
+        if post_to == "export":
+            response['Content-Type'] = 'application/json'
+            response['Content-Disposition'] = 'attachment; filename="results.json"'
+
+        return response
 
  
 def about_view(request):
     return render(request, 'about.html', {})
 
 def howto_view(request):
-    print('test')
     return render(request, 'howto.html', {})
 
