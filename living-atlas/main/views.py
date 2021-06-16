@@ -31,9 +31,6 @@ def ajax_view(request):
             elif query_type == 'regex':
                 forms = queryset.filter(lemma__regex = fr"{query}")
 
-            if len(forms) == 0:
-                return HttpResponseNotFound("No results found")
-
         elif lang == 'latin':
             if query_type == 'list':
                 items = set(query.split(' '))
@@ -42,8 +39,8 @@ def ajax_view(request):
             elif query_type == 'regex':
                 forms = queryset.filter(latin__regex = fr"{query}")
 
-            if len(forms) == 0:
-                return HttpResponseNotFound("No results found")
+        if len(forms) == 0:
+            return HttpResponseNotFound("No results found")
 
         results = {}
         for form, lemma, latin in forms.values_list()[:N]:
