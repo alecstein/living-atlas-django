@@ -47,12 +47,9 @@ def ajax_view(request):
             context['not_found'] = not_found
 
         context['results'] = results
+        context['group'] = group
 
-        if group == 'A':
-            return render(request, "groupA.html", context)
-
-        elif group  == 'B':
-            return render(request, "groupB.html", context)
+        return render(request, "query.html", context)
 
 
 def search_view(request):

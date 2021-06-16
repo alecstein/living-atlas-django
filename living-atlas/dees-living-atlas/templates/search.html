@@ -43,57 +43,68 @@
 	{% csrf_token %}
 
 	<div class="flex-container" name="A">
-		<div class="results">
+		<div class="lemma-box">
 			<ol>
-				<li>
-					<div class="list-title-container">
-						<div class="list-title">
-							lemmas (group A)
-						</div>
-					</div>		
-				</li>	
+				<li class="lemma-title">
+					<div class="lemma-col-1">
+						lemma (group A)
+					</div>
+					<div class="lemma-col-2">
+						latin
+					</div>
+					<div class="lemma-col-3" group="A">
+					</div>
+				</li>
 			</ol>
 		</div>
-		<div class="results">
+
+		<div class="form-box">
 			<ol>
 				<li>
-					<div class="list-title-container">
-						<div class="list-title">
+					<div class="form-title">
+						<div class="form-col-1">
 							forms (group A)
+						</div>
+						<div class="form-col-2" group="A">
 						</div>
 					</div>		
 				</li>	
 			</ol>
 		</div>
 	</div>
-
 	<div class="flex-container" name="B">
-		<div class="results">
+		<div class="lemma-box">
 			<ol>
-				<li>
-					<div class="list-title-container">
-						<div class="list-title">
-							lemmas (group B)
-						</div>
-					</div>		
-				</li>	
+				<li class="lemma-title">
+					<div class="lemma-col-1">
+						lemma (group B)
+					</div>
+					<div class="lemma-col-2">
+						latin
+					</div>
+					<div class="lemma-col-3" group="B">
+					</div>
+				</li>
 			</ol>
 		</div>
 
-		<div class="results">
+		<div class="form-box">
 			<ol>
 				<li>
-					<div class="list-title-container">
-						<div class="list-title">
+					<div class="form-title">
+						<div class="form-col-1">
 							forms (group B)
 						</div>
+						<div class="form-col-2" group="B">
+						</div>
 					</div>		
-				</li>		
+				</li>	
 			</ol>
 		</div>
 	</div>
 	<div id="cartography-button">
-		<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/>
+		<input class="pushable" name="to_carto" type="submit" value = "submit to cartography"/></input>
+     	<a href="path_to_file" download="proposed_file_name">Download</a>
 	</div>
 </form>
 {%endblock content%}
