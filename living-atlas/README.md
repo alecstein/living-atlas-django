@@ -7,7 +7,6 @@ In case you run into issues serving static files, check the top answer here and 
 
 https://stackoverflow.com/questions/63187103/static-files-not-being-served-on-aws-lightsail
 
-
 # INSTALLED_APPS
 
 ## django-cachalot
@@ -54,3 +53,7 @@ You will need to set the allowed hosts to include the IP address of the server:
 ```python
 ALLOWED_HOSTS = ['18.207.127.123', '*']
 ```
+
+# Importing the data into the database
+
+Use the `import-from-csv.py` file included. It will take 1-2 hours depending on the number of rows.
