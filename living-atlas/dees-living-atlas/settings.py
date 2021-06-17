@@ -86,15 +86,15 @@ DATABASES = {
 
 
 # Cache setup for use with django-cachalot
-# pip install django-cachalot
-# 'cachalot' already added to INSTALLED_APPS
+# pip3 install django-cachalot
+# 'cachalot' already added to INSTALLED_APPS - Alec
 # Adjust these settings if needed
 # https://docs.djangoproject.com/en/3.2/topics/cache/
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/Users/dirac/AlecTecLLC/dees-living-atlas/dees-living-atlas/tmp/django_cache',
+        'LOCATION': '/tmp/django-cache',
         'OPTIONS': {
         'MAX_ENTRIES': 10_000
         }
