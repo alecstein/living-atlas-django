@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',
+    'main', 
+    'cachalot', # for caching searches
 ]
 
 MIDDLEWARE = [
@@ -80,6 +81,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
+# Cache setup for use with django-cachalot
+# pip install django-cachalot
+# 'cachalot' already added to INSTALLED_APPS
+# Adjust these settings if needed
+# https://docs.djangoproject.com/en/3.2/topics/cache/
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/Users/dirac/AlecTecLLC/dees-living-atlas/dees-living-atlas/tmp/django_cache',
+        'OPTIONS': {
+        'MAX_ENTRIES': 10_000
+        }
     }
 }
 
