@@ -46,14 +46,13 @@ def ajax_view(request):
 
         results = {}
         for form, lemma, latin in forms.values_list()[:N]:
-            if results.get((lemma, latin)):
-                results[(lemma, latin)].append(form)
+            if results.get(lemma):
+                results[lemma]['forms'].append(form)
             else:
-                results[(lemma, latin)] = [form]
+                results[lemma] = {'latin':latin, 'forms':[form]}
 
         context['results'] = results
         context['group'] = group
-
         response = render(request, "query.html", context)
 
         response['Limit'] = N
@@ -73,20 +72,21 @@ def search_view(request):
         json_data = {}
 
         # All lemma keys are of the form {lemma}@{group}@.
-        # All form keys are of the form {lemma}@{group}@{form}.
-        # The "@" symbol will not appear in any other key.
-        # Split the key_data into two parts, the lemma/group part
-        # and the form part. The form part is either [] or [form]
+        # All form keys are of the form {lemma}@{group}@{form}
+        # and have value {group}@{form}.
+        # The "@" symbol will not appear in any other key or value.
 
-        for idx, key in enumerate(request.POST):
-            if "@" not in key:
+        for key in request.POST:
+            if "@" not in key: 
                 continue
-            key_data = key.split("@")
-            if len(key_data) < 3:
+            value = request.POST[key]
+            if "@" not in value:
                 continue
-            (lemlat, group), form = key_data[:2], key_data[2]
-            lemma, latin = ast.literal_eval(lemlat)
-            json_data[idx] = {'form': form, 'lemma':lemma, 'latin':latin}
+            group, form = value.split("@")
+            if json_data.get(group):
+                json_data[group].append(form)
+            else:
+                json_data[group] = [form]
 
         response = JsonResponse(json_data, status=200)
 
