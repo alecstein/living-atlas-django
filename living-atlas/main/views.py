@@ -24,10 +24,15 @@ def ajax_view(request):
 
         if query_type == 'list':
             items = set(query.split(' '))
+            
             if lang == 'lemma':
                 forms = queryset.filter(lemma__in = items)
             elif lang == 'latin':
                 forms = queryset.filter(latin__in = items)
+
+            found = forms.values_list(lang, flat = True)
+            not_found = [item for item in items if item not in found]
+            context['not_found'] = not_found
 
         elif query_type == 'regex':
             if lang == 'lemma':
@@ -45,25 +50,12 @@ def ajax_view(request):
             else:
                 results[(lemma, latin)] = [form]
 
-        if query_type == 'list':
-            not_found = []
-            if lang == 'lemma':
-                item_keys = [key[0] for key in results.keys()]
-            else:
-                # latin case
-                item_keys = [key[1] for key in results.keys()]
-
-            for item in items:
-                if item not in item_keys:
-                    not_found.append(item)
-            context['not_found'] = not_found
-
         context['results'] = results
         context['group'] = group
 
         response = render(request, "query.html", context)
-        response['Limit'] = N
 
+        response['Limit'] = N
         if len(forms) > N:
             response['Exceeds-Limit'] = len(forms)
 
