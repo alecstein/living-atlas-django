@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import redirect
 from .models import Form
-import json
 # Create your views here.
 
 def ajax_view(request):
@@ -11,7 +10,7 @@ def ajax_view(request):
     N: limit of number of queries to fetch
     queryset: models in the database, lazily evaluated
     """
-    N = 2_000
+    N = 10_000
 
     context = {}
     queryset = Form.objects
@@ -23,23 +22,20 @@ def ajax_view(request):
         group = request.GET.get('group')
         lang = request.GET.get('lang')
 
-        if lang == 'french':
-            if query_type == 'list':
-                items = set(query.split(' '))
+        if query_type == 'list':
+            items = set(query.split(' '))
+            if lang == 'lemma':
                 forms = queryset.filter(lemma__in = items)
-
-            elif query_type == 'regex':
-                forms = queryset.filter(lemma__regex = fr"{query}")
-
-        elif lang == 'latin':
-            if query_type == 'list':
-                items = set(query.split(' '))
+            elif lang == 'latin':
                 forms = queryset.filter(latin__in = items)
 
-            elif query_type == 'regex':
+        elif query_type == 'regex':
+            if lang == 'lemma':
+                forms = queryset.filter(lemma__regex = fr"{query}")
+            if lang == 'latin':
                 forms = queryset.filter(latin__regex = fr"{query}")
 
-        if len(forms) == 0:
+        if not forms:
             return HttpResponseNotFound("No results found")
 
         results = {}
@@ -51,7 +47,7 @@ def ajax_view(request):
 
         if query_type == 'list':
             not_found = []
-            if lang == 'french':
+            if lang == 'lemma':
                 item_keys = [key[0] for key in results.keys()]
             else:
                 # latin case
