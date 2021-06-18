@@ -144,3 +144,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Because large numbers of checkboxes are submitted, this needs
+# to be set to None to allow them to be posted
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
