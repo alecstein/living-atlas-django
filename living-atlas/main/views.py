@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import redirect
 from .models import Form
+import ast
 # Create your views here.
 
 def ajax_view(request):
@@ -65,14 +66,11 @@ def search_view(request):
     """
     The app revolves around this view, which is also the homepage.
     """
-    context = {}
-
     if request.method == 'GET':
-        return render(request, 'search.html', context)
+        return render(request, 'search.html')
 
     if request.method == 'POST':
-        checked_A = {}
-        checked_B = {}
+        json_data = {}
 
         # All lemma keys are of the form {lemma}@{group}@.
         # All form keys are of the form {lemma}@{group}@{form}.
@@ -80,26 +78,17 @@ def search_view(request):
         # Split the key_data into two parts, the lemma/group part
         # and the form part. The form part is either [] or [form]
 
-        for key in request.POST:
+        for idx, key in enumerate(request.POST):
             if "@" not in key:
                 continue
             key_data = key.split("@")
-            (lemma, group), form = key_data[:2], key_data[2:]
-            if group == "A":
-                if checked_A.get(lemma):
-                    checked_A[lemma].extend(form)
-                else:
-                    checked_A[lemma] = list(form)
-            if group == "B":
-                if checked_B.get(lemma):
-                    checked_B[lemma].extend(form)
-                else:
-                    checked_B[lemma] = list(form)
+            if len(key_data) < 3:
+                continue
+            (lemlat, group), form = key_data[:2], key_data[2]
+            lemma, latin = ast.literal_eval(lemlat)
+            json_data[idx] = {'form': form, 'lemma':lemma, 'latin':latin}
 
-        context['query_A'] = checked_A
-        context['query_B'] = checked_B
-
-        response = JsonResponse(context, status=200)
+        response = JsonResponse(json_data, status=200)
 
         post_to = request.POST['post_to']
 
