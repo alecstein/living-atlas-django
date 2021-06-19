@@ -19,6 +19,17 @@ body {
     margin-top: 3rem;
 }
 
+.top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 80%;
+    margin: auto;
+    margin-bottom: -1rem;
+
+}
+
 #title {
     font-family: "Tahoma";
     font-size: 32pt;
@@ -28,7 +39,6 @@ body {
 
 #subtitle {
     font-family: "Tahoma";
-    font-style: italic;
     text-align: center;
     font-size: 16pt;
     color: gray;
@@ -38,22 +48,25 @@ nav {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin-top: -1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    /*padding-bottom: 1rem;*/
+    /*margin-top: -1rem;*/
+
 }
 
 nav a {
     font-weight: bolder;
-    color: black;
-    font-size: 18pt;
-    padding: .6rem;
-    text-decoration: underline;
-    border: 1px solid transparent;
+    color: #222;
+    font-size: 20pt;
+    padding: 0 .5rem 0 .5rem;
+    text-decoration: none;
+    transition:color .2s ease-out, background 1s ease-in;
 }
 
 nav a:hover {
-    /*text-decoration: none;*/
-    background-color: var(--yellow);
-    border: 1px solid black;
+    text-decoration: underline;
+    color: #237272;
 }
 
 hr {
@@ -206,6 +219,7 @@ input[type='radio'] {
 
 /*Pushables are buttons*/
 .pushable {
+    cursor:pointer;
     background-color: #f3f3f3;
     position: relative;
     border: 1px solid black;

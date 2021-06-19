@@ -3,17 +3,19 @@
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <script type="text/javascript" src="{% static 'js/selectors.js' %}"></script>
 
-<head>
-<h1 id="title">the living atlas</h1>
-
-<p id="subtitle"> explore French through space and time</p>
-
-<nav>
-<a href="{% url 'search' %}">search</a>
-<a href="{% url 'howto' %}">how-to</a>
-<a href="{% url 'about' %}">about</a>
-</nav>
-</head>
+<div class="top">
+	<div>
+		<h1 id="title">the living atlas</h1>
+		<p id="subtitle"> explore French through space and time</p>
+	</div>
+	<div>
+		<nav>
+			<a href="{% url 'search' %}">search</a>
+			<a href="{% url 'howto' %}">how-to</a>
+			<a href="{% url 'about' %}">about</a>
+		</nav>
+	</div>
+</div>
 <hr>
 
 <body>
