@@ -113,12 +113,10 @@ function toggleParent(element) {
 function countCheckboxes(element) {
   // Whenever a form or lemma is changed, count the new
   // checkbox totals
-
   const lemma = element.getAttribute("lemma");
   const group = element.getAttribute("group");
   const allCheckedCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] input:checked');
   let total = allCheckedCheckboxes.length;
-
   const lemmaItem = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"]');
   const lemmaTotal = lemmaItem.querySelector('.total');
   lemmaTotal.innerHTML = total;
@@ -169,7 +167,6 @@ function validateForm(value) {
   }
   
   if (!formAValid) {
-    console.log("Select at least one item from group A");
     document.getElementById("invalid-submission").setAttribute("style", "display:visible");
     return false;
   }
@@ -186,12 +183,10 @@ function validateForm(value) {
   }
 
   if (!formBValid) {
-    console.log("Select at least one item from group B");
     document.getElementById("invalid-submission").setAttribute("style", "display:visible");
     return false;
   }
 
-  console.log("Form valid");
   document.getElementById("invalid-submission").setAttribute("style", "display:none");
   return true;
 }
@@ -214,7 +209,6 @@ function queryGroup(item) {
   let type = document.querySelector("input[name='type'][type='radio']:checked").value
   let lang = document.querySelector("input[name='lang'][type='radio']:checked").value
   let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
-  console.log(url);
   request.open(method, url);
   request.onload = function () {
 

@@ -15,8 +15,8 @@
 		{% for lemma, value in results.items %}
 		<li class="lemma-item" lemma="{{lemma}}" group="{{group}}" onclick="showForms(this)">
 			<div class="lemma-col-1">
-				<input type="checkbox" name="{{lemma}}@{{group}}" lemma="{{lemma}}" group="{{group}}" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
-				<label>{{ lemma }}</label>
+				<input type="checkbox" name="{{lemma}}@{{group}}" lemma="{{lemma}}" group="{{group}}" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" id="{{lemma}}@{{group}}" checked></input>
+				<label for="{{lemma}}@{{group}}">{{ lemma }}</label>
 			</div>
 			<div class="lemma-col-2">
 				{{ value.latin }}
