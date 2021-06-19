@@ -74,7 +74,9 @@ def search_view(request):
         # All lemma keys are of the form {lemma}@{group}@.
         # All form keys are of the form {lemma}@{group}@{form}
         # and have value {group}@{form}.
-        # The "@" symbol will not appear in any other key or value.
+        # The "@" symbol will not appear in any other key,
+        # and the "@" symbol will only appear in the value if the
+        # checkbox corresponds to a form
 
         for key in request.POST:
             if "@" not in key: 
