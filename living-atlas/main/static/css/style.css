@@ -33,7 +33,7 @@ body {
 #title {
     font-family: "Tahoma";
     font-size: 32pt;
-    margin-bottom: -1rem;
+    margin-bottom: -1.5rem;
     text-align: center;
 }
 
@@ -41,7 +41,7 @@ body {
     font-family: "Tahoma";
     text-align: center;
     font-size: 16pt;
-    color: gray;
+    color: #333;
 }
 
 nav {
