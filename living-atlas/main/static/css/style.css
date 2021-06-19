@@ -27,6 +27,7 @@ body {
 }
 
 #subtitle {
+    font-family: "Tahoma";
     font-style: italic;
     text-align: center;
     font-size: 16pt;
