@@ -129,6 +129,7 @@ hr {
     background-color: #237272;
     color: white;
     border-bottom: 10px solid black;
+    font-family: "Menlo", "Courier New", "Courier", monospace;
 }
 
 .lemma-col-1 {
