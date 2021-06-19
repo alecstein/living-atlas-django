@@ -3,16 +3,16 @@
 {% block content %}
 <div class="radios">
 	<div class="radio-group">
-		<input type="radio" name="lang" value="latin">
-		<label for="latin">latin</label>
-		<input type="radio" name="lang" value="lemma" checked>
-		<label for="latin">french</label>
+		<input type="radio" name="lang" value="latin" id="radio-latin">
+		<label for="radio-latin">latin</label>
+		<input type="radio" name="lang" value="lemma" id="radio-lemma" checked>
+		<label for="radio-lemma">french</label>
 	</div>
 	<div class="radio-group">
-		<input type="radio" name="type" value="regex" onclick="toggleRegEx(this)">
-		<label for="regex">regex</label>
-		<input type="radio" name="type" value="list" onclick="toggleRegEx(this)" checked>
-		<label for="regex">list</label>
+		<input type="radio" name="type" value="regex" id="radio-regex" onclick="toggleRegEx(this)">
+		<label for="radio-regex">regex</label>
+		<input type="radio" name="type" value="list" id="radio-list" onclick="toggleRegEx(this)" checked>
+		<label for="radio-list">list</label>
 	</div>
 
 </div>
@@ -72,14 +72,12 @@
 
 		<div class="form-box">
 			<ol>
-				<li>
-					<div class="form-title">
-						<div class="form-col-1">
-							forms (group A)
-						</div>
-						<div class="form-col-2" group="A">
-						</div>
-					</div>		
+				<li class="form-title">
+					<div class="form-col-1">
+						forms (group A)
+					</div>
+					<div class="form-col-2" group="A">
+					</div>
 				</li>	
 			</ol>
 		</div>
@@ -102,14 +100,12 @@
 
 		<div class="form-box">
 			<ol>
-				<li>
-					<div class="form-title">
-						<div class="form-col-1">
-							forms (group B)
-						</div>
-						<div class="form-col-2" group="B">
-						</div>
-					</div>		
+				<li class="form-title">
+					<div class="form-col-1">
+						forms (group B)
+					</div>
+					<div class="form-col-2" group="B">
+					</div>
 				</li>	
 			</ol>
 		</div>

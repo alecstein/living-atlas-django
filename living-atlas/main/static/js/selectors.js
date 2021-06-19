@@ -13,8 +13,12 @@ function selectAllThisBox(element, tf, lemma) {
     const allLemmas = document.querySelectorAll('.lemma-item[group="'+group+'"] input');
     let i = 0, len = allLemmas.length;
     while (i < len) {
+      let checkVal = allLemmas[i].checked;
+      let total = allLemmas[i].parentNode.parentNode.querySelector(".total");
+      // Trick for updating the counts quickly
+      // tf - checkVal adds 1 or subtracts 1 if needed
+      total.innerHTML = parseInt(total.innerHTML) + tf - checkVal;
       allLemmas[i].checked = tf;
-      allLemmas[i].onchange();
       i++;
     }
   }

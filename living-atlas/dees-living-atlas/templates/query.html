@@ -35,21 +35,20 @@
 </div>
 <div class="form-box">
 	<ol>
-		<li>
-			<div class="form-title">
-				<div class="form-col-1">
-					forms (group {{group}})
-				</div>
-				<div class="form-col-2" group="{{group}}">
-					<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true)"></input>
-					<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false)"></input>
-				</div>
-			</div>		
+		<li class="form-title">
+			<div class="form-col-1">
+				forms (group {{group}})
+			</div>
+			<div class="form-col-2" group="{{group}}">
+				<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true)"></input>
+				<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false)"></input>
+			</div>
 		</li>	
+
 		{% for lemma, value in results.items %}
 		{% for form in value.forms %}
 		<li class="form-item" lemma="{{lemma}}" group="{{group}}" style="display:none">
-			<input type="checkbox" lemma="{{lemma}}" group="{{group}}" name="{{lemma}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" value="{{group}@{{form}}" checked>
+			<input type="checkbox" lemma="{{lemma}}" group="{{group}}" name="{{lemma}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" value="{{group}}@{{form}}" checked>
 			<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
 		</li>
 		{% endfor %}

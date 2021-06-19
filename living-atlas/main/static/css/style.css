@@ -12,9 +12,55 @@
 }
 
 body {
+    font-family: "Tahoma", "Helvetica", "Arial";
+    font-size: 14pt;
     width: 900px;
     margin: auto;
     margin-top: 3rem;
+}
+
+#title {
+    font-family: "Tahoma";
+    font-size: 32pt;
+    margin-bottom: -1rem;
+    text-align: center;
+}
+
+#subtitle {
+    font-style: italic;
+    text-align: center;
+    font-size: 16pt;
+    color: gray;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: -1rem;
+}
+
+nav a {
+    font-weight: bolder;
+    color: black;
+    font-size: 18pt;
+    padding: .6rem;
+    text-decoration: underline;
+    border: 1px solid transparent;
+}
+
+nav a:hover {
+    /*text-decoration: none;*/
+    background-color: var(--yellow);
+    border: 1px solid black;
+}
+
+hr {
+    width: 80%;
+    color: transparent;
+    background-color: #444;
+    /*background: linear-gradient(to right, #fff6da, #333, #fff6da);*/
+    height: 1px;
 }
 
 .flex-container {
@@ -38,8 +84,8 @@ body {
     background-color: white;
     width: 50%;
     overflow: auto;
-    height: 14rem;
-    border: 2px solid black;
+    height: 18rem;
+    border: 2px solid #444;    
 
 }
 
@@ -75,8 +121,13 @@ body {
     align-items: center;
 }
 
-.lemma-title {
+.lemma-title, .form-title {
     font-weight: bolder;
+    position: sticky;
+    top: 0;
+    background-color: #237272;
+    color: white;
+    border-bottom: 10px solid black;
 }
 
 .lemma-col-1 {
@@ -119,19 +170,13 @@ body {
     float: right;
 }
 
-#subtitle {
-    text-align: center;
-}
-
-#title {
-    text-align: center;
-}
 
 #clear {
     background-color: #ffe600;
 }
 
 .radios {
+    font-family: "Menlo", "Courier New", "Courier", monospace;
     display: flex;
     justify-content: center;
     margin-bottom: .5rem;
@@ -160,16 +205,18 @@ input[type='radio'] {
 /*Pushables are buttons*/
 .pushable {
     background-color: #f3f3f3;
-  position: relative;
-  border: 1px solid black;
-  padding: .5rem;
-  font-size: .9rem;
-  margin: .5rem;
-  font-family: "Menlo", "Courier New", "Courier", monospace;
+    position: relative;
+    border: 1px solid black;
+    padding: .5rem;
+    font-size: 1.1rem;
+    margin: .5rem;
+    box-shadow: 0 5px 8px rgba(0,0,0,.3);
+    font-family: "Menlo", "Courier New", "Courier", monospace;
 }
 
 .pushable:enabled:active {
   transform: translateY(3px);
+  box-shadow: 0 2px 2px rgba(0,0,0,.3);
 }
 
 .wrap-searchbox {
@@ -192,6 +239,7 @@ textarea {
 }
 
 .error {
+    font-family: "Menlo", "Courier New", "Courier", monospace;
     display: inline-block;
     border: 2px solid red;
     margin-bottom: .5rem;
@@ -201,30 +249,6 @@ textarea {
 .searchbox input {
     margin-top: 1rem;
     margin-bottom: 1rem;
-}
-
-nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-bottom: .5rem;
-}
-
-nav a {
-    font-weight: bolder;
-    color: black;
-    font-size: 1.2rem;
-    padding: .5rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    text-decoration: underline;
-    border: 1px solid transparent;
-}
-
-nav a:hover {
-    text-decoration: none;
-    background-color: var(--yellow);
-    border: 1px solid black;
 }
 
 
@@ -245,4 +269,9 @@ nav a:hover {
 
 .article h2 {
     margin: 0;
+}
+
+.article p {
+    font-size: 16pt;
+    font-family: "Arial";
 }
