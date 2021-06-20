@@ -1,3 +1,8 @@
+// jQuery notation for commonly used long functions
+
+$ = document.querySelector.bind(document)
+$$ = document.querySelectorAll.bind(document)
+
 let originalHTML = undefined;
 
 window.onload = function() {
@@ -10,7 +15,7 @@ function selectAllThisBox(element, tf, lemma) {
 
   const group = element.parentNode.getAttribute("group");
   if (lemma) {
-    const allLemmas = document.querySelectorAll('.lemma-item[group="'+group+'"] input');
+    const allLemmas = $$('.lemma-item[group="'+group+'"] input');
     let i = 0, len = allLemmas.length;
     while (i < len) {
       let checkVal = allLemmas[i].checked;
@@ -23,7 +28,7 @@ function selectAllThisBox(element, tf, lemma) {
     }
   }
   else {
-    const allForms = document.querySelectorAll('.form-item:not([style="display: none;"])[group="'+group+'"] input');
+    const allForms = $$('.form-item:not([style="display: none;"])[group="'+group+'"] input');
     let len = allForms.length;
     if (len > 0) {
       let i = 0;
@@ -49,7 +54,7 @@ function showForms(element) {
     if (activeLemma_A != undefined) {
       activeLemma_A.style = "";     
       let activeLemmaName = activeLemma_A.getAttribute("lemma"); 
-      const activeFormItems = document.querySelectorAll('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
+      const activeFormItems = $$('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
       let i = 0, len = activeFormItems.length;
       while (i < len) {
         activeFormItems[i].style.display = "none";
@@ -63,7 +68,7 @@ function showForms(element) {
     if (activeLemma_B != undefined) {
       activeLemma_B.style = "";
       let activeLemmaName = activeLemma_B.getAttribute("lemma");
-      const activeFormItems = document.querySelectorAll('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
+      const activeFormItems = $$('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
       let i = 0, len = activeFormItems.length;
       while (i < len) {
         activeFormItems[i].style.display = "none";
@@ -74,7 +79,7 @@ function showForms(element) {
   }
 
   element.style = "background-color:#ffe600";
-  const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
+  const formItems = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
   let i = 0, len = formItems.length;
   while (i < len) {
     formItems[i].style.display = "";
@@ -89,7 +94,7 @@ function lemmaToggleAll(element) {
 
   const lemma = element.closest("li").getAttribute("lemma");
   const group = element.closest("li").getAttribute("group");
-  const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"] input');
+  const formItems = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"] input');
   let i = 0, len = formItems.length;
   while (i < len) {
     formItems[i].checked = element.checked;
@@ -103,7 +108,7 @@ function toggleParent(element) {
 
   const lemma = element.closest("li").getAttribute("lemma");
   const group = element.closest("li").getAttribute("group");
-  const lemmaCheckbox = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] input');
+  const lemmaCheckbox = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] input');
   if (element.checked) {
     lemmaCheckbox.checked = true;
   }
@@ -115,9 +120,9 @@ function countCheckboxes(element) {
 
   const lemma = element.closest("li").getAttribute("lemma");
   const group = element.closest("li").getAttribute("group");
-  const allCheckedCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] input:checked');
+  const allCheckedCheckboxes = $$('li[lemma="'+lemma+'"][group="'+group+'"] input:checked');
   let total = allCheckedCheckboxes.length;
-  const lemmaTotal = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] .total');
+  const lemmaTotal = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] .total');
   lemmaTotal.innerHTML = total;
 }
 
@@ -144,7 +149,7 @@ function validateForm(value) {
   // If no boxes are selected, the form is considered invalid
 
   if (value == "export") {
-    let allCheckedCheckboxes = document.querySelectorAll('li input:checked');
+    let allCheckedCheckboxes = $$('li input:checked');
     if (allCheckedCheckboxes.length > 0)
     {
       return true;
@@ -157,7 +162,7 @@ function validateForm(value) {
 
   let formAValid;
 
-  let allCheckedCheckboxesA = document.querySelectorAll('li[group="A"] input:checked');
+  let allCheckedCheckboxesA = $$('li[group="A"] input:checked');
   if (allCheckedCheckboxesA.length > 0)
   {
     formAValid = true;
@@ -173,7 +178,7 @@ function validateForm(value) {
 
   let formBValid = false;
 
-  let allCheckedCheckboxesB = document.querySelectorAll('li[group="B"] input:checked');
+  let allCheckedCheckboxesB = $$('li[group="B"] input:checked');
   if (allCheckedCheckboxesB.length > 0)
   {
     formBValid = true;
@@ -195,8 +200,8 @@ function queryGroup(item) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
 
-  let allButtons = document.querySelectorAll(".pushable");
-  let allErrors = document.querySelectorAll(".error-container");
+  let allButtons = $$(".pushable");
+  let allErrors = $$(".error-container");
 
   for (let i = allButtons.length - 1; i >= 0; i--) {
     allButtons[i].disabled = true;
@@ -206,8 +211,8 @@ function queryGroup(item) {
   let method = 'GET';
   let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, '+');
   let group = item.getAttribute("group");
-  let type = document.querySelector("input[name='type'][type='radio']:checked").value
-  let lang = document.querySelector("input[name='lang'][type='radio']:checked").value
+  let type = $("input[name='type'][type='radio']:checked").value
+  let lang = $("input[name='lang'][type='radio']:checked").value
   let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
   request.open(method, url);
   request.onload = function () {
@@ -252,22 +257,22 @@ function queryGroup(item) {
     }
 
     if (group == 'A') {
-      document.querySelector('.flex-container[name="A"]').innerHTML = responseHTML;
+      $('.flex-container[name="A"]').innerHTML = responseHTML;
       // Select the first element ONLY if number of lemmas == 1
 
-      let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="A"]');
+      let lemmaCheckboxes = $$('.lemma-item[group="A"]');
       if (lemmaCheckboxes.length == 1)
       {
-        activeLemma_A = document.querySelector('.lemma-item[group="A"]');
+        activeLemma_A = $('.lemma-item[group="A"]');
         activeLemma_A.onclick();
       }
     }
     else if (group == 'B') {
-      document.querySelector('.flex-container[name="B"]').innerHTML = responseHTML;
-      let lemmaCheckboxes = document.querySelectorAll('.lemma-item[group="B"]');
+      $('.flex-container[name="B"]').innerHTML = responseHTML;
+      let lemmaCheckboxes = $$('.lemma-item[group="B"]');
       if (lemmaCheckboxes.length == 1)
       {
-        activeLemma_B = document.querySelector('.lemma-item[group="B"]');
+        activeLemma_B = $('.lemma-item[group="B"]');
         activeLemma_B.onclick();
       }
     }
@@ -278,7 +283,7 @@ function queryGroup(item) {
 function clearAll() {
   // Gets new html template from server to clear the screen
 
-  let allErrors = document.querySelectorAll(".error-container");
+  let allErrors = $$(".error-container");
 
   for (var i = 0; i < allErrors.length; i++) {
     allErrors[i].style.display = "none";

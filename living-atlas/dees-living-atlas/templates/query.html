@@ -44,7 +44,6 @@
 				<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false)"></input>
 			</div>
 		</li>	
-
 		{% for lemma, value in results.items %}
 		{% for form in value.forms %}
 		<li class="form-item" lemma="{{lemma}}" group="{{group}}" style="display:none">
