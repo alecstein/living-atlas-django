@@ -1,22 +1,22 @@
-:root {
-    --yellow: #ffe600; // highlights
-    --manilla: #fff6da; // background
-    --faint-gray: #e4e4e7; // used to line separators
-    --gray: #f3f3f3; // buttons
-    --font-size: .9rem;
-    --font-family: "Menlo", "Courier New", "Courier", monospace;
-    font-family: "Menlo", "Courier New", "Courier", monospace;
-    font-size: 1rem; 
-    background-color: #fff6da;
-    padding-bottom: 300px;
+html {
+    --font-family-sans: "Tahoma", "Helvetica", "Arial", sans-serif;
+    --font-family-mono: "Menlo", "Courier New", "Courier", monospace;
+    --manilla: #fff6da;
+    --yellow: #ffe600;
+    --lightgray: #e4e4e7;
+    --gray: #f3f3f3;
+    --darkcyan: #237272;
+    --error-color: red;
+    font-size: 15px; 
+    background-color: var(--manilla);
+    padding-bottom: 18rem;
 }
 
 body {
-    font-family: "Tahoma", "Helvetica", "Arial";
-    font-size: 14pt;
-    width: 900px;
+    font-size: 1rem;
+    font-family: var(--font-family-sans);
+    width: 55rem;
     margin: auto;
-    margin-top: 3rem;
 }
 
 .top {
@@ -27,21 +27,18 @@ body {
     width: 80%;
     margin: auto;
     margin-bottom: -1rem;
-
 }
 
 #title {
-    font-family: "Tahoma";
-    font-size: 32pt;
-    margin-bottom: -1.5rem;
+    font-size: 2.5rem;
+    margin-bottom: -1.3rem;
     text-align: center;
 }
 
 #subtitle {
-    font-family: "Tahoma";
     text-align: center;
-    font-size: 16pt;
-    color: #333;
+    font-size: 1.3rem;
+    color: #555;
 }
 
 nav {
@@ -49,16 +46,14 @@ nav {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1rem;
-    /*padding-bottom: 1rem;*/
-    /*margin-top: -1rem;*/
+    margin-bottom: 1.2rem;
 
 }
 
 nav a {
+    font-size: 1.5rem;
     font-weight: bolder;
     color: #222;
-    font-size: 20pt;
     padding: 0 .5rem 0 .5rem;
     text-decoration: none;
     transition:color .2s ease-out, background 1s ease-in;
@@ -66,14 +61,13 @@ nav a {
 
 nav a:hover {
     text-decoration: underline;
-    color: #237272;
+    color: var(--darkcyan);
 }
 
 hr {
     width: 80%;
     color: transparent;
     background-color: #444;
-    /*background: linear-gradient(to right, #fff6da, #333, #fff6da);*/
     height: 1px;
 }
 
@@ -106,24 +100,15 @@ hr {
 .lemma-box ol {
     padding: 0;
     margin: 0;
-    /*list-style: none;*/
 }
 
 .form-box ol {
     padding: 0;
     margin: 0;
-    /*list-style: none;*/
 }
 
-.lemma-box li {
-    border-bottom: 1px solid #e4e4e7;
-    padding: .5rem 1rem;
-    list-style: none;
-    text-align: left;
-}
-
-.form-box li {
-    border-bottom: 1px solid #e4e4e7;
+.lemma-box li, .form-box li {
+    border-bottom: 1px solid var(--lightgray);
     padding: .5rem 1rem;
     list-style: none;
     text-align: left;
@@ -136,13 +121,12 @@ hr {
 }
 
 .lemma-title, .form-title {
-    font-weight: bolder;
     position: sticky;
     top: 0;
-    background-color: #237272;
     color: white;
-    border-bottom: 10px solid black;
-    font-family: "Menlo", "Courier New", "Courier", monospace;
+    font-weight: bolder;
+    background-color: var(--darkcyan);
+    font-family: var(--font-family-mono);
 }
 
 .lemma-col-1 {
@@ -163,7 +147,7 @@ hr {
 }
 
 .lemma-item-not-found {
-    color:  red;
+    color: var(--error-color);
 }
 
 .form-title {
@@ -173,7 +157,6 @@ hr {
 }
 
 .form-col-1 {
-    font-weight: bolder;
 }
 
 .form-col-2 input {
@@ -181,27 +164,23 @@ hr {
 }
 
 .counter {
-    color: gray;
+    color: var(--lightgray);
     float: right;
 }
 
-
 #clear {
-    background-color: #ffe600;
+    background-color: var(--yellow);
 }
 
 .radios {
-    font-family: "Menlo", "Courier New", "Courier", monospace;
+    font-family: var(--font-family-mono);
     display: flex;
     justify-content: center;
     margin-bottom: .5rem;
 }
 
 .radio-group {
-    margin-top: .5rem;
-    margin-right: 2rem;
-    margin-left: 2rem;
-    margin-bottom:  .5rem;
+    margin: .5rem 2rem .5rem 2rem;
 }
 
 input[type='radio'] { 
@@ -217,17 +196,16 @@ input[type='radio'] {
     justify-content: center;
 }
 
-/*Pushables are buttons*/
 .pushable {
     cursor:pointer;
-    background-color: #f3f3f3;
+    background-color: var(--gray);
     position: relative;
     border: 1px solid black;
     padding: .5rem;
     font-size: 1.1rem;
     margin: .5rem;
     box-shadow: 0 5px 8px rgba(0,0,0,.4);
-    font-family: "Menlo", "Courier New", "Courier", monospace;
+    font-family: var(--font-family-mono);
 }
 
 .pushable:enabled:active {
@@ -242,11 +220,11 @@ input[type='radio'] {
 }
 
 textarea {
-    font-size: var(--font-size);
+    font-size: 1rem;
 }
 
 ::placeholder {
-  font-size: var(--font-size);
+  font-size: 1rem;
 }
 
 .error-container {
@@ -255,9 +233,9 @@ textarea {
 }
 
 .error {
-    font-family: "Menlo", "Courier New", "Courier", monospace;
+    font-family: var(--font-family-mono);
     display: inline-block;
-    border: 2px solid red;
+    border: 2px solid var(--error-color);
     margin-bottom: .5rem;
     padding: .5rem;
 }
@@ -266,7 +244,6 @@ textarea {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-
 
 #base-buttons {
     display: flex;
@@ -285,9 +262,4 @@ textarea {
 
 .article h2 {
     margin: 0;
-}
-
-.article p {
-    font-size: 16pt;
-    font-family: "Arial";
 }
