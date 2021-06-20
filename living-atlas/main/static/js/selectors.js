@@ -23,7 +23,7 @@ function selectAllThisBox(element, tf, lemma) {
     }
   }
   else {
-    const allForms = document.querySelectorAll('li:not([style="display:none"])[group="'+group+'"].form-item > input');
+    const allForms = document.querySelectorAll('.form-item:not([style="display: none;"])[group="'+group+'"] input');
     let len = allForms.length;
     if (len > 0) {
       let i = 0;
@@ -52,7 +52,7 @@ function showForms(element) {
       const activeFormItems = document.querySelectorAll('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
       let i = 0, len = activeFormItems.length;
       while (i < len) {
-        activeFormItems[i].setAttribute("style", "display:none");
+        activeFormItems[i].style.display = "none";
         i++;
       }
     }
@@ -66,7 +66,7 @@ function showForms(element) {
       const activeFormItems = document.querySelectorAll('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
       let i = 0, len = activeFormItems.length;
       while (i < len) {
-        activeFormItems[i].style = "display:none";
+        activeFormItems[i].style.display = "none";
         i++;
       }
     }
@@ -77,7 +77,7 @@ function showForms(element) {
   const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
   let i = 0, len = formItems.length;
   while (i < len) {
-    formItems[i].style = "display:visible";
+    formItems[i].style.display = "";
     i++;
   }
 
@@ -87,9 +87,9 @@ function lemmaToggleAll(element) {
   // If a lemma is checked, it checks all the forms
   // If a form is unchecked, it unchecks all the forms
 
-  const lemma = element.getAttribute("lemma");
-  const group = element.getAttribute("group");
-  const formItems = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"].form-item > input');
+  const lemma = element.closest("li").getAttribute("lemma");
+  const group = element.closest("li").getAttribute("group");
+  const formItems = document.querySelectorAll('.form-item[lemma="'+lemma+'"][group="'+group+'"] input');
   let i = 0, len = formItems.length;
   while (i < len) {
     formItems[i].checked = element.checked;
@@ -101,10 +101,9 @@ function toggleParent(element) {
   // If a form is checked, it automatically toggles 
   // the parent lemma
 
-  const lemma = element.getAttribute("lemma");
-  const group = element.getAttribute("group");
-  const lemmaItem = document.querySelector('li[lemma="'+lemma+'"][group="'+group+'"].lemma-item');
-  const lemmaCheckbox = lemmaItem.querySelector('input');
+  const lemma = element.closest("li").getAttribute("lemma");
+  const group = element.closest("li").getAttribute("group");
+  const lemmaCheckbox = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] input');
   if (element.checked) {
     lemmaCheckbox.checked = true;
   }
@@ -113,12 +112,12 @@ function toggleParent(element) {
 function countCheckboxes(element) {
   // Whenever a form or lemma is changed, count the new
   // checkbox totals
-  const lemma = element.getAttribute("lemma");
-  const group = element.getAttribute("group");
+
+  const lemma = element.closest("li").getAttribute("lemma");
+  const group = element.closest("li").getAttribute("group");
   const allCheckedCheckboxes = document.querySelectorAll('li[lemma="'+lemma+'"][group="'+group+'"] input:checked');
   let total = allCheckedCheckboxes.length;
-  const lemmaItem = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"]');
-  const lemmaTotal = lemmaItem.querySelector('.total');
+  const lemmaTotal = document.querySelector('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] .total');
   lemmaTotal.innerHTML = total;
 }
 
@@ -128,14 +127,15 @@ let regexText = "enter a regular expression, such as\n.deg. (all words containin
 function toggleRegEx(element) {
   // Toggles the placeholder text in the search box
   // and toggles search type
+
   const searchBox = document.getElementById("searchbox");
 
   if (element.value == 'regex') {
-    searchBox.setAttribute("placeholder", regexText);
+    searchBox.placeholder = regexText;
   }
 
   else if (element.value == 'list') {
-    searchBox.setAttribute("placeholder", lemmaText);
+    searchBox.placeholder = lemmaText;
   }
 }
 
@@ -150,7 +150,7 @@ function validateForm(value) {
       return true;
     }
     else {
-      document.getElementById("export-failed").setAttribute("style", "display:visible")
+      document.getElementById("export-failed").style.display = "";
       return false;
     }
   }
@@ -167,7 +167,7 @@ function validateForm(value) {
   }
   
   if (!formAValid) {
-    document.getElementById("invalid-submission").setAttribute("style", "display:visible");
+    document.getElementById("invalid-submission").style.display = "";
     return false;
   }
 
@@ -183,11 +183,11 @@ function validateForm(value) {
   }
 
   if (!formBValid) {
-    document.getElementById("invalid-submission").setAttribute("style", "display:visible");
+    document.getElementById("invalid-submission").style.display = "";
     return false;
   }
 
-  document.getElementById("invalid-submission").setAttribute("style", "display:none");
+  document.getElementById("invalid-submission").style.display = "none";
   return true;
 }
 
@@ -217,13 +217,13 @@ function queryGroup(item) {
     }
 
     if (request.status == "404") {
-      document.getElementById("no-results").setAttribute("style", "display:visible");
+      document.getElementById("no-results").style.display = "";
       return false;
     }
 
     //  Whenever we return a new, valid search we clear the error messages
     for (var i = 0; i < allErrors.length; i++) {
-      allErrors[i].setAttribute("style", "display:none");
+      allErrors[i].style.display = "none";
     }
     
     let responseHTML = request.response;
@@ -248,7 +248,7 @@ function queryGroup(item) {
 
       document.getElementById("exceed-count").innerHTML = headerMap['exceeds-limit'];
       document.getElementById("exceed-limit").innerHTML = headerMap['limit'];
-      document.getElementById("too-many-results").setAttribute("style", "display:visible");
+      document.getElementById("too-many-results").style.display = "";
     }
 
     if (group == 'A') {
@@ -281,7 +281,7 @@ function clearAll() {
   let allErrors = document.querySelectorAll(".error-container");
 
   for (var i = 0; i < allErrors.length; i++) {
-    allErrors[i].setAttribute("style", "display:none");
+    allErrors[i].style.display = "none";
   }
   document.getElementById("main-table").innerHTML = originalHTML;
 

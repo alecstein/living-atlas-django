@@ -93,8 +93,7 @@ hr {
     width: 50%;
     overflow: auto;
     height: 18rem;
-    border: 2px solid #444;    
-
+    border: 2px solid #444;
 }
 
 .lemma-box ol {
@@ -164,7 +163,7 @@ hr {
 }
 
 .counter {
-    color: var(--lightgray);
+    color: #666;
     float: right;
 }
 
