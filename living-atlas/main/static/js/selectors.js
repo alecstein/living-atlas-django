@@ -9,11 +9,10 @@ window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
 };
 
-function selectAllThisBox(element, tf, lemma) {
+function selectAllThisBox(group, tf, lemma) {
   // "all" and "none" buttons select or de-select
   // everything within one box
 
-  const group = element.parentNode.getAttribute("group");
   if (lemma) {
     const allLemmas = $$('.lemma-item[group="'+group+'"] input');
     let i = 0, len = allLemmas.length;
@@ -28,7 +27,14 @@ function selectAllThisBox(element, tf, lemma) {
     }
   }
   else {
-    const allForms = $$('.form-item:not([style="display: none;"])[group="'+group+'"] input');
+    let activeLemmaName;
+    if (group == "A") {
+      activeLemmaName = activeLemma_A.getAttribute("lemma");
+    }
+    else {
+       activeLemmaName = activeLemma_B.getAttribute("lemma");
+    }
+    const allForms = $$('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"] input');
     let len = allForms.length;
     if (len > 0) {
       let i = 0;

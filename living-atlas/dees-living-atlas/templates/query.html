@@ -7,9 +7,9 @@
 			<div class="lemma-col-2">
 				latin
 			</div>
-			<div class="lemma-col-3" group="{{group}}">
-				<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true, true)"></input>
-				<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false, true)"></input>
+			<div class="lemma-col-3">
+				<input type="button" class="pushable" value="all" onclick="selectAllThisBox('{{group}}', true, true)"></input>
+				<input type="button" class="pushable" value="none" onclick="selectAllThisBox('{{group}}', false, true)"></input>
 			</div>
 		</li>
 		{% for lemma, value in results.items %}
@@ -40,8 +40,8 @@
 				forms (group {{group}})
 			</div>
 			<div class="form-col-2" group="{{group}}">
-				<input type="button" class="pushable" value="all" onclick="selectAllThisBox(this, true)"></input>
-				<input type="button" class="pushable" value="none" onclick="selectAllThisBox(this, false)"></input>
+				<input type="button" class="pushable" value="all" onclick="selectAllThisBox('{{group}}', true)"></input>
+				<input type="button" class="pushable" value="none" onclick="selectAllThisBox('{{group}}', false)"></input>
 			</div>
 		</li>	
 		{% for lemma, value in results.items %}
