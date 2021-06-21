@@ -261,7 +261,7 @@ function queryGroup(item) {
 
     if (group == 'A') {
       $('.flex-container[name="A"]').innerHTML = responseHTML;
-      
+
       // Select the first element ONLY if number of lemmas == 1
 
       let lemmaCheckboxes = $$('.lemma-item[group="A"]');
