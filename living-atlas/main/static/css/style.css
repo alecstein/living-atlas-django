@@ -186,7 +186,7 @@ input[type='radio'] {
    transform: scale(1.5); 
 }
 
-#textarea {
+#textarea-main, #textarea-form {
     margin: auto;
 }
 
@@ -239,7 +239,7 @@ textarea {
     padding: .5rem;
 }
 
-.searchbox input {
+.searchbox-main input {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }

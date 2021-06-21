@@ -22,10 +22,11 @@ def ajax_view(request):
         query_type = request.GET.get('type')
         group = request.GET.get('group')
         lang = request.GET.get('lang')
+        form_filter = request.GET.get('form_filter')
 
         if query_type == 'list':
             items = set(query.split(' '))
-            
+
             if lang == 'lemma':
                 forms = queryset.filter(lemma__in = items)
             elif lang == 'latin':
@@ -40,6 +41,9 @@ def ajax_view(request):
                 forms = queryset.filter(lemma__regex = fr"{query}")
             if lang == 'latin':
                 forms = queryset.filter(latin__regex = fr"{query}")
+
+        if form_filter:
+            forms = forms.filter(form__regex = fr"{form_filter}")
 
         if not forms:
             return HttpResponseNotFound("No results found")

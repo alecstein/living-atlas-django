@@ -222,11 +222,12 @@ function queryGroup(item) {
 
   let request = new XMLHttpRequest();
   let method = 'GET';
-  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, '+');
+  let query = document.getElementById("searchbox-main").value.trim().replace(/\s+/g, '+');
+  let formFilter = document.getElementById("searchbox-form").value.trim().replace(/\s+/g, '+');
   let group = item.getAttribute("group");
   let type = $("input[name='type'][type='radio']:checked").value;
   let lang = $("input[name='lang'][type='radio']:checked").value;
-  let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
+  let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang+'&form_filter='+formFilter;
   request.open(method, url);
   request.onload = function () {
 
