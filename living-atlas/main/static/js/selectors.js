@@ -125,9 +125,16 @@ function countCheckboxes(element) {
   const lemma = element.closest("li").getAttribute("lemma");
   const group = element.closest("li").getAttribute("group");
   const allCheckedCheckboxes = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"] input:checked');
+  const lemmaCheckbox = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] input');
   let total = allCheckedCheckboxes.length;
   const lemmaTotal = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] .total');
   lemmaTotal.innerHTML = total;
+  if (total == 0) {
+    lemmaCheckbox.checked = false;
+  }
+  else {
+    lemmaCheckbox.checked = true;
+  }
 }
 
 let lemmaText = "enter one lemma per line, as in\naccommoder\nmobiliaire\npecine";
