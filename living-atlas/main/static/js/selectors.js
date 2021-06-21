@@ -200,25 +200,30 @@ function queryGroup(item) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
 
+  document.body.style.cursor='wait';
   let allButtons = $$(".pushable");
   let allErrors = $$(".error-container");
 
   for (let i = allButtons.length - 1; i >= 0; i--) {
     allButtons[i].disabled = true;
+    allButtons[i].style.cursor = 'wait';
   }
 
   let request = new XMLHttpRequest();
   let method = 'GET';
   let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, '+');
   let group = item.getAttribute("group");
-  let type = $("input[name='type'][type='radio']:checked").value
-  let lang = $("input[name='lang'][type='radio']:checked").value
+  let type = $("input[name='type'][type='radio']:checked").value;
+  let lang = $("input[name='lang'][type='radio']:checked").value;
   let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
   request.open(method, url);
   request.onload = function () {
 
+    document.body.style.cursor='default';
+
     for (let i = allButtons.length - 1; i >= 0; i--) {
       allButtons[i].disabled = false;
+      allButtons[i].style.cursor = 'pointer';
     }
 
     if (request.status == "404") {
@@ -249,8 +254,6 @@ function queryGroup(item) {
     });
 
     if (headerMap['exceeds-limit']) {   
-      // let errorExceedsLimit = document.getElementById("too-many-results");
-
       document.getElementById("exceed-count").innerHTML = headerMap['exceeds-limit'];
       document.getElementById("exceed-limit").innerHTML = headerMap['limit'];
       document.getElementById("too-many-results").style.display = "";
@@ -258,6 +261,7 @@ function queryGroup(item) {
 
     if (group == 'A') {
       $('.flex-container[name="A"]').innerHTML = responseHTML;
+      
       // Select the first element ONLY if number of lemmas == 1
 
       let lemmaCheckboxes = $$('.lemma-item[group="A"]');
