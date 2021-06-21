@@ -20,8 +20,6 @@ function selectAllThisBox(group, tf, lemma) {
       let checkVal = allLemmas[i].checked;
       let total = allLemmas[i].parentNode.parentNode.querySelector(".total");
       // Trick for updating the counts quickly
-      // tf - checkVal adds 1 or subtracts 1 if needed
-      total.innerHTML = parseInt(total.innerHTML) + tf - checkVal;
       allLemmas[i].checked = tf;
       i++;
     }
@@ -126,7 +124,7 @@ function countCheckboxes(element) {
 
   const lemma = element.closest("li").getAttribute("lemma");
   const group = element.closest("li").getAttribute("group");
-  const allCheckedCheckboxes = $$('li[lemma="'+lemma+'"][group="'+group+'"] input:checked');
+  const allCheckedCheckboxes = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"] input:checked');
   let total = allCheckedCheckboxes.length;
   const lemmaTotal = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] .total');
   lemmaTotal.innerHTML = total;
