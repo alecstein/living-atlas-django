@@ -249,13 +249,12 @@ function AJAXQuery(element) {
   // for either group A or group B.
 
   const url = getAJAXQueryURL();
-  const method = "GET";
   const request = new XMLHttpRequest();
 
   // Suspend while waiting for response
   suspendPage(true);
 
-  request.open(method, url);
+  request.open("GET", url);
   request.onload = function () {
 
     const responseHTML = request.response;
