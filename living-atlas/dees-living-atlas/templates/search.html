@@ -14,11 +14,16 @@
 		<input type="radio" name="type" value="list" id="radio-list" onclick="togglePlaceholderText(this)" checked>
 		<label for="radio-list">list</label>
 	</div>
-
 </div>
-<div class="wrap-searchbox" name="lemma-search">
-	<div id="textarea">
-		<textarea type="text" id="searchbox" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire&#10;pecine" cols="40" rows="5"></textarea>
+<div class="wrap-searchbox">
+	<div id="textarea-main">
+		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire&#10;pecine" cols="40" rows="5"></textarea>
+	</div>
+	<div id="textarea-form">
+		<div>
+		filter forms by regex (optional)
+		</div>
+		<textarea type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)" cols="40" rows="1"></textarea>
 	</div>
 	<div class="button-array">
 		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "send query to group A"/>
