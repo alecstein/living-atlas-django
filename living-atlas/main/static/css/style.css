@@ -76,7 +76,7 @@ hr {
     justify-content: flex-grow;
 }
 
-.flex-container[name="B"] {
+.flex-container[data-group="B"] {
     margin-top: .5rem;
 }
 
@@ -186,8 +186,13 @@ input[type='radio'] {
    transform: scale(1.5); 
 }
 
-#textarea {
+#textarea-main, #textarea-form {
     margin: auto;
+}
+
+#textarea-form {
+    margin-top: .5rem;
+    font-family: var(--font-family-mono);
 }
 
 .button-array {
@@ -239,7 +244,7 @@ textarea {
     padding: .5rem;
 }
 
-.searchbox input {
+.searchbox-main input {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }

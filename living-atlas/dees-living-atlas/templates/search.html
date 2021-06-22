@@ -9,20 +9,25 @@
 		<label for="radio-lemma">lemma</label>
 	</div>
 	<div class="radio-group">
-		<input type="radio" name="type" value="regex" id="radio-regex" onclick="toggleRegEx(this)">
+		<input type="radio" name="type" value="regex" id="radio-regex" onclick="togglePlaceholderText(this)">
 		<label for="radio-regex">regex</label>
-		<input type="radio" name="type" value="list" id="radio-list" onclick="toggleRegEx(this)" checked>
+		<input type="radio" name="type" value="list" id="radio-list" onclick="togglePlaceholderText(this)" checked>
 		<label for="radio-list">list</label>
 	</div>
-
 </div>
-<div class="wrap-searchbox" name="lemma-search">
-	<div id="textarea">
-		<textarea type="text" id="searchbox" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire&#10;pecine" cols="40" rows="5"></textarea>
+<div class="wrap-searchbox">
+	<div id="textarea-main">
+		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire&#10;pecine" cols="40" rows="5"></textarea>
+	</div>
+	<div id="textarea-form">
+		<div>
+		filter forms by regex (optional)
+		</div>
+		<textarea type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)" cols="40" rows="1"></textarea>
 	</div>
 	<div class="button-array">
-		<input class="pushable" group="A" type="submit" onclick="queryGroup(this)" value = "send query to group A"/>
-		<input class="pushable" group="B" type="submit" onclick="queryGroup(this)" value = "send query to group B"/>
+		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "send query to group A"/>
+		<input class="pushable" group="B" type="submit" onclick="AJAXQuery(this)" value = "send query to group B"/>
 		<input class="pushable" id="clear" type="submit" onclick="clearAll()" value = "clear all ❌"/>
 	</div>
 </div>
@@ -54,7 +59,7 @@
 <form method="post" id="main-table" onsubmit="return validateForm(this.submitted)" action="">
 	{% csrf_token %}
 
-	<div class="flex-container" name="A">
+	<div class="flex-container" data-group="A">
 		<div class="lemma-box">
 			<ol>
 				<li class="lemma-title">
@@ -64,7 +69,7 @@
 					<div class="lemma-col-2">
 						latin
 					</div>
-					<div class="lemma-col-3" group="A">
+					<div class="lemma-col-3" data-group="A">
 					</div>
 				</li>
 			</ol>
@@ -76,13 +81,13 @@
 					<div class="form-col-1">
 						forms (group A)
 					</div>
-					<div class="form-col-2" group="A">
+					<div class="form-col-2" data-group="A">
 					</div>
 				</li>	
 			</ol>
 		</div>
 	</div>
-	<div class="flex-container" name="B">
+	<div class="flex-container" data-group="B">
 		<div class="lemma-box">
 			<ol>
 				<li class="lemma-title">
@@ -92,7 +97,7 @@
 					<div class="lemma-col-2">
 						latin
 					</div>
-					<div class="lemma-col-3" group="B">
+					<div class="lemma-col-3" data-group="B">
 					</div>
 				</li>
 			</ol>
@@ -104,7 +109,7 @@
 					<div class="form-col-1">
 						forms (group B)
 					</div>
-					<div class="form-col-2" group="B">
+					<div class="form-col-2" data-group="B">
 					</div>
 				</li>	
 			</ol>
