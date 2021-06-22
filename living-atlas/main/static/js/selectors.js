@@ -1,41 +1,63 @@
 let activeLemmaA;
 let activeLemmaB;
 let originalHTML;
+const lemmaText = `enter one lemma per line,` + 
+                  `as in` + 
+                  `\naccommoder` + 
+                  `\nmobiliaire` + 
+                  `\npecine`;
+const regexText = `enter a regular expression, such as` + 
+                  `\n.deg. (all words containing "deg")` + 
+                  `\n^mun (all words that start with "mun")`;
 
 window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
 };
 
-function selectAllThisBox(group, bool, lemma) {
-  // "all" and "none" buttons select or de-select
-  // everything within one box
-
-  if (lemma) {
-    const lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
+function checkAllLemmas(group, bool) {
+  const lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
                                                       `[data-group="${group}"] ` +  
                                                       `input`);
-    for (var i = 0; i < lemmaCheckboxes.length; i++) {
-      lemmaCheckboxes[i].checked = bool;
-    }
+  for (var i = 0; i < lemmaCheckboxes.length; i++) {
+    lemmaCheckboxes[i].checked = bool;
   }
+}
 
-  else {
-    let activeLemmaName;
-    if (group === "A") {
-      activeLemmaName = activeLemmaA.dataset.lemma;
-    }
-    else {
-       activeLemmaName = activeLemmaB.dataset.lemma;
-    }
-    const formCheckboxes = document.querySelectorAll(`.form-item` + 
-                                                     `[data-lemma="${activeLemmaName}"]` + 
-                                                     `[data-group="${group}"] ` +
-                                                     `input`);
-    for (var i = 0; i < formCheckboxes.length; i++) {
-      formCheckboxes[i].checked = bool;
-    }
-    formCheckboxes[0].onchange();
+function checkAllForms(group, bool) {
+  let activeLemmaName;
+
+  if (group === "A") {
+    activeLemmaName = activeLemmaA.dataset.lemma;
   }
+  else if (group == "B") {
+     activeLemmaName = activeLemmaB.dataset.lemma;
+  }
+  const formCheckboxes = document.querySelectorAll(`.form-item` + 
+                                                   `[data-lemma="${activeLemmaName}"]` + 
+                                                   `[data-group="${group}"] ` +
+                                                   `input`);
+  for (var i = 0; i < formCheckboxes.length; i++) {
+    formCheckboxes[i].checked = bool;
+  }
+  formCheckboxes[0].onchange();
+}
+
+function formsReveal(lemma, group) {
+
+  const formItems = document.querySelectorAll(`.form-item` + 
+                                              `[data-lemma="${lemma}"]` +
+                                              `[data-group="${group}"]`);
+
+  formItems.forEach(node => node.setAttribute("style", "display:"));
+}
+
+function formsHide(lemma, group) {
+
+  const formItems = document.querySelectorAll(`.form-item` + 
+                                              `[data-lemma="${lemma}"]` +
+                                              `[data-group="${group}"]`);
+
+  formItems.forEach(node => node.setAttribute("style", "display:none"));
 }
 
 function activateLemma(element) {
@@ -57,26 +79,15 @@ function activateLemma(element) {
     activeLemmaB = element;
   }
 
-  if (activeLemmaItem != undefined) {
-    activeLemma = activeLemmaItem.dataset.lemma;
-    if (activeLemma === inactiveLemma) {
-      return false;
-    }
-
-    activeLemmaItem.style.backgroundColor = "";
-    const activeFormItems = document.querySelectorAll(`.form-item` + 
-                                                      `[data-lemma="${activeLemma}"]` +
-                                                      `[data-group="${group}"]`);
-
-    activeFormItems.forEach(node => node.setAttribute("style", "display:none"));
-  }
-
   element.style.backgroundColor = "#ffe600";
-  const formItems = document.querySelectorAll(`.form-item` + 
-                                              `[data-lemma="${inactiveLemma}"]` + 
-                                              `[data-group="${group}"]`);
+  formsReveal(inactiveLemma, group);
 
-  formItems.forEach(node => node.setAttribute("style", "display:"));
+  if (typeof activeLemmaItem != "undefined") {
+    if (activeLemmaItem.dataset.lemma !== inactiveLemma) {
+      activeLemmaItem.style.backgroundColor = "";
+      formsHide(activeLemma, group);
+    }
+  }
 }
 
 function lemmaToggleAll(element) {
@@ -126,16 +137,6 @@ function countCheckboxes(element) {
   }
 }
 
-const lemmaText = `enter one lemma per line,` + 
-                  `as in` + 
-                  `\naccommoder` + 
-                  `\nmobiliaire` + 
-                  `\npecine`;
-
-const regexText = `enter a regular expression, such as` + 
-                  `\n.deg. (all words containing "deg")` + 
-                  `\n^mun (all words that start with "mun")`;
-
 function toggleRegEx(element) {
   // Toggles the placeholder text in the search box
   // and toggles search type
@@ -169,67 +170,87 @@ function validateForm(value) {
       return false;
     }
   }
+  
+  else if (value === "carto") {
+    const allCheckedCheckboxesA = document.querySelectorAll(`li[data-group="A"] input:checked`);
+    const allCheckedCheckboxesB = document.querySelectorAll(`li[data-group="B"] input:checked`);
 
-  const allCheckedCheckboxesA = document.querySelectorAll(`li[data-group="A"] input:checked`);
-  const allCheckedCheckboxesB = document.querySelectorAll(`li[data-group="B"] input:checked`);
-
-  if (allCheckedCheckboxesA.length > 0 && allCheckedCheckboxesB.length > 0) {
-    invalidSubmission.style.display = "none";
-    return true;
+    if (allCheckedCheckboxesA.length > 0 && allCheckedCheckboxesB.length > 0) {
+      invalidSubmission.style.display = "none";
+      return true;
+    }
+    else {
+      invalidSubmission.style.display = "";
+      return false
+    }
   }
-
-  invalidSubmission.style.display = "";
 }
 
-function queryGroup(element) {
+function suspendPage(bool) {
+  // Freezes buttons and sets cursor to hourglass
+
+  const allButtons = document.querySelectorAll(".pushable");
+
+  if (bool) {
+    allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
+    allButtons.forEach(node => node.setAttribute("disabled", true));
+    document.body.style.cursor = "wait";
+  }
+  else {
+    allButtons.forEach(node => node.removeAttribute("disabled"));
+    allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
+    document.body.style.cursor="default";
+  }
+}
+
+function clearErrors() {
+
+  const allErrors = document.querySelectorAll(".error-container");
+  allErrors.forEach(node => node.setAttribute("style", "display:none"));
+}
+
+function AJAXQuery(element) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
 
-  let allButtons = document.querySelectorAll(".pushable");
-  let allErrors = document.querySelectorAll(".error-container");
-  let request = new XMLHttpRequest();
-  let method = "GET";
-  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, "+");
-  let group = element.getAttribute("group");
-  let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
-  let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
-  let url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
+  const allErrors = document.querySelectorAll(".error-container");
 
-  allButtons.forEach(node => node.setAttribute("disabled", true));
-  allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
-  document.body.style.cursor = "wait";
+  const request = new XMLHttpRequest();
+  const method = "GET";
+  const query = document.getElementById("searchbox").value.trim().replace(/\s+/g, "+");
+  const group = element.getAttribute("group");
+  const type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
+  const lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
+  const url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
+
+  suspendPage(true);
 
   request.open(method, url);
-
   request.onload = function () {
+    // Get AJAX request from server
 
-    document.body.style.cursor="default";
+    suspendPage(false);
+    clearErrors();
 
-    allButtons.forEach(node => node.removeAttribute("disabled"));
-    allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
-
-    if (request.status === "404") {
+    if (request.status === 404) {
       document.getElementById("no-results").style.display = "";
       return false;
     }
 
-    //  Whenever we return a new, valid search we clear the error messages
-    allErrors.forEach(node => node.setAttribute("style", "display:none"));
-    
-    let responseHTML = request.response;
+    const responseHTML = request.response;
 
-    let headers = request.getAllResponseHeaders();
+    const headers = request.getAllResponseHeaders();
 
     // Convert the header string into an array
     // of individual headers
-    let arr = headers.trim().split(/[\r\n]+/);
+    const arr = headers.trim().split(/[\r\n]+/);
 
     // Create a map of header names to values
-    let headerMap = {};
+    const headerMap = {};
     arr.forEach(function (line) {
-      let parts = line.split(": ");
-      let header = parts.shift();
-      let value = parts.join(": ");
+      const parts = line.split(": ");
+      const header = parts.shift();
+      const value = parts.join(": ");
       headerMap[header] = value;
     });
 
@@ -241,7 +262,7 @@ function queryGroup(element) {
 
     document.querySelector(`.flex-container[data-group="${group}"]`).innerHTML = responseHTML;
 
-    let lemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
+    const lemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
     if (lemmas.length === 1) {
       activateLemma(lemmas[0]);
     }
@@ -252,10 +273,6 @@ function queryGroup(element) {
 function clearAll() {
   // Gets new html template from server to clear the screen
 
-  let allErrors = document.querySelectorAll(".error-container");
-
-  // allErrors.forEach(node => node.style.display = "none");
-  allErrors.forEach(node => node.setAttribute("style", "display:none"));
-
+  clearErrors();
   document.getElementById("main-table").innerHTML = originalHTML;
 }
