@@ -175,20 +175,21 @@ function validateForm(value) {
   }
 }
 
-function suspendPage(bool) {
+function suspendPage() {
   // Lets user know that the server is "thinking"
   let allButtons = document.querySelectorAll(".pushable");
 
-  if (bool) {
-    allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
-    allButtons.forEach(node => node.setAttribute("disabled", true));
-    document.body.style.cursor = "wait";
-  }
-  else {
-    allButtons.forEach(node => node.removeAttribute("disabled"));
-    allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
-    document.body.style.cursor="default";
-  }
+  allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
+  allButtons.forEach(node => node.setAttribute("disabled", true));
+  document.body.style.cursor = "wait";
+}
+
+function resumePage() {
+  let allButtons = document.querySelectorAll(".pushable");
+
+  allButtons.forEach(node => node.removeAttribute("disabled"));
+  allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
+  document.body.style.cursor="default";
 }
 
 function clearErrors() {
@@ -247,7 +248,8 @@ function AJAXQuery(element) {
   let url = getAJAXQueryURL(group);
   let request = new XMLHttpRequest();
 
-  suspendPage(true);
+  clearErrors();
+  suspendPage();
 
   request.open("GET", url);
   request.onload = function () {
@@ -256,8 +258,7 @@ function AJAXQuery(element) {
     let headers = request.getAllResponseHeaders();
     let headerMap = headersToHeaderMap(headers);
 
-    clearErrors();
-    suspendPage(false);
+    resumePage();
 
     if (request.status === 404) {
       document.getElementById("no-results").style.display = "";
