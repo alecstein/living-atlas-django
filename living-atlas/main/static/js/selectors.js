@@ -1,9 +1,6 @@
-// jQuery notation for commonly used long functions
-$ = document.querySelector.bind(document)
-$$ = document.querySelectorAll.bind(document)
-let activeLemma_A;
-let activeLemma_B;
-let originalHTML = undefined;
+let activeLemmaA;
+let activeLemmaB;
+let originalHTML;
 
 window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
@@ -14,21 +11,27 @@ function selectAllThisBox(group, bool, lemma) {
   // everything within one box
 
   if (lemma) {
-    const allLemmas = $$('.lemma-item[data-group="'+group+'"] input');
-    allLemmas.forEach(item => item.checked = bool);
+    const lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
+                                                      `[data-group="${group}"] ` +  
+                                                      `input`);
+
+    lemmaCheckboxes.forEach(node => node.click());
   }
 
   else {
     let activeLemmaName;
     if (group == "A") {
-      activeLemmaName = activeLemma_A.dataset.lemma;
+      activeLemmaName = activeLemmaA.dataset.lemma;
     }
     else {
-       activeLemmaName = activeLemma_B.dataset.lemma;
+       activeLemmaName = activeLemmaB.dataset.lemma;
     }
-    const allForms = $$('.form-item[data-lemma="'+activeLemmaName+'"][data-group="'+group+'"] input');
-    allForms.forEach(item => item.checked = bool);
-    allForms[0].onchange();
+    const formCheckboxes = document.querySelectorAll(`.form-item` + 
+                                                     `[data-lemma="${activeLemmaName}"]` + 
+                                                     `[data-group="${group}"] ` +
+                                                     `input`);
+
+    formCheckboxes.forEach(node => node.click());
   }
 }
 
@@ -36,33 +39,41 @@ function activateLemma(element) {
   // Shows all the forms when you click on a lemma
 
   let activeLemmaItem;
+  let activeLemma;
+
   const data = element.dataset;
   const inactiveLemma = data.lemma;
   const group = data.group;
 
   if (group == "A") {
-    activeLemmaItem = activeLemma_A;
-    activeLemma_A = element;
+    activeLemmaItem = activeLemmaA;
+    activeLemmaA = element;
   }
   else {
-    activeLemmaItem = activeLemma_B;
-    activeLemma_B = element;
+    activeLemmaItem = activeLemmaB;
+    activeLemmaB = element;
   }
 
   if (activeLemmaItem != undefined) {
-    const activeLemma = activeLemmaItem.dataset.lemma;
+    activeLemma = activeLemmaItem.dataset.lemma;
     if (activeLemma == inactiveLemma) {
       return false;
     }
 
     activeLemmaItem.style.backgroundColor = "";
-    const activeFormItems = $$('.form-item[data-lemma="'+activeLemma+'"][data-group="'+group+'"]');
-    activeFormItems.forEach(item => item.style.display = "none");
+    const activeFormItems = document.querySelectorAll(`.form-item` + 
+                                                      `[data-lemma="${activeLemma}"]` +
+                                                      `[data-group="${group}"]`);
+
+    activeFormItems.forEach(node => node.setAttribute("style", "display:none"));
   }
 
   element.style.backgroundColor = "#ffe600";
-  const formItems = $$('.form-item[data-lemma="'+inactiveLemma+'"][data-group="'+group+'"]');
-  formItems.forEach(item => item.style.display = "");
+  const formItems = document.querySelectorAll(`.form-item` + 
+                                              `[data-lemma="${inactiveLemma}"]` + 
+                                              `[data-group="${group}"]`);
+
+  formItems.forEach(node => node.setAttribute("style", "display:"));
 }
 
 function lemmaToggleAll(element) {
@@ -72,8 +83,12 @@ function lemmaToggleAll(element) {
   const data = element.closest("li").dataset;
   const lemma = data.lemma;
   const group = data.group;
-  const formItems = $$('.form-item[data-lemma="'+lemma+'"][data-group="'+group+'"] input');
-  formItems.forEach(item => item.checked = element.checked);
+  const formCheckboxes = document.querySelectorAll(`.form-item` +
+                                                   `[data-lemma="${lemma}"]` + 
+                                                   `[data-group="${group}"] ` + 
+                                                   `input`);
+
+  formCheckboxes.forEach(node => node.click());
 }
 
 function countCheckboxes(element) {
@@ -84,11 +99,18 @@ function countCheckboxes(element) {
   const lemma = data.lemma;
   const group = data.group;
 
-  const allCheckedCheckboxes = $$('.form-item[data-lemma="'+lemma+'"][data-group="'+group+'"] input:checked');
-  const total = allCheckedCheckboxes.length;
-  const lemmaItem = $('.lemma-item[data-lemma="'+lemma+'"][data-group="'+group+'"]');
-  const lemmaTotal = lemmaItem.querySelector('.total');
-  const lemmaCheckbox = lemmaItem.querySelector('input');
+  const formCheckboxes = document.querySelectorAll(`.form-item` + 
+                                                   `[data-lemma="${lemma}"]` + 
+                                                   `[data-group="${group}"] ` + 
+                                                   `input:checked`);
+
+  const total = formCheckboxes.length;
+  const lemmaItem = document.querySelector(`.lemma-item` + 
+                                           `[data-lemma="${lemma}"]` + 
+                                           `[data-group="${group}"]`);
+
+  const lemmaTotal = lemmaItem.querySelector(".total");
+  const lemmaCheckbox = lemmaItem.querySelector("input");
 
   lemmaTotal.innerHTML = total;
 
@@ -100,8 +122,15 @@ function countCheckboxes(element) {
   }
 }
 
-let lemmaText = "enter one lemma per line, as in\naccommoder\nmobiliaire\npecine";
-let regexText = "enter a regular expression, such as\n.deg. (all words containing 'deg')\n^mun (all words that start with 'mun')";
+const lemmaText = `enter one lemma per line,` + 
+                  `as in` + 
+                  `\naccommoder` + 
+                  `\nmobiliaire` + 
+                  `\npecine`;
+
+const regexText = `enter a regular expression, such as` + 
+                  `\n.deg. (all words containing "deg")` + 
+                  `\n^mun (all words that start with "mun")`;
 
 function toggleRegEx(element) {
   // Toggles the placeholder text in the search box
@@ -109,11 +138,11 @@ function toggleRegEx(element) {
 
   const searchBox = document.getElementById("searchbox");
 
-  if (element.value == 'regex') {
+  if (element.value == "regex") {
     searchBox.placeholder = regexText;
   }
 
-  else if (element.value == 'list') {
+  else if (element.value == "list") {
     searchBox.placeholder = lemmaText;
   }
 }
@@ -126,7 +155,7 @@ function validateForm(value) {
   const exportFailed = document.getElementById("export-failed");
 
   if (value == "export") {
-    let allCheckedCheckboxes = $$('.form-item input:checked');
+    let allCheckedCheckboxes = document.querySelectorAll(`.form-item input:checked`);
     if (allCheckedCheckboxes.length > 0)
     {
       return true;
@@ -137,8 +166,8 @@ function validateForm(value) {
     }
   }
 
-  const allCheckedCheckboxesA = $$('li[data-group="A"] input:checked');
-  const allCheckedCheckboxesB = $$('li[data-group="B"] input:checked');
+  const allCheckedCheckboxesA = document.querySelectorAll(`li[data-group="A"] input:checked`);
+  const allCheckedCheckboxesB = document.querySelectorAll(`li[data-group="B"] input:checked`);
 
   if (allCheckedCheckboxesA.length > 0 && allCheckedCheckboxesB.length > 0) {
     invalidSubmission.style.display = "none";
@@ -148,32 +177,32 @@ function validateForm(value) {
   invalidSubmission.style.display = "";
 }
 
-function queryGroup(item) {
+function queryGroup(element) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
 
-  document.body.style.cursor='wait';
-
-  let allButtons = $$(".pushable");
-  let allErrors = $$(".error-container");
-
-  allButtons.forEach(item => item.disabled = true);
-  allButtons.forEach(item => item.style.cursor = 'wait');
-
+  let allButtons = document.querySelectorAll(".pushable");
+  let allErrors = document.querySelectorAll(".error-container");
   let request = new XMLHttpRequest();
-  let method = 'GET';
-  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, '+');
-  let group = item.getAttribute("group");
-  let type = $("input[name='type'][type='radio']:checked").value;
-  let lang = $("input[name='lang'][type='radio']:checked").value;
-  let url = '/ajax/?query='+query+'&group='+group+'&type='+type+'&lang='+lang;
+  let method = "GET";
+  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, "+");
+  let group = element.getAttribute("group");
+  let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
+  let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
+  let url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
+
+  allButtons.forEach(node => node.setAttribute("disabled", true));
+  allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
+  document.body.style.cursor = "wait";
+
   request.open(method, url);
+
   request.onload = function () {
 
-    document.body.style.cursor='default';
+    document.body.style.cursor="default";
 
-    allButtons.forEach(item => item.disabled = false);
-    allButtons.forEach(item => item.style.cursor = 'pointer');
+    allButtons.forEach(node => node.removeAttribute("disabled"));
+    allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
 
     if (request.status == "404") {
       document.getElementById("no-results").style.display = "";
@@ -181,7 +210,7 @@ function queryGroup(item) {
     }
 
     //  Whenever we return a new, valid search we clear the error messages
-    allErrors.forEach(item => item.style.display = "none");
+    allErrors.forEach(node => node.setAttribute("style", "display:none"));
     
     let responseHTML = request.response;
 
@@ -194,21 +223,21 @@ function queryGroup(item) {
     // Create a map of header names to values
     let headerMap = {};
     arr.forEach(function (line) {
-      let parts = line.split(': ');
+      let parts = line.split(": ");
       let header = parts.shift();
-      let value = parts.join(': ');
+      let value = parts.join(": ");
       headerMap[header] = value;
     });
 
-    if (headerMap['exceeds-limit']) {   
-      document.getElementById("exceed-count").innerHTML = headerMap['exceeds-limit'];
-      document.getElementById("exceed-limit").innerHTML = headerMap['limit'];
+    if (headerMap["exceeds-limit"]) {   
+      document.getElementById("exceed-count").innerHTML = headerMap["exceeds-limit"];
+      document.getElementById("exceed-limit").innerHTML = headerMap["limit"];
       document.getElementById("too-many-results").style.display = "";
     }
 
-    $('.flex-container[data-group="'+group+'"]').innerHTML = responseHTML;
+    document.querySelector(`.flex-container[data-group="${group}"]`).innerHTML = responseHTML;
 
-    let lemmas = $$('.lemma-item[data-group="'+group+'"]');
+    let lemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
     if (lemmas.length == 1) {
       activateLemma(lemmas[0]);
     }
@@ -219,9 +248,10 @@ function queryGroup(item) {
 function clearAll() {
   // Gets new html template from server to clear the screen
 
-  let allErrors = $$(".error-container");
+  let allErrors = document.querySelectorAll(".error-container");
 
-  allErrors.forEach(item => item.style.display = "none");
+  // allErrors.forEach(node => node.style.display = "none");
+  allErrors.forEach(node => node.setAttribute("style", "display:none"));
 
   document.getElementById("main-table").innerHTML = originalHTML;
 }
