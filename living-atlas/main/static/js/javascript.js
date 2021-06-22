@@ -199,10 +199,11 @@ function clearErrors() {
 }
 
 function getAJAXQueryURL(group) {
-  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, "+");
+  let query = document.getElementById("searchbox-main").value.trim().replace(/\s+/g, "+");
+  let form_filter = document.getElementById("searchbox-form").value.trim().replace(/\s+/g, "+");
   let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
   let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
-  let url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
+  let url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}&form_filter=${form_filter}`;
 
   return url;
 }
