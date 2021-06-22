@@ -1,12 +1,12 @@
 let activeLemmaA;
 let activeLemmaB;
 let originalHTML;
-const lemmaText = `enter one lemma per line,` + 
+const LEMMA_TEXT = `enter one lemma per line,` + 
                   `as in` + 
                   `\naccommoder` + 
                   `\nmobiliaire` + 
                   `\npecine`;
-const regexText = `enter a regular expression, such as` + 
+const REGEX_TEXT = `enter a regular expression, such as` + 
                   `\n.deg. (all words containing "deg")` + 
                   `\n^mun (all words that start with "mun")`;
 
@@ -17,9 +17,9 @@ window.onload = function() {
 function checkAllLemmas(group, bool) {
   // Button to select all lemma checkboxes in a group
 
-  const lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
-                                                      `[data-group="${group}"] ` +  
-                                                      `input`);
+  let lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
+                                                  `[data-group="${group}"] ` +  
+                                                  `input`);
   for (var i = 0; i < lemmaCheckboxes.length; i++) {
     lemmaCheckboxes[i].checked = bool;
   }
@@ -35,12 +35,12 @@ function checkAllForms(group, bool) {
     lemma = activeLemmaA.dataset.lemma;
   }
   else if (group == "B") {
-     lemma = activeLemmaB.dataset.lemma;
+    lemma = activeLemmaB.dataset.lemma;
   }
-  const formCheckboxes = document.querySelectorAll(`.form-item` + 
-                                                   `[data-lemma="${lemma}"]` + 
-                                                   `[data-group="${group}"] ` +
-                                                   `input`);
+  let formCheckboxes = document.querySelectorAll(`.form-item` + 
+                                                 `[data-lemma="${lemma}"]` + 
+                                                 `[data-group="${group}"] ` +
+                                                 `input`);
   for (var i = 0; i < formCheckboxes.length; i++) {
     formCheckboxes[i].checked = bool;
   }
@@ -50,9 +50,9 @@ function checkAllForms(group, bool) {
 function revealForms(lemma, group) {
   // Reveal forms
 
-  const formItems = document.querySelectorAll(`.form-item` + 
-                                              `[data-lemma="${lemma}"]` +
-                                              `[data-group="${group}"]`);
+  let formItems = document.querySelectorAll(`.form-item` + 
+                                            `[data-lemma="${lemma}"]` +
+                                            `[data-group="${group}"]`);
 
   formItems.forEach(node => node.setAttribute("style", "display:"));
 }
@@ -60,9 +60,9 @@ function revealForms(lemma, group) {
 function hideForms(lemma, group) {
   // Hide forms
 
-  const formItems = document.querySelectorAll(`.form-item` + 
-                                              `[data-lemma="${lemma}"]` +
-                                              `[data-group="${group}"]`);
+  let formItems = document.querySelectorAll(`.form-item` + 
+                                            `[data-lemma="${lemma}"]` +
+                                            `[data-group="${group}"]`);
 
   formItems.forEach(node => node.setAttribute("style", "display:none"));
 }
@@ -73,9 +73,9 @@ function activateLemma(element) {
   let activeLemmaItem;
   let activeLemma;
 
-  const data = element.dataset;
-  const inactiveLemma = data.lemma;
-  const group = data.group;
+  let data = element.dataset;
+  let inactiveLemma = data.lemma;
+  let group = data.group;
 
   if (group === "A") {
     activeLemmaItem = activeLemmaA;
@@ -101,13 +101,13 @@ function lemmaToggleAll(element) {
   // If a lemma is checked, it checks all the forms
   // If a form is unchecked, it unchecks all the forms
 
-  const data = element.closest("li").dataset;
-  const lemma = data.lemma;
-  const group = data.group;
-  const formCheckboxes = document.querySelectorAll(`.form-item` +
-                                                   `[data-lemma="${lemma}"]` + 
-                                                   `[data-group="${group}"] ` + 
-                                                   `input`);
+  let data = element.closest("li").dataset;
+  let lemma = data.lemma;
+  let group = data.group;
+  let formCheckboxes = document.querySelectorAll(`.form-item` +
+                                                 `[data-lemma="${lemma}"]` + 
+                                                 `[data-group="${group}"] ` + 
+                                                 `input`);
   for (var i = 0; i < formCheckboxes.length; i++) {
     formCheckboxes[i].checked = element.checked;
   }
@@ -117,22 +117,22 @@ function countCheckboxes(element) {
   // Whenever a form or lemma is changed, count the new
   // checkbox totals
 
-  const data = element.closest("li").dataset;
-  const lemma = data.lemma;
-  const group = data.group;
+  let data = element.closest("li").dataset;
+  let lemma = data.lemma;
+  let group = data.group;
 
-  const formCheckboxes = document.querySelectorAll(`.form-item` + 
-                                                   `[data-lemma="${lemma}"]` + 
-                                                   `[data-group="${group}"] ` + 
-                                                   `input:checked`);
+  let formCheckboxes = document.querySelectorAll(`.form-item` + 
+                                                 `[data-lemma="${lemma}"]` + 
+                                                 `[data-group="${group}"] ` + 
+                                                 `input:checked`);
 
-  const total = formCheckboxes.length;
-  const lemmaItem = document.querySelector(`.lemma-item` + 
-                                           `[data-lemma="${lemma}"]` + 
-                                           `[data-group="${group}"]`);
+  let total = formCheckboxes.length;
+  let lemmaItem = document.querySelector(`.lemma-item` + 
+                                         `[data-lemma="${lemma}"]` + 
+                                         `[data-group="${group}"]`);
 
-  const lemmaTotal = lemmaItem.querySelector(".total");
-  const lemmaCheckbox = lemmaItem.querySelector("input");
+  let lemmaTotal = lemmaItem.querySelector(".total");
+  let lemmaCheckbox = lemmaItem.querySelector("input");
 
   lemmaTotal.innerHTML = total;
 
@@ -148,27 +148,36 @@ function toggleRegex(element) {
   // Toggles the placeholder text in the search box
   // and toggles search type
 
-  const searchBox = document.getElementById("searchbox");
+  let searchBox = document.getElementById("searchbox");
 
   if (element.value === "regex") {
-    searchBox.placeholder = regexText;
+    searchBox.placeholder = REGEX_TEXT;
   }
 
   else if (element.value === "list") {
-    searchBox.placeholder = lemmaText;
+    searchBox.placeholder = LEMMA_TEXT;
   }
+}
+
+function atLeastOneSelection() {
+  let checkedBoxesA = document.querySelectorAll(`.form-item[data-group="A"] input:checked`);
+  let checkedBoxesB = document.querySelectorAll(`.form-item[data-group="B"] input:checked`);
+  return (checkedBoxesA.length > 0 && checkedBoxesB.length > 0);
 }
 
 function validateForm(value) {
   // Now check to see if at least one checkbox is selected from this div
   // If no boxes are selected, the form is considered invalid
 
-  const invalidSubmission = document.getElementById("invalid-submission");
-  const exportFailed = document.getElementById("export-failed");
+  let invalidSubmission = document.getElementById("invalid-submission");
+  let exportFailed = document.getElementById("export-failed");
+
+  invalidSubmission.style.display = "none";
+  exportFailed.style.display = "none";
 
   if (value === "export") {
-    let allCheckedCheckboxes = document.querySelectorAll(`.form-item input:checked`);
-    if (allCheckedCheckboxes.length > 0)
+    let checkedBoxes = document.querySelectorAll(`.form-item input:checked`);
+    if (checkedBoxes.length > 0)
     {
       return true;
     }
@@ -177,13 +186,8 @@ function validateForm(value) {
       return false;
     }
   }
-
   else if (value === "carto") {
-    const allCheckedCheckboxesA = document.querySelectorAll(`li[data-group="A"] input:checked`);
-    const allCheckedCheckboxesB = document.querySelectorAll(`li[data-group="B"] input:checked`);
-
-    if (allCheckedCheckboxesA.length > 0 && allCheckedCheckboxesB.length > 0) {
-      invalidSubmission.style.display = "none";
+    if (atLeastOneSelection()) {
       return true;
     }
     else {
@@ -194,8 +198,9 @@ function validateForm(value) {
 }
 
 function suspendPage(bool) {
+  // Lets user know that the server is "thinking"
 
-  const allButtons = document.querySelectorAll(".pushable");
+  let allButtons = document.querySelectorAll(".pushable");
 
   if (bool) {
     allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
@@ -211,17 +216,16 @@ function suspendPage(bool) {
 
 function clearErrors() {
 
-  const allErrors = document.querySelectorAll(".error-container");
+  let allErrors = document.querySelectorAll(".error-container");
   allErrors.forEach(node => node.setAttribute("style", "display:none"));
 }
 
-function getAJAXQueryURL() {
+function getAJAXQueryURL(group) {
 
-  const query = document.getElementById("searchbox").value.trim().replace(/\s+/g, "+");
-  const group = element.getAttribute("group");
-  const type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
-  const lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
-  const url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
+  let query = document.getElementById("searchbox").value.trim().replace(/\s+/g, "+");
+  let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
+  let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
+  let url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
   return url;
 }
 
@@ -229,14 +233,14 @@ function toHeaderMap(headers) {
 
   // Convert the header string into an array
   // of individual headers
-  const arr = headers.trim().split(/[\r\n]+/);
+  let arr = headers.trim().split(/[\r\n]+/);
 
   // Create a map of header names to values
-  const headerMap = {};
+  let headerMap = {};
   arr.forEach(function (line) {
-    const parts = line.split(": ");
-    const header = parts.shift();
-    const value = parts.join(": ");
+    let parts = line.split(": ");
+    let header = parts.shift();
+    let value = parts.join(": ");
     headerMap[header] = value;
   });
 
@@ -248,8 +252,9 @@ function AJAXQuery(element) {
   // Sends a request to the API endpoint to fetch data
   // for either group A or group B.
 
-  const url = getAJAXQueryURL();
-  const request = new XMLHttpRequest();
+  let group = element.getAttribute("group");
+  let url = getAJAXQueryURL(group);
+  let request = new XMLHttpRequest();
 
   // Suspend while waiting for response
   suspendPage(true);
@@ -257,9 +262,9 @@ function AJAXQuery(element) {
   request.open("GET", url);
   request.onload = function () {
 
-    const responseHTML = request.response;
-    const headers = request.getAllResponseHeaders();
-    const headerMap = toHeaderMap(headers);
+    let responseHTML = request.response;
+    let headers = request.getAllResponseHeaders();
+    let headerMap = toHeaderMap(headers);
 
     suspendPage(false);
     clearErrors();
@@ -277,7 +282,7 @@ function AJAXQuery(element) {
 
     document.querySelector(`.flex-container[data-group="${group}"]`).innerHTML = responseHTML;
 
-    const lemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
+    let lemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
     if (lemmas.length === 1) {
       activateLemma(lemmas[0]);
     }
