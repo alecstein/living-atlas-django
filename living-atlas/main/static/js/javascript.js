@@ -179,7 +179,7 @@ function suspendPage() {
   // Lets user know that the server is "thinking"
   let allButtons = document.querySelectorAll(".pushable");
 
-  allButtons.forEach(node => node.setAttribute("style", `cursor:"wait"`));
+  allButtons.forEach(node => node.setAttribute("style", `cursor:wait`));
   allButtons.forEach(node => node.setAttribute("disabled", true));
   document.body.style.cursor = "wait";
 }
@@ -188,7 +188,7 @@ function resumePage() {
   let allButtons = document.querySelectorAll(".pushable");
 
   allButtons.forEach(node => node.removeAttribute("disabled"));
-  allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
+  allButtons.forEach(node => node.setAttribute("style", `cursor:pointer`));
   document.body.style.cursor="default";
 }
 
