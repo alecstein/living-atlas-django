@@ -1,134 +1,97 @@
 // jQuery notation for commonly used long functions
-
 $ = document.querySelector.bind(document)
 $$ = document.querySelectorAll.bind(document)
-
+let activeLemma_A;
+let activeLemma_B;
 let originalHTML = undefined;
 
 window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
 };
 
-function selectAllThisBox(group, tf, lemma) {
+function selectAllThisBox(group, bool, lemma) {
   // "all" and "none" buttons select or de-select
   // everything within one box
 
   if (lemma) {
-    const allLemmas = $$('.lemma-item[group="'+group+'"] input');
-    let i = 0, len = allLemmas.length;
-    while (i < len) {
-      let checkVal = allLemmas[i].checked;
-      let total = allLemmas[i].parentNode.parentNode.querySelector(".total");
-      // Trick for updating the counts quickly
-      allLemmas[i].checked = tf;
-      i++;
-    }
+    const allLemmas = $$('.lemma-item[data-group="'+group+'"] input');
+    allLemmas.forEach(item => item.checked = bool);
   }
+
   else {
     let activeLemmaName;
     if (group == "A") {
-      activeLemmaName = activeLemma_A.getAttribute("lemma");
+      activeLemmaName = activeLemma_A.dataset.lemma;
     }
     else {
-       activeLemmaName = activeLemma_B.getAttribute("lemma");
+       activeLemmaName = activeLemma_B.dataset.lemma;
     }
-    const allForms = $$('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"] input');
-    let len = allForms.length;
-    if (len > 0) {
-      let i = 0;
-      while (i < len) {
-        allForms[i].checked = tf;
-        i++;
-      }
-      allForms[0].onchange();
-    }
+    const allForms = $$('.form-item[data-lemma="'+activeLemmaName+'"][data-group="'+group+'"] input');
+    allForms.forEach(item => item.checked = bool);
+    allForms[0].onchange();
   }
 }
 
-let activeLemma_A;
-let activeLemma_B;
-
-function showForms(element) {
+function activateLemma(element) {
   // Shows all the forms when you click on a lemma
 
-  const lemma = element.getAttribute("lemma");
-  const group = element.getAttribute("group");
+  let activeLemmaItem;
+  const data = element.dataset;
+  const inactiveLemma = data.lemma;
+  const group = data.group;
 
   if (group == "A") {
-    if (activeLemma_A != undefined) {
-      activeLemma_A.style = "";     
-      let activeLemmaName = activeLemma_A.getAttribute("lemma"); 
-      const activeFormItems = $$('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
-      let i = 0, len = activeFormItems.length;
-      while (i < len) {
-        activeFormItems[i].style.display = "none";
-        i++;
-      }
-    }
+    activeLemmaItem = activeLemma_A;
     activeLemma_A = element;
   }
-
-  if (group == "B") {
-    if (activeLemma_B != undefined) {
-      activeLemma_B.style = "";
-      let activeLemmaName = activeLemma_B.getAttribute("lemma");
-      const activeFormItems = $$('.form-item[lemma="'+activeLemmaName+'"][group="'+group+'"]');
-      let i = 0, len = activeFormItems.length;
-      while (i < len) {
-        activeFormItems[i].style.display = "none";
-        i++;
-      }
-    }
+  else {
+    activeLemmaItem = activeLemma_B;
     activeLemma_B = element;
   }
 
-  element.style = "background-color:#ffe600";
-  const formItems = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"]');
-  let i = 0, len = formItems.length;
-  while (i < len) {
-    formItems[i].style.display = "";
-    i++;
+  if (activeLemmaItem != undefined) {
+    const activeLemma = activeLemmaItem.dataset.lemma;
+    if (activeLemma == inactiveLemma) {
+      return false;
+    }
+
+    activeLemmaItem.style.backgroundColor = "";
+    const activeFormItems = $$('.form-item[data-lemma="'+activeLemma+'"][data-group="'+group+'"]');
+    activeFormItems.forEach(item => item.style.display = "none");
   }
 
+  element.style.backgroundColor = "#ffe600";
+  const formItems = $$('.form-item[data-lemma="'+inactiveLemma+'"][data-group="'+group+'"]');
+  formItems.forEach(item => item.style.display = "");
 }
 
 function lemmaToggleAll(element) {
   // If a lemma is checked, it checks all the forms
   // If a form is unchecked, it unchecks all the forms
 
-  const lemma = element.closest("li").getAttribute("lemma");
-  const group = element.closest("li").getAttribute("group");
-  const formItems = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"] input');
-  let i = 0, len = formItems.length;
-  while (i < len) {
-    formItems[i].checked = element.checked;
-    i++;
-  }
-}
-
-function toggleParent(element) {
-  // If a form is checked, it automatically toggles 
-  // the parent lemma
-
-  const lemma = element.closest("li").getAttribute("lemma");
-  const group = element.closest("li").getAttribute("group");
-  const lemmaCheckbox = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] input');
-  if (element.checked) {
-    lemmaCheckbox.checked = true;
-  }
+  const data = element.closest("li").dataset;
+  const lemma = data.lemma;
+  const group = data.group;
+  const formItems = $$('.form-item[data-lemma="'+lemma+'"][data-group="'+group+'"] input');
+  formItems.forEach(item => item.checked = element.checked);
 }
 
 function countCheckboxes(element) {
   // Whenever a form or lemma is changed, count the new
   // checkbox totals
 
-  const lemma = element.closest("li").getAttribute("lemma");
-  const group = element.closest("li").getAttribute("group");
-  const allCheckedCheckboxes = $$('.form-item[lemma="'+lemma+'"][group="'+group+'"] input:checked');
-  const lemmaCheckbox = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] input');
-  let total = allCheckedCheckboxes.length;
-  const lemmaTotal = $('.lemma-item[lemma="'+lemma+'"][group="'+group+'"] .total');
+  const data = element.closest("li").dataset;
+  const lemma = data.lemma;
+  const group = data.group;
+
+  const allCheckedCheckboxes = $$('.form-item[data-lemma="'+lemma+'"][data-group="'+group+'"] input:checked');
+  const total = allCheckedCheckboxes.length;
+  const lemmaItem = $('.lemma-item[data-lemma="'+lemma+'"][data-group="'+group+'"]');
+  const lemmaTotal = lemmaItem.querySelector('.total');
+  const lemmaCheckbox = lemmaItem.querySelector('input');
+
   lemmaTotal.innerHTML = total;
+
   if (total == 0) {
     lemmaCheckbox.checked = false;
   }
@@ -159,52 +122,30 @@ function validateForm(value) {
   // Now check to see if at least one checkbox is selected from this div
   // If no boxes are selected, the form is considered invalid
 
+  const invalidSubmission = document.getElementById("invalid-submission");
+  const exportFailed = document.getElementById("export-failed");
+
   if (value == "export") {
-    let allCheckedCheckboxes = $$('li input:checked');
+    let allCheckedCheckboxes = $$('.form-item input:checked');
     if (allCheckedCheckboxes.length > 0)
     {
       return true;
     }
     else {
-      document.getElementById("export-failed").style.display = "";
+      exportFailed.style.display = "";
       return false;
     }
   }
 
-  let formAValid;
+  const allCheckedCheckboxesA = $$('li[data-group="A"] input:checked');
+  const allCheckedCheckboxesB = $$('li[data-group="B"] input:checked');
 
-  let allCheckedCheckboxesA = $$('li[group="A"] input:checked');
-  if (allCheckedCheckboxesA.length > 0)
-  {
-    formAValid = true;
-  }
-  else {
-    formAValid = false;
-  }
-  
-  if (!formAValid) {
-    document.getElementById("invalid-submission").style.display = "";
-    return false;
+  if (allCheckedCheckboxesA.length > 0 && allCheckedCheckboxesB.length > 0) {
+    invalidSubmission.style.display = "none";
+    return true;
   }
 
-  let formBValid = false;
-
-  let allCheckedCheckboxesB = $$('li[group="B"] input:checked');
-  if (allCheckedCheckboxesB.length > 0)
-  {
-    formBValid = true;
-  }
-  else {
-    formBValid = false;
-  }
-
-  if (!formBValid) {
-    document.getElementById("invalid-submission").style.display = "";
-    return false;
-  }
-
-  document.getElementById("invalid-submission").style.display = "none";
-  return true;
+  invalidSubmission.style.display = "";
 }
 
 function queryGroup(item) {
@@ -212,13 +153,12 @@ function queryGroup(item) {
   // for either group A or group B.
 
   document.body.style.cursor='wait';
+
   let allButtons = $$(".pushable");
   let allErrors = $$(".error-container");
 
-  for (let i = allButtons.length - 1; i >= 0; i--) {
-    allButtons[i].disabled = true;
-    allButtons[i].style.cursor = 'wait';
-  }
+  allButtons.forEach(item => item.disabled = true);
+  allButtons.forEach(item => item.style.cursor = 'wait');
 
   let request = new XMLHttpRequest();
   let method = 'GET';
@@ -232,10 +172,8 @@ function queryGroup(item) {
 
     document.body.style.cursor='default';
 
-    for (let i = allButtons.length - 1; i >= 0; i--) {
-      allButtons[i].disabled = false;
-      allButtons[i].style.cursor = 'pointer';
-    }
+    allButtons.forEach(item => item.disabled = false);
+    allButtons.forEach(item => item.style.cursor = 'pointer');
 
     if (request.status == "404") {
       document.getElementById("no-results").style.display = "";
@@ -243,9 +181,7 @@ function queryGroup(item) {
     }
 
     //  Whenever we return a new, valid search we clear the error messages
-    for (var i = 0; i < allErrors.length; i++) {
-      allErrors[i].style.display = "none";
-    }
+    allErrors.forEach(item => item.style.display = "none");
     
     let responseHTML = request.response;
 
@@ -270,26 +206,11 @@ function queryGroup(item) {
       document.getElementById("too-many-results").style.display = "";
     }
 
-    if (group == 'A') {
-      $('.flex-container[name="A"]').innerHTML = responseHTML;
+    $('.flex-container[data-group="'+group+'"]').innerHTML = responseHTML;
 
-      // Select the first element ONLY if number of lemmas == 1
-
-      let lemmaCheckboxes = $$('.lemma-item[group="A"]');
-      if (lemmaCheckboxes.length == 1)
-      {
-        activeLemma_A = $('.lemma-item[group="A"]');
-        activeLemma_A.onclick();
-      }
-    }
-    else if (group == 'B') {
-      $('.flex-container[name="B"]').innerHTML = responseHTML;
-      let lemmaCheckboxes = $$('.lemma-item[group="B"]');
-      if (lemmaCheckboxes.length == 1)
-      {
-        activeLemma_B = $('.lemma-item[group="B"]');
-        activeLemma_B.onclick();
-      }
+    let lemmas = $$('.lemma-item[data-group="'+group+'"]');
+    if (lemmas.length == 1) {
+      activateLemma(lemmas[0]);
     }
   };
   request.send();
@@ -300,9 +221,7 @@ function clearAll() {
 
   let allErrors = $$(".error-container");
 
-  for (var i = 0; i < allErrors.length; i++) {
-    allErrors[i].style.display = "none";
-  }
-  document.getElementById("main-table").innerHTML = originalHTML;
+  allErrors.forEach(item => item.style.display = "none");
 
+  document.getElementById("main-table").innerHTML = originalHTML;
 }

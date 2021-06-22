@@ -13,7 +13,7 @@
 			</div>
 		</li>
 		{% for lemma, value in results.items %}
-		<li class="lemma-item" lemma="{{lemma}}" group="{{group}}" onclick="showForms(this)">
+		<li class="lemma-item" data-lemma="{{lemma}}" data-group="{{group}}" onclick="activateLemma(this)">
 			<div class="lemma-col-1">
 				<input type="checkbox" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" id="{{lemma}}@{{group}}" checked></input>
 				<label for="{{lemma}}@{{group}}">{{ lemma }}</label>
@@ -39,15 +39,15 @@
 			<div class="form-col-1">
 				forms (group {{group}})
 			</div>
-			<div class="form-col-2" group="{{group}}">
+			<div class="form-col-2" data-group="{{group}}">
 				<input type="button" class="pushable" value="all" onclick="selectAllThisBox('{{group}}', true)"></input>
 				<input type="button" class="pushable" value="none" onclick="selectAllThisBox('{{group}}', false)"></input>
 			</div>
 		</li>	
 		{% for lemma, value in results.items %}
 		{% for form in value.forms %}
-		<li class="form-item" lemma="{{lemma}}" group="{{group}}" style="display:none">
-			<input type="checkbox" name="{{lemma}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" onclick="toggleParent(this)" value="{{group}}@{{form}}" id="{{lemma}}@{{group}}@{{form}}" checked>
+		<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
+			<input type="checkbox" name="{{lemma}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}}" id="{{lemma}}@{{group}}@{{form}}" checked>
 			<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
 		</li>
 		{% endfor %}

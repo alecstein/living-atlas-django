@@ -76,7 +76,7 @@ hr {
     justify-content: flex-grow;
 }
 
-.flex-container[name="B"] {
+.flex-container[data-group="B"] {
     margin-top: .5rem;
 }
 

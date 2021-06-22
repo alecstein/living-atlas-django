@@ -54,7 +54,7 @@
 <form method="post" id="main-table" onsubmit="return validateForm(this.submitted)" action="">
 	{% csrf_token %}
 
-	<div class="flex-container" name="A">
+	<div class="flex-container" data-group="A">
 		<div class="lemma-box">
 			<ol>
 				<li class="lemma-title">
@@ -64,7 +64,7 @@
 					<div class="lemma-col-2">
 						latin
 					</div>
-					<div class="lemma-col-3" group="A">
+					<div class="lemma-col-3" data-group="A">
 					</div>
 				</li>
 			</ol>
@@ -76,13 +76,13 @@
 					<div class="form-col-1">
 						forms (group A)
 					</div>
-					<div class="form-col-2" group="A">
+					<div class="form-col-2" data-group="A">
 					</div>
 				</li>	
 			</ol>
 		</div>
 	</div>
-	<div class="flex-container" name="B">
+	<div class="flex-container" data-group="B">
 		<div class="lemma-box">
 			<ol>
 				<li class="lemma-title">
@@ -92,7 +92,7 @@
 					<div class="lemma-col-2">
 						latin
 					</div>
-					<div class="lemma-col-3" group="B">
+					<div class="lemma-col-3" data-group="B">
 					</div>
 				</li>
 			</ol>
@@ -104,7 +104,7 @@
 					<div class="form-col-1">
 						forms (group B)
 					</div>
-					<div class="form-col-2" group="B">
+					<div class="form-col-2" data-group="B">
 					</div>
 				</li>	
 			</ol>
