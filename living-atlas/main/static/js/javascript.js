@@ -79,7 +79,8 @@ function activateLemma(element) {
   revealForms(inactiveLemma, group);
 
   if (typeof activeLemmaItem != "undefined") {
-    if (activeLemmaItem.dataset.lemma !== inactiveLemma) {
+    let activeLemma = activeLemmaItem.dataset.lemma;
+    if (activeLemma !== inactiveLemma) {
       activeLemmaItem.style.backgroundColor = "";
       hideForms(activeLemma, group);
     }
@@ -126,7 +127,7 @@ function countCheckboxes(element) {
 }
 
 function togglePlaceholderText(element) {
-  let searchBox = document.getElementById("searchbox");
+  let searchBox = document.getElementById("searchbox-main");
 
   if (element.value === "regex") {
     searchBox.placeholder = REGEX_TEXT;
