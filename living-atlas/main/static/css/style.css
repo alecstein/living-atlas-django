@@ -190,6 +190,11 @@ input[type='radio'] {
     margin: auto;
 }
 
+#textarea-form {
+    margin-top: .5rem;
+    font-family: var(--font-family-mono);
+}
+
 .button-array {
     display: flex;
     justify-content: center;
