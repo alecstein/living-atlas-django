@@ -14,13 +14,14 @@ function selectAllThisBox(group, bool, lemma) {
     const lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
                                                       `[data-group="${group}"] ` +  
                                                       `input`);
-
-    lemmaCheckboxes.forEach(node => node.click());
+    for (var i = 0; i < lemmaCheckboxes.length; i++) {
+      lemmaCheckboxes[i].checked = bool;
+    }
   }
 
   else {
     let activeLemmaName;
-    if (group == "A") {
+    if (group === "A") {
       activeLemmaName = activeLemmaA.dataset.lemma;
     }
     else {
@@ -30,8 +31,10 @@ function selectAllThisBox(group, bool, lemma) {
                                                      `[data-lemma="${activeLemmaName}"]` + 
                                                      `[data-group="${group}"] ` +
                                                      `input`);
-
-    formCheckboxes.forEach(node => node.click());
+    for (var i = 0; i < formCheckboxes.length; i++) {
+      formCheckboxes[i].checked = bool;
+    }
+    formCheckboxes[0].onchange();
   }
 }
 
@@ -45,18 +48,18 @@ function activateLemma(element) {
   const inactiveLemma = data.lemma;
   const group = data.group;
 
-  if (group == "A") {
+  if (group === "A") {
     activeLemmaItem = activeLemmaA;
     activeLemmaA = element;
   }
-  else {
+  else if (group === "B") {
     activeLemmaItem = activeLemmaB;
     activeLemmaB = element;
   }
 
   if (activeLemmaItem != undefined) {
     activeLemma = activeLemmaItem.dataset.lemma;
-    if (activeLemma == inactiveLemma) {
+    if (activeLemma === inactiveLemma) {
       return false;
     }
 
@@ -87,8 +90,9 @@ function lemmaToggleAll(element) {
                                                    `[data-lemma="${lemma}"]` + 
                                                    `[data-group="${group}"] ` + 
                                                    `input`);
-
-  formCheckboxes.forEach(node => node.click());
+  for (var i = 0; i < formCheckboxes.length; i++) {
+    formCheckboxes[i].checked = element.checked;
+  }
 }
 
 function countCheckboxes(element) {
@@ -114,7 +118,7 @@ function countCheckboxes(element) {
 
   lemmaTotal.innerHTML = total;
 
-  if (total == 0) {
+  if (total === 0) {
     lemmaCheckbox.checked = false;
   }
   else {
@@ -138,11 +142,11 @@ function toggleRegEx(element) {
 
   const searchBox = document.getElementById("searchbox");
 
-  if (element.value == "regex") {
+  if (element.value === "regex") {
     searchBox.placeholder = regexText;
   }
 
-  else if (element.value == "list") {
+  else if (element.value === "list") {
     searchBox.placeholder = lemmaText;
   }
 }
@@ -154,7 +158,7 @@ function validateForm(value) {
   const invalidSubmission = document.getElementById("invalid-submission");
   const exportFailed = document.getElementById("export-failed");
 
-  if (value == "export") {
+  if (value === "export") {
     let allCheckedCheckboxes = document.querySelectorAll(`.form-item input:checked`);
     if (allCheckedCheckboxes.length > 0)
     {
@@ -204,7 +208,7 @@ function queryGroup(element) {
     allButtons.forEach(node => node.removeAttribute("disabled"));
     allButtons.forEach(node => node.setAttribute("style", `cursor:"pointer"`));
 
-    if (request.status == "404") {
+    if (request.status === "404") {
       document.getElementById("no-results").style.display = "";
       return false;
     }
@@ -238,7 +242,7 @@ function queryGroup(element) {
     document.querySelector(`.flex-container[data-group="${group}"]`).innerHTML = responseHTML;
 
     let lemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
-    if (lemmas.length == 1) {
+    if (lemmas.length === 1) {
       activateLemma(lemmas[0]);
     }
   };
