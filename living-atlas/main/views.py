@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import redirect
 from .models import Form
+from openpyxl import Workbook
 import ast
+
 # Create your views here.
 
 def ajax_view(request):
@@ -69,7 +71,6 @@ def search_view(request):
         return render(request, 'search.html')
 
     if request.method == 'POST':
-        json_data = {}
 
         # All lemma keys are of the form {lemma}@{group}@.
         # All form keys are of the form {lemma}@{group}@{form}
@@ -77,6 +78,42 @@ def search_view(request):
         # The "@" symbol will not appear in any other key,
         # and the "@" symbol will only appear in the value if the
         # checkbox corresponds to a form
+
+        post_to = request.POST['post_to']
+
+        if post_to == "export":
+
+            response = HttpResponse()
+            response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            response['Content-Disposition'] = f'attachment; filename=living-atlas.xlsx'
+
+            workbook = Workbook()
+            worksheet = workbook.active
+            worksheet.title = "living-atlas-export"
+
+            columns = {'form':1, 'lemma':2, 'latin':3, 'group':4}
+
+            for col_name, col_idx in columns.items():
+                cell = worksheet.cell(row = 1, column = col_idx)
+                cell.value = col_name
+
+            row_idx = 2
+            for key in request.POST:
+                if len(key.split("@")) != 4:
+                    continue
+
+                lemma, latin, group, form = key.split("@")
+                row_values = {'form':form, 'lemma':lemma, 'latin':latin, 'group':group}
+
+                for col_name, row_value in row_values.items():
+                    cell = worksheet.cell(row = row_idx, column = columns[col_name])
+                    cell.value = row_value
+                row_idx += 1
+
+            workbook.save(response)
+            return response
+
+        json_data = {}
 
         for key in request.POST:
             if "@" not in key: 
@@ -91,12 +128,6 @@ def search_view(request):
                 json_data[group] = [form]
 
         response = JsonResponse(json_data, status=200)
-
-        post_to = request.POST['post_to']
-
-        if post_to == "export":
-            response['Content-Type'] = 'application/json'
-            response['Content-Disposition'] = 'attachment; filename="results.json"'
 
         return response
 
