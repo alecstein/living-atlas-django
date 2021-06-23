@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="article">
+
+<h2>searching the database (english)</h2>
+
+<p>
+	The Living Atlas allows you to take two sets of forms and compare them on
+	a map. When you type a list of lemmas into the searchbox, the Living Atlas returns 
+	a list of lemmas (on the left) and all the associated forms (on the right.) Whatever
+	boxes are checked in the "forms" box will be mapped as part of that group. 
+</p>
+<p>
+	Try, for example, searching for the lemma "mobiliaire" and sending it to group A. 
+	You will see it appear in the lemmas box for that group. Click on it, and it will
+	reveal all the forms associated with that lemma. Check or uncheck the boxes as desired.
+	The checked forms will appear on the map on the next page.
+</p>
+<p>
+	To search for a list of lemmas, separate the search terms by spaces or newlines. Either
+	one is fine. This returns a list of lemmas and the forms that are associated to them.
+	By default, the forms are hidden, but clicking on the lemmas reveals them.
+</p>
+<p>
+	Each lemma, and all of the various forms of that lemma, have a checkbox next to them.
+	Clicking the checkboxes selects those forms/lemmas that you want to map. "Group A" is one group, 
+	as is "Group B". All the forms/lemmas in a group will get mapped together as a group. The two
+	search buttons send a query to either box A or box B.
+</p>
+<p>
+	By default the lemmas are checked, but the forms are not. You can select one form at a time,
+	or you can use the convenient "all" or "none" buttons to flip them on or off all at once.
+</p>
+
+<h2>searching with regex (regular expressions)</h2>
+<p>
+	<a href="https://docs.python.org/3/library/re.html">Read more about regex</a>
+</p>
+
+<p>
+	The Atlas supports advanced regex searches. These searches are much more intensive than
+	simple list searches and will take longer (around 3 seconds for a regex compared to
+	less than a second for a list search.) Regular expressions use symbols to stand
+	for specific symbols or groups of symbols. For example, the expression ^a stands for "all lemmas
+	starting with 'a'". The expression \d stands for a single digit, and the expression \d+ stands 
+	for a string of digits of any length.
+</p>
+<p>
+	Because there are a lot of symbols it's helpful to have an updated clear table of them. The search
+	engine on this page uses the python syntax, which you can find <a href="https://docs.python.org/3/library/re.html">here</a>.
+</p>
+	
+</div>
+
+{% endblock content %}

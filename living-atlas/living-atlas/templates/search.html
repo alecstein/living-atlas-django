@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<script type="text/javascript" src="{% static 'js/search.js' %}"></script>
+
+<div class="radios">
+	<div class="radio-group">
+		<input type="radio" name="lang" value="latin" id="radio-latin">
+		<label for="radio-latin">latin</label>
+		<input type="radio" name="lang" value="lemma" id="radio-lemma" checked>
+		<label for="radio-lemma">lemma</label>
+	</div>
+	<div class="radio-group">
+		<input type="radio" name="type" value="regex" id="radio-regex" onclick="togglePlaceholderText(this)">
+		<label for="radio-regex">regex</label>
+		<input type="radio" name="type" value="list" id="radio-list" onclick="togglePlaceholderText(this)" checked>
+		<label for="radio-list">list</label>
+	</div>
+</div>
+<div class="wrap-searchbox">
+	<div id="textarea-main">
+		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire&#10;pecine" rows="5"></textarea>
+	</div>
+	<div id="textarea-form-title">
+		filter forms by regex (optional)
+	</div>
+	<div id="textarea-form">
+		<textarea type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)"></textarea>
+	</div>
+	<div class="button-array">
+		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "send query to group A"/>
+		<input class="pushable" group="B" type="submit" onclick="AJAXQuery(this)" value = "send query to group B"/>
+		<input class="pushable" id="clear" type="submit" onclick="clearAll()" value = "clear all ❌"/>
+	</div>
+</div>
+
+<div class="error-container" id="invalid-submission" style="display:none">
+	<div class="error">
+		to compare results you must select from both groups
+	</div>
+</div>
+
+<div class="error-container" id="no-results" style="display:none">
+	<div class="error">
+		no results were found for that search
+	</div>
+</div>
+
+<div class="error-container" id="too-many-results" style="display:none">
+	<div class="error">
+		your search returned too many results (<span id="exceed-count"></span>) to display. showing <span id="exceed-limit">2000</span>
+	</div>
+</div>
+
+<div class="error-container" id="export-failed" style="display:none">
+	<div class="error">
+		select at least one item to export
+	</div>
+</div>
+
+<form method="post" id="main-table" onsubmit="return validateForm(this.submitted)" action="">
+	{% csrf_token %}
+	<div class="flex-container" data-group="A">
+		<div class="lemma-box">
+			<ol>
+				<li class="lemma-title">
+					<div class="lemma-col-1">
+						lemma (group A)
+					</div>
+					<div class="lemma-col-2">
+						latin
+					</div>
+					<div class="lemma-col-3" data-group="A">
+					</div>
+				</li>
+			</ol>
+		</div>
+
+		<div class="form-box">
+			<ol>
+				<li class="form-title">
+					<div class="form-col-1">
+						forms (group A)
+					</div>
+					<div class="form-col-2" data-group="A">
+					</div>
+				</li>	
+			</ol>
+		</div>
+	</div>
+	<div class="flex-container" data-group="B">
+		<div class="lemma-box">
+			<ol>
+				<li class="lemma-title">
+					<div class="lemma-col-1">
+						lemma (group B)
+					</div>
+					<div class="lemma-col-2">
+						latin
+					</div>
+					<div class="lemma-col-3" data-group="B">
+					</div>
+				</li>
+			</ol>
+		</div>
+
+		<div class="form-box">
+			<ol>
+				<li class="form-title">
+					<div class="form-col-1">
+						forms (group B)
+					</div>
+					<div class="form-col-2" data-group="B">
+					</div>
+				</li>	
+			</ol>
+		</div>
+	</div>
+</form>
+<div id="base-buttons">
+	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "export"/>export to MS Excel</button>
+	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "carto"/>send to carto</button>
+</div>
+{%endblock content%}
+
+
+
+
