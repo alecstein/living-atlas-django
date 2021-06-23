@@ -1,9 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from .models import Form
-from openpyxl import Workbook
-import ast
+from .helpers.view_utils import render_to_excel, render_to_carto
 
 # Create your views here.
 
@@ -74,67 +73,15 @@ def search_view(request):
     if request.method == 'GET':
         return render(request, 'search.html')
 
-    if request.method == 'POST':
-
-        # All lemma keys are of the form {lemma}@{group}@.
-        # All form keys are of the form {lemma}@{group}@{form}
-        # and have value {group}@{form}.
-        # The "@" symbol will not appear in any other key,
-        # and the "@" symbol will only appear in the value if the
-        # checkbox corresponds to a form
+    elif request.method == 'POST':
 
         post_to = request.POST['post_to']
 
         if post_to == "export":
+            return render_to_excel(request)
 
-            response = HttpResponse()
-            response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            response['Content-Disposition'] = f'attachment; filename=living-atlas.xlsx'
-
-            workbook = Workbook()
-            worksheet = workbook.active
-            worksheet.title = "living-atlas-export"
-
-            columns = {'form':1, 'lemma':2, 'latin':3, 'group':4}
-
-            for col_name, col_idx in columns.items():
-                cell = worksheet.cell(row = 1, column = col_idx)
-                cell.value = col_name
-
-            row_idx = 2
-            for key in request.POST:
-                if len(key.split("@")) != 4:
-                    continue
-
-                lemma, latin, group, form = key.split("@")
-                row_values = {'form':form, 'lemma':lemma, 'latin':latin, 'group':group}
-
-                for col_name, row_value in row_values.items():
-                    cell = worksheet.cell(row = row_idx, column = columns[col_name])
-                    cell.value = row_value
-                row_idx += 1
-
-            workbook.save(response)
-            return response
-
-        json_data = {}
-
-        for key in request.POST:
-            if "@" not in key: 
-                continue
-            value = request.POST[key]
-            if "@" not in value:
-                continue
-            group, form = value.split("@")
-            if json_data.get(group):
-                json_data[group].append(form)
-            else:
-                json_data[group] = [form]
-
-        response = JsonResponse(json_data, status=200)
-
-        return response
-
+        elif post_to == "carto":
+            return render_to_carto(request)
  
 def about_view(request):
     return render(request, 'about.html', {})

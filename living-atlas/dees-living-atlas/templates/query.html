@@ -47,7 +47,7 @@
 		{% for lemma, value in results.items %}
 		{% for form in value.forms %}
 		<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
-			<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" id="{{lemma}}@{{group}}@{{form}}" checked>
+			<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}} "id="{{lemma}}@{{group}}@{{form}}" checked>
 			<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
 		</li>
 		{% endfor %}
