@@ -1,0 +1,11 @@
+.DS_Store
+.vscode/
+__pycache__/
+
+db.sqlite3
+
+source/
+living-atlas/tmp/
+paperwork/
+Pipfile
+Pipfile.lock
