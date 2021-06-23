@@ -1,11 +1,19 @@
+# Junk
 .DS_Store
 .vscode/
-__pycache__/
+.ipynb_checkpoints/
 
+# Database
 db.sqlite3
 
+# Main documents
 source/
 living-atlas/tmp/
 paperwork/
 Pipfile
 Pipfile.lock
+
+# Python-specific
+*.pyc
+*.pyo
+__pycache__/
