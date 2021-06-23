@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from .models import Form
-from .utils.view_utils import export_to_excel, render_to_json
+from .utils.view_utils import render_to_excel_response, render_to_carto_response
 
 # Create your views here.
 
@@ -20,12 +20,10 @@ def ajax_view(request):
     if request.method == 'GET':
 
         query = request.GET.get('query')
-        query_type = request.GET.get('type')
         group = request.GET.get('group')
         lang = request.GET.get('lang')
-        form_filter = request.GET.get('form_filter')
 
-        if query_type == 'list':
+        if request.GET['type'] == 'list':
             items = set(query.split(' '))
 
             if lang == 'lemma':
@@ -37,13 +35,13 @@ def ajax_view(request):
             not_found = [item for item in items if item not in found]
             context['not_found'] = not_found
 
-        elif query_type == 'regex':
+        elif request.GET['type'] == 'regex':
             if lang == 'lemma':
                 forms = queryset.filter(lemma__regex = f"{query}")
             if lang == 'latin':
                 forms = queryset.filter(latin__regex = f"{query}")
 
-        if form_filter:
+        if request.GET.get('form_filter'):
             forms = forms.filter(form__regex = f"{form_filter}")
 
         if not forms:
@@ -78,10 +76,10 @@ def search_view(request):
         post_to = request.POST['post_to']
 
         if post_to == "export":
-            return export_to_excel(request)
+            return render_to_excel_response(request)
 
         elif post_to == "carto":
-            return render_to_json(request)
+            return render_to_carto_response(request)
  
 def about_view(request):
     return render(request, 'about.html', {})

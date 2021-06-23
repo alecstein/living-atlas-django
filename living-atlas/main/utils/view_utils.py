@@ -1,6 +1,17 @@
 from django.http import HttpResponse, JsonResponse
 
-def render_to_json(request):
+def header_map(request):
+    return
+
+def render_to_carto_response(request):
+
+    # All lemma keys are of the form {lemma}@{group}@.
+    # All form keys are of the form {lemma}@{group}@{form}
+    # and have value {group}@{form}.
+    # The "@" symbol will not appear in any other key,
+    # and the "@" symbol will only appear in the value if the
+    # checkbox corresponds to a form
+
     json_data = {}
 
     for key in request.POST:
@@ -20,7 +31,8 @@ def render_to_json(request):
 
 from openpyxl import Workbook
 
-def export_to_excel(request):
+def render_to_excel_response(request):
+
     # All lemma keys are of the form {lemma}@{group}@.
     # All form keys are of the form {lemma}@{group}@{form}
     # and have value {group}@{form}.
@@ -36,7 +48,10 @@ def export_to_excel(request):
     worksheet = workbook.active
     worksheet.title = "living-atlas-export"
 
-    columns = {'form':1, 'lemma':2, 'latin':3, 'group':4}
+    columns = {'form'  : 1, 
+               'lemma' : 2, 
+               'latin' : 3, 
+               'group' : 4,}
 
     for col_name, col_idx in columns.items():
         cell = worksheet.cell(row = 1, column = col_idx)
