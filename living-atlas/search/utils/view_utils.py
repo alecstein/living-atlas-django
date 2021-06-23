@@ -1,16 +1,13 @@
 from django.http import HttpResponse, JsonResponse
 
-def header_map(request):
-    return
+# All lemma keys are of the form {lemma}@{group}@.
+# All form keys are of the form {lemma}@{group}@{form}
+# and have value {group}@{form}.
+# The "@" symbol will not appear in any other key,
+# and the "@" symbol will only appear in the value if the
+# checkbox corresponds to a form
 
 def render_to_carto_response(request):
-
-    # All lemma keys are of the form {lemma}@{group}@.
-    # All form keys are of the form {lemma}@{group}@{form}
-    # and have value {group}@{form}.
-    # The "@" symbol will not appear in any other key,
-    # and the "@" symbol will only appear in the value if the
-    # checkbox corresponds to a form
 
     json_data = {}
 
@@ -33,13 +30,6 @@ from openpyxl import Workbook
 
 def render_to_excel_response(request):
 
-    # All lemma keys are of the form {lemma}@{group}@.
-    # All form keys are of the form {lemma}@{group}@{form}
-    # and have value {group}@{form}.
-    # The "@" symbol will not appear in any other key,
-    # and the "@" symbol will only appear in the value if the
-    # checkbox corresponds to a form
-
     response = HttpResponse()
     response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response['Content-Disposition'] = f'attachment; filename=living-atlas.xlsx'
@@ -53,12 +43,13 @@ def render_to_excel_response(request):
                'latin' : 3, 
                'group' : 4,}
 
+    # Create the column names
     for col_name, col_idx in columns.items():
         cell = worksheet.cell(row = 1, column = col_idx)
         cell.value = col_name
 
+    # Insert the row values
     row_idx = 2
-
     for key in request.POST:
         if len(key.split("@")) != 4:
             continue
