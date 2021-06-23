@@ -1,5 +1,0 @@
-*.pdf
-.DS_Store
-db.sqlite3
-tmp/
-__pycache__
