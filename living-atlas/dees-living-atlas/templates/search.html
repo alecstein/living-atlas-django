@@ -58,7 +58,6 @@
 
 <form method="post" id="main-table" onsubmit="return validateForm(this.submitted)" action="">
 	{% csrf_token %}
-
 	<div class="flex-container" data-group="A">
 		<div class="lemma-box">
 			<ol>
@@ -115,11 +114,11 @@
 			</ol>
 		</div>
 	</div>
-	<div id="base-buttons">
-		<button class="pushable" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "export"/>export to MS Excel</button>
-		<button class="pushable" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "carto"/>send to carto</button>
-	</div>
 </form>
+<div id="base-buttons">
+	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "export"/>export to MS Excel</button>
+	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "carto"/>send to carto</button>
+</div>
 {%endblock content%}
 
 

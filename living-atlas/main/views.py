@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from .models import Form
-from .helpers.view_utils import render_to_excel, render_to_carto
+from .utils.view_utils import export_to_excel, render_to_json
 
 # Create your views here.
 
@@ -78,10 +78,10 @@ def search_view(request):
         post_to = request.POST['post_to']
 
         if post_to == "export":
-            return render_to_excel(request)
+            return export_to_excel(request)
 
         elif post_to == "carto":
-            return render_to_carto(request)
+            return render_to_json(request)
  
 def about_view(request):
     return render(request, 'about.html', {})

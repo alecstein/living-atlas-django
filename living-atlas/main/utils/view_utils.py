@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 
-def render_to_carto(request):
+def render_to_json(request):
     json_data = {}
 
     for key in request.POST:
@@ -20,7 +20,7 @@ def render_to_carto(request):
 
 from openpyxl import Workbook
 
-def render_to_excel(request):
+def export_to_excel(request):
     # All lemma keys are of the form {lemma}@{group}@.
     # All form keys are of the form {lemma}@{group}@{form}
     # and have value {group}@{form}.
