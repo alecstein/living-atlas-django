@@ -216,23 +216,25 @@ input[type='radio'] {
     font-family: var(--font-family-mono);
 }
 
-#textarea-form textarea {
-    height: 1.1rem;
+#textinput-form-regex input {
+    font-size: 1rem;
+    height: 1.5rem;
+    width: 24rem;
 }
 textarea {
     font-size: 1rem;
     width: 24rem;
 }
 
-#textarea-form-title {
+#textinput-form-regex-title {
     margin: 1rem auto .2rem auto;
 }
 
-#textarea-main, #textarea-form {
+#textarea-main, #textinput-form-regex {
     margin: auto;
 }
 
-#textarea-form {
+#textinput-form-regex {
     margin: 0 auto .2rem auto;
     font-family: var(--font-family-mono);
 }

@@ -26,9 +26,9 @@
 			</div>
 		</li>
 		{% endfor %}
-		{% for lemma in not_found %}
+		{% for item in not_found_items_set %}
 		<li class="lemma-item-not-found">
-			{{ lemma }} -- not found
+			{{ item }} -- not found
 		</li>
 		{% endfor %}
 	</ol>

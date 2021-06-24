@@ -204,24 +204,24 @@ function clearErrors() {
   allErrors.forEach(node => node.setAttribute("style", "display:none"));
 }
 
-function cleanText(text) {
+function cleanQuery(text) {
   return text.trim().replace(/\s+/g, "+");
 }
 
 function getAJAXQueryURL(group) {
-  let query = document.getElementById("searchbox-main").value;
-  let formFilter = document.getElementById("searchbox-form").value;
+  let query = cleanQuery(document.getElementById("searchbox-main").value);
+  let formFilter = cleanQuery(document.getElementById("searchbox-form").value);
   let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
   let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
+  let url = `/ajax/?`+
+            `query=${query}`+
+            `&group=${group}`+
+            `&type=${type}`+
+            `&lang=${lang}`;
 
-  query = cleanText(query);
-  formFilter = cleanText(formFilter);
-
-  let url = `/ajax/?query=${query}` +
-            `&group=${group}` + 
-            `&type=${type}` + 
-            `&lang=${lang}` +
-            `&form_filter=${formFilter}`;
+  if (formFilter) {
+    url += `&form_filter=${formFilter}`;
+  }
 
   return url;
 }
