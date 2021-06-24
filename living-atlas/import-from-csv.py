@@ -5,7 +5,7 @@ from main.models import Form
 # Run with
 # ./manage.py shell < import-from-csv.py
 
-with open('../medieval-french-lang-toolkit/frolex-latin.csv') as f:
+with open('../source/frolex-latin.csv') as f:
     reader = csv.reader(f)
     print(next(reader))
     for idx, row in tqdm(enumerate(reader)):

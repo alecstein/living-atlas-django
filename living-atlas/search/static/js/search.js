@@ -145,6 +145,11 @@ function atLeastOneSelection() {
   return (checkedBoxesA.length > 0 && checkedBoxesB.length > 0);
 }
 
+function disableLemmaCheckboxes() {
+  let lemmaCheckboxes = document.querySelectorAll(`lemma-item input`);
+  lemmaCheckboxes.forEach(node => node.setAttribute("disabled", true));
+}
+
 function validateForm(value) {
   // Now check to see if at least one checkbox is selected from this div
   // If no boxes are selected, the form is considered invalid
