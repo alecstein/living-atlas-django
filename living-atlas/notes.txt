@@ -1,0 +1,3 @@
+viking: in general, pythonic files and directories should avoid use
+of the dash character -, preferring instead the underscore _. - makes
+importing such artifacts difficult.

@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+# viking: Not a huge deal, but keeping imports sorted alphabetically makes for
+# easier readability and thus maintenance. This will be a common theme :)
 from pathlib import Path
 import os
 
@@ -24,6 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# viking: I like DEBUG = os.getenv('DEBUG', 'false').lower() == 'true',
+# allows you to use the env instead of forgetting to turn it off in 
+# production.
 DEBUG = True
 
 ALLOWED_HOSTS = ['18.207.127.123', '*']
@@ -96,6 +101,7 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': '/tmp/django-cache',
         'OPTIONS': {
+        # viking: wrong indent level
         'MAX_ENTRIES': 10_000
         }
     }

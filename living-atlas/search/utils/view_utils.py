@@ -18,6 +18,7 @@ def render_to_carto_response(request):
         if "@" not in value:
             continue
         group, form = value.split("@")
+        # viking: json_data.setdefault() may be useful.
         if json_data.get(group):
             json_data[group].append(form)
         else:
@@ -26,8 +27,12 @@ def render_to_carto_response(request):
 
     return JsonResponse(json_data, status=200)
 
+# viking: imports go at the top of the file. See
+# https://www.python.org/dev/peps/pep-0008/#imports
 from openpyxl import Workbook
 
+# viking: this is called directly from a view, which could impact the user
+# experience negatively if it takes a long time (a few seconds) to complete.
 def render_to_excel_response(request):
 
     response = HttpResponse()
@@ -53,6 +58,13 @@ def render_to_excel_response(request):
     for key in request.POST:
         if len(key.split("@")) != 4:
             continue
+
+        # viking: don't perform the split twice (stay DRY), assign it and
+        # reference it twice, something like:
+        #    data = key.split('@')
+        #    if len(data) != 4:
+        #        ...
+        #    lemma, latin, group, form = data
 
         lemma, latin, group, form = key.split("@")
         row_values = {'form':form, 'lemma':lemma, 'latin':latin, 'group':group}

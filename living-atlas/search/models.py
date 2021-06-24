@@ -8,6 +8,8 @@
 from django.db import models
 
 class Form(models.Model):
+    # viking: PEP-8 specifies no whitespace around = in variable assignment, but
+    # if you are going to include one, at least be consistent ;)
     form = models.CharField(max_length=100, primary_key = True)
     lemma = models.CharField(max_length=100, db_index = True)
     latin = models.CharField(max_length=100, db_index = True, blank = True, null = True)

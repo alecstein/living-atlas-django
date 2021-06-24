@@ -25,6 +25,7 @@ function checkAllLemmas(group, bool) {
 }
 
 function checkAllForms(group, bool) {
+  // viking: let it be what? It's not used anywhere.
   let activeLemmaName;
 
   if (group === "A") {

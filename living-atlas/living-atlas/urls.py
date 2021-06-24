@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ajax/', ajax_view, name = 'ajax'), # API endpoint
     path('search/', search_view, name = 'search'), # main page
+    # viking: you can safely set this to search_view also, FYI
     path('', home_view, name = 'home'),
     path('howto/', howto_view, name = 'howto'),
     path('about/', about_view, name = 'about'),
