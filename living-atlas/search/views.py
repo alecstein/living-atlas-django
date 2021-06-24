@@ -28,12 +28,14 @@ def ajax_view(request):
         lang = request.GET.get('lang')
         form_filter = request.GET.get('form_filter', '')
 
+        lemma_queryset = Lemma.objects.prefetch_related('form_set')
+
         if query_type == 'list':
             query_items_set = set(raw_query.split(' '))
             if lang == 'lemma':
-                lemma_queryset = Lemma.objects.filter(lemma__in = query_items_set)
+                lemma_queryset = lemma_queryset.filter(lemma__in = query_items_set)
             elif lang == 'latin':
-                lemma_queryset = Lemma.objects.filter(latin__in = query_items_set)
+                lemma_queryset = lemma_queryset.filter(latin__in = query_items_set)
 
             found_items_set = set(lemma_queryset.values_list(lang, flat = True))
             not_found_items_set = query_items_set.difference(found_items_set)
@@ -44,9 +46,9 @@ def ajax_view(request):
                 raw_query = raw_query.replace(key, sub)
 
             if lang == 'lemma':
-                lemma_queryset = Lemma.objects.filter(lemma__regex = raw_query)
+                lemma_queryset = lemma_queryset.filter(lemma__regex = raw_query)
             elif lang == 'latin':
-                lemma_queryset = Lemma.objects.filter(latin__regex = raw_query)
+                lemma_queryset = lemma_queryset.filter(latin__regex = raw_query)
 
         if not lemma_queryset:
             raise Http404("No Form matches the given query.")
