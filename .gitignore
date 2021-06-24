@@ -18,3 +18,5 @@ Pipfile.lock
 *.pyc
 *.pyo
 __pycache__/
+
+two-scoops-of-django.pdf
