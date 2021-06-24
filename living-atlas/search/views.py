@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import Http404
-from .models import Form
+from .models import Form, Lemma
+from tqdm import tqdm
 from .utils.view_utils import render_to_excel_response, render_to_carto_response
 
 # Create your views here.
@@ -21,47 +22,61 @@ def ajax_view(request):
         query_type = request.GET.get('type')
         group = request.GET.get('group')
         lang = request.GET.get('lang')
-        form_filter = request.GET.get('form_filter')
+        form_filter = request.GET.get('form_filter', '')
 
         if query_type == 'list':
             query_items_set = set(raw_query.split(' '))
             if lang == 'lemma':
-                form_queryset = Form.objects.filter(lemma__in = query_items_set)
+                lemma_queryset = Lemma.objects.filter(lemma__in = query_items_set)
             elif lang == 'latin':
-                form_queryset = Form.objects.filter(latin__in = query_items_set)
+                lemma_queryset = Lemma.objects.filter(latin__in = query_items_set)
 
-            found_items_set = set(form_queryset.values_list(lang, flat = True))
+            found_items_set = set(lemma_queryset.values_list(lang, flat = True))
             not_found_items_set = query_items_set.difference(found_items_set)
             context['not_found_items_set'] = not_found_items_set
 
         elif query_type == 'regex':
             if lang == 'lemma':
-                form_queryset = Form.objects.filter(lemma__regex = f"{raw_query}")
-            if lang == 'latin':
-                form_queryset = Form.objects.filter(latin__regex = f"{raw_query}")
+                lemma_queryset = Lemma.objects.filter(lemma__regex = raw_query)
+            elif lang == 'latin':
+                lemma_queryset = Lemma.objects.filter(latin__regex = raw_query)
 
-        if form_filter:
-            form_queryset = form_queryset.filter(form__regex = f"{form_filter}")
-
-        if not form_queryset:
+        if not lemma_queryset:
             raise Http404("No Form matches the given query.")
 
         results_dict = {}
-        form_values_list = form_queryset.values_list()[:N]
-        for form, lemma, latin in form_values_list:
-            if results_dict.get(lemma):
-                results_dict[lemma]['forms'].append(form)
-            else:
-                results_dict[lemma] = {'latin':latin, 'forms':[form]}
+        results_count = 0
+        exceeds_limit = False
+        for lemma_obj in tqdm(lemma_queryset):
+
+            results_buffer = N - results_count
+            if results_buffer <= 0:
+                exceeds_limit = True
+                break
+
+            lemma = lemma_obj.lemma
+            latin = lemma_obj.latin
+            homonym_id = lemma_obj.homonym_id
+
+            form_queryset = lemma_obj.form_set.filter(form__regex = form_filter)
+            form_list = form_queryset.values_list("form", flat=True)[:results_buffer]
+            form_list = list(form_list) + [lemma]
+
+            results_count += len(form_list)
+            results_dict[lemma] = {'form_list':form_list,
+                                    'latin':latin,
+                                    'homonym_id':homonym_id}
+        print(results_count)
 
         context['results'] = results_dict
         context['group'] = group
 
         response = render(request, "query.html", context)
 
-        response['Limit'] = N
-        if form_queryset.count() > N:
-            response['Exceeds-Limit'] = form_queryset.count()
+        response['Result-Limit'] = N
+        if exceeds_limit:
+            response['Exceeds-Limit'] = True
+
 
         return response
 

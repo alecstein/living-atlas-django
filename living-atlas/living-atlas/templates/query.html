@@ -25,10 +25,10 @@
 				{{ value.latin }}
 			</div>
 			<div class="lemma-col-3">
-				homonym id.
+				{{ value.homonym_id }}
 			</div>
 			<div class="lemma-col-4">
-				<span class="counter">(<span class="total">{{ value.forms|length }}</span>/<span>{{ value.forms|length }}</span>)</span>
+				<span class="counter">(<span class="total">{{ value.form_list|length }}</span>/<span>{{ value.form_list|length }}</span>)</span>
 			</div>
 		</li>
 		{% endfor %}
@@ -51,7 +51,7 @@
 			</div>
 		</li>	
 		{% for lemma, value in results.items %}
-		{% for form in value.forms %}
+		{% for form in value.form_list %}
 		<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
 			<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}} "id="{{lemma}}@{{group}}@{{form}}" checked>
 			<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>

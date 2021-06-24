@@ -245,8 +245,7 @@ function headersToHeaderMap(headers) {
 }
 
 function showCountExceedsLimit(headerMap) {
-  document.getElementById("exceed-count").innerHTML = headerMap["exceeds-limit"];
-  document.getElementById("exceed-limit").innerHTML = headerMap["limit"];
+  document.getElementById("result-limit").innerHTML = headerMap["result-limit"];
   document.getElementById("too-many-results").style.display = "";
 }
 
