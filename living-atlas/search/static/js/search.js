@@ -244,11 +244,6 @@ function headersToHeaderMap(headers) {
 
 }
 
-function showCountExceedsLimit(headerMap) {
-  document.getElementById("result-limit").innerHTML = headerMap["result-limit"];
-  document.getElementById("too-many-results").style.display = "";
-}
-
 function setHTMLFromQuery(responseHTML, group) {
   let container = document.querySelector(`.flex-container[data-group="${group}"]`);
   container.innerHTML = responseHTML;
@@ -270,7 +265,7 @@ function AJAXQuery(element) {
   suspendPage();
 
   request.open("GET", url);
-  request.onload = function () {
+  request.onload = function () {    
 
     let responseHTML = request.response;
     let headers = request.getAllResponseHeaders();
@@ -283,8 +278,8 @@ function AJAXQuery(element) {
       return false;
     }
 
-    if (headerMap["exceeds-limit"]) {  
-      showCountExceedsLimit(headerMap); 
+    if (request.status === 408) {  
+      document.getElementById("timeout").style.display = "";
     }
 
     setHTMLFromQuery(responseHTML, group);

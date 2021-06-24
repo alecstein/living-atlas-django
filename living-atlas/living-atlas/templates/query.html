@@ -2,7 +2,7 @@
 	<ol>
 		<li class="lemma-title">
 			<div class="lemma-col-1">
-				lemma [{{results.items|length}}] (group {{group}})
+				lemma [{{results_dict.items|length}}] (group {{group}})
 			</div>
 			<div class="lemma-col-2">
 				latin
@@ -15,7 +15,7 @@
 				<input type="button" class="pushable" value="none" onclick="checkAllLemmas('{{group}}', false)"></input>
 			</div>
 		</li>
-		{% for lemma, value in results.items %}
+		{% for lemma, value in results_dict.items %}
 		<li class="lemma-item" data-lemma="{{lemma}}" data-group="{{group}}" onclick="activateLemma(this)">
 			<div class="lemma-col-1">
 				<input type="checkbox" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" id="{{lemma}}@{{group}}" checked></input>
@@ -50,7 +50,7 @@
 				<input type="button" class="pushable" value="none" onclick="checkAllForms('{{group}}', false)"></input>
 			</div>
 		</li>	
-		{% for lemma, value in results.items %}
+		{% for lemma, value in results_dict.items %}
 		{% for form in value.form_list %}
 		<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
 			<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}} "id="{{lemma}}@{{group}}@{{form}}" checked>

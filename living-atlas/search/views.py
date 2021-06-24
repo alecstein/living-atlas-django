@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from .models import Form, Lemma
 from tqdm import tqdm
+from time import time
 from .utils.view_utils import render_to_excel_response, render_to_carto_response
 
 # Create your views here.
@@ -17,8 +18,10 @@ def ajax_view(request):
     Note that 'form' is a linguistic object -- it does NOT have
     anything to do with a Django Form.
     """
-    N = 10_000
+
+    timeout = 4 # seconds
     context = {}
+    status = 200
 
     if request.method == 'GET':
 
@@ -51,40 +54,35 @@ def ajax_view(request):
                 lemma_queryset = lemma_queryset.filter(latin__regex = raw_query)
 
         if not lemma_queryset:
-            raise Http404("No Form matches the given query.")
+            raise Http404("No Lemma matches the given query.")
 
         results_dict = {}
-        results_count = 0
-        exceeds_limit = False
+        start_time = time()
+
         for lemma_obj in tqdm(lemma_queryset):
 
-            results_buffer = N - results_count
-            if results_buffer <= 0:
-                exceeds_limit = True
+            if time() - start_time > timeout:
+                status = 408
                 break
 
             lemma = lemma_obj.lemma
             latin = lemma_obj.latin
             homonym_id = lemma_obj.homonym_id
 
-            form_queryset = lemma_obj.form_set.filter(form__regex = form_filter)
-            form_list = form_queryset.values_list("form", flat=True)[:results_buffer]
+            form_queryset = lemma_obj.form_set
+            if form_filter:
+                form_queryset.filter(form__regex = form_filter)
+            form_list = form_queryset.values_list("form", flat=True)
             form_list = list(form_list) + [lemma]
 
-            results_count += len(form_list)
             results_dict[lemma] = {'form_list':form_list,
                                     'latin':latin,
                                     'homonym_id':homonym_id}
 
-        context['results'] = results_dict
+        context['results_dict'] = results_dict
         context['group'] = group
 
-        response = render(request, "query.html", context)
-
-        response['Result-Limit'] = N
-        if exceeds_limit:
-            response['Exceeds-Limit'] = True
-
+        response = render(request, "query.html", context, status = status)
 
         return response
 
