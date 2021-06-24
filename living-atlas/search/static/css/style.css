@@ -82,11 +82,11 @@ hr {
 }
 
 .lemma-box {
-    flex-basis: 80%;
+    flex-basis: 85%;
 }
 
 .forms-box {
-    flex-basis: 20%;
+    flex-basis: 15%;
 }
 
 .lemma-box, .form-box {
@@ -134,16 +134,17 @@ hr {
 }
 
 .lemma-col-2 {
-    flex-basis: 20%;
+    flex-basis: 25%;
+    text-align: left;
 }
 
 .lemma-col-3 {
     flex-basis: 20%;
-    text-align: center;
+    text-align: left;
 }
 
 .lemma-col-4 {
-    flex-basis: 25%;
+    flex-basis: 20%;
     text-align: right;
 }
 
@@ -222,8 +223,9 @@ input[type='radio'] {
 }
 
 #textinput-form-regex input {
+    font-family: var(--font-family-mono);
     font-size: 1rem;
-    height: 1.5rem;
+    height: 1.8rem;
     width: 24rem;
 }
 textarea {

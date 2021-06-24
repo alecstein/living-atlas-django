@@ -6,6 +6,10 @@ from .utils.view_utils import render_to_excel_response, render_to_carto_response
 
 # Create your views here.
 
+regex_substitutions = {
+    '£' : '[^aeiou]'
+}
+
 def ajax_view(request):
     """
     Server API endpoint for fetching data
@@ -36,6 +40,9 @@ def ajax_view(request):
             context['not_found_items_set'] = not_found_items_set
 
         elif query_type == 'regex':
+            for key, sub in regex_substitutions.items():
+                raw_query = raw_query.replace(key, sub)
+
             if lang == 'lemma':
                 lemma_queryset = Lemma.objects.filter(lemma__regex = raw_query)
             elif lang == 'latin':
@@ -66,7 +73,6 @@ def ajax_view(request):
             results_dict[lemma] = {'form_list':form_list,
                                     'latin':latin,
                                     'homonym_id':homonym_id}
-        print(results_count)
 
         context['results'] = results_dict
         context['group'] = group
