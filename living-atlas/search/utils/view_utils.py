@@ -1,11 +1,14 @@
 from django.http import HttpResponse, JsonResponse
+from time import time
 
-# All lemma keys are of the form {lemma}@{group}@.
-# All form keys are of the form {lemma}@{group}@{form}
-# and have value {group}@{form}.
-# The "@" symbol will not appear in any other key,
-# and the "@" symbol will only appear in the value if the
-# checkbox corresponds to a form
+def timer(func):
+    def wrap_func(*args, **kwargs):
+        start = time()
+        result = func(*args, **kwargs)
+        end = time()
+        print(f'Function {func.__name__!r} executed in {(end-start):.4f}s')
+        return result
+    return wrap_func
 
 def render_to_carto_response(request):
 

@@ -3,14 +3,16 @@ from django.http import Http404, HttpResponse
 from .models import Form, Lemma
 from tqdm import tqdm
 from time import time
-from .utils.view_utils import render_to_excel_response, render_to_carto_response
-
+from .utils.view_utils import timer, render_to_excel_response, render_to_carto_response
+import re
+from django.db import connection
 # Create your views here.
 
 regex_substitutions = {
     '£' : '[^aeiou]'
 }
 
+@timer
 def ajax_view(request):
     """
     Server API endpoint for fetching data
@@ -21,21 +23,24 @@ def ajax_view(request):
     context = {}
     status = 200
 
-    s = time()
+
+
     if request.method == 'GET':
+
+        lemma_queryset = Lemma.objects.prefetch_related('form_set').all()
 
         raw_query = request.GET.get('query')
         query_type = request.GET.get('type')
         group = request.GET.get('group')
         lang = request.GET.get('lang')
-        form_filter = request.GET.get('form_filter')
+        form_filter = re.compile(request.GET.get('form_filter', ''))
 
         if query_type == 'list':
 
             query_items_set = set(raw_query.split(' '))
 
             filter_args = {f'{lang}__in': query_items_set}
-            lemma_queryset = Lemma.objects.filter(**filter_args)
+            lemma_queryset = lemma_queryset.filter(**filter_args)
 
             found_items_set = set(lemma_queryset.values_list(lang, flat = True))
 
@@ -48,21 +53,19 @@ def ajax_view(request):
                 raw_query = raw_query.replace(key, sub)
 
             filter_args = {f'{lang}__regex': raw_query}
-            lemma_queryset = Lemma.objects.filter(**filter_args)
+            lemma_queryset = lemma_queryset.filter(**filter_args)
 
-        lemma_queryset = lemma_queryset[:300]
+        lemma_queryset = lemma_queryset[:500]
         results_dict = {}
 
-        # https://github.com/nyergler/effective-django/blob/master/orm.rst#query-performance
-        
         for lemma in lemma_queryset:
 
-            form_list = lemma.form_set.values_list("name", flat=True)
+            form_queryset = lemma.form_set.all()
 
-            if form_filter:
-                form_list = form_list.filter(name__regex = form_filter)
+            form_list = [form.name for form in form_queryset if form_filter.match(form.name)]
 
-            results_dict[lemma] = form_list
+            if form_list:
+                results_dict[lemma] = form_list
 
         if not results_dict:
             raise Http404("No result matches the given query.")
@@ -71,7 +74,7 @@ def ajax_view(request):
         context['group'] = group
 
         response = render(request, "query.html", context, status = status)
-        print(time()-s)
+
         return response
 
 def search_view(request):
