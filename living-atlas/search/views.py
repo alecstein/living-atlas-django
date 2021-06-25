@@ -29,32 +29,37 @@ def ajax_view(request):
         lang = request.GET.get('lang')
         form_filter = request.GET.get('form_filter')
 
-        lemma_queryset = Lemma.objects.prefetch_related('form_set')
-
         if query_type == 'list':
+
             query_items_set = set(raw_query.split(' '))
+
             if lang == 'lemma':
-                lemma_queryset = lemma_queryset.filter(name__in = query_items_set)
+
+                lemma_queryset = Lemma.objects.filter(name__in = query_items_set)
                 found_items_set = set(lemma_queryset.values_list('name', flat = True))
+
             elif lang == 'latin':
-                lemma_queryset = lemma_queryset.filter(latin__in = query_items_set)
+
+                lemma_queryset = Lemma.objects.filter(latin__in = query_items_set)
                 found_items_set = set(lemma_queryset.values_list('latin', flat = True))
 
             not_found_items_set = query_items_set.difference(found_items_set)
             context['not_found_items_set'] = not_found_items_set
 
         elif query_type == 'regex':
+            
             for key, sub in regex_substitutions.items():
                 raw_query = raw_query.replace(key, sub)
 
             if lang == 'lemma':
-                lemma_queryset = lemma_queryset.filter(name__regex = raw_query)
+                lemma_queryset = Lemma.objects.filter(name__regex = raw_query)
+
             elif lang == 'latin':
-                lemma_queryset = lemma_queryset.filter(latin__regex = raw_query)
+                lemma_queryset = Lemma.objects.filter(latin__regex = raw_query)
 
-
-        results_dict = {}
+        
         lemma_queryset = lemma_queryset[:300]
+        results_dict = {}
 
         for lemma in lemma_queryset:
 
