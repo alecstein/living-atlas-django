@@ -2,7 +2,7 @@
 	<ol>
 		<li class="lemma-title">
 			<div class="lemma-col-1">
-				lemma [{{results_dict.items|length}}] (group {{group}})
+				lemma [{{results_dict|length}}] (group {{group}})
 			</div>
 			<div class="lemma-col-2">
 				latin
@@ -15,20 +15,24 @@
 				<input type="button" class="pushable" value="none" onclick="checkAllLemmas('{{group}}', false)"></input>
 			</div>
 		</li>
-		{% for lemma, value in results_dict.items %}
+		{% for lemma, form_list in results_dict.items %}
 		<li class="lemma-item" data-lemma="{{lemma}}" data-group="{{group}}" onclick="activateLemma(this)">
 			<div class="lemma-col-1">
 				<input type="checkbox" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" id="{{lemma}}@{{group}}" checked></input>
-				<label for="{{lemma}}@{{group}}">{{ lemma }}</label>
+				<label for="{{lemma}}@{{group}}">
+				{{ lemma.name }}
+				</label>
 			</div>
 			<div class="lemma-col-2">
-				{{ value.latin }}
+				{{ lemma.latin }}
 			</div>
 			<div class="lemma-col-3">
-				{{ value.homonym_id }}
+				{{ lemma.homonym_id }}
 			</div>
 			<div class="lemma-col-4">
-				<span class="counter">(<span class="total">{{ value.form_list|length }}</span>/<span>{{ value.form_list|length }}</span>)</span>
+				{% with form_list|length as total %}
+				<span class="counter">(<span class="total">{{ total }}</span>/<span>{{ total }}</span>)</span>
+				{% endwith %}
 			</div>
 		</li>
 		{% endfor %}
@@ -50,13 +54,13 @@
 				<input type="button" class="pushable" value="none" onclick="checkAllForms('{{group}}', false)"></input>
 			</div>
 		</li>	
-		{% for lemma, value in results_dict.items %}
-		{% for form in value.form_list %}
-		<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
-			<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}} "id="{{lemma}}@{{group}}@{{form}}" checked>
-			<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
-		</li>
-		{% endfor %}
+		{% for lemma, form_list in results_dict.items %}
+			{% for form in form_list %}
+			<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
+				<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}} "id="{{lemma}}@{{group}}@{{form}}" checked>
+				<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
+			</li>
+			{% endfor %}
 		{% endfor %}
 	</ol>
 </div>

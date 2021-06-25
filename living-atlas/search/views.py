@@ -21,6 +21,7 @@ def ajax_view(request):
     context = {}
     status = 200
 
+    s = time()
     if request.method == 'GET':
 
         raw_query = request.GET.get('query')
@@ -54,21 +55,14 @@ def ajax_view(request):
 
         # https://github.com/nyergler/effective-django/blob/master/orm.rst#query-performance
         
-        for lemma in tqdm(lemma_queryset):
+        for lemma in lemma_queryset:
 
-            lemma_name    = lemma.name
-            latin         = lemma.latin
-            homonym_id    = lemma.homonym_id
-            form_queryset = lemma.form_set
+            form_list = lemma.form_set.values_list("name", flat=True)
 
             if form_filter:
-                form_queryset = form_queryset.filter(name__regex = form_filter)
+                form_list = form_list.filter(name__regex = form_filter)
 
-            form_list = form_queryset.values_list("name", flat=True)
-
-            results_dict[lemma_name] = {'form_list' :form_list,
-                                        'latin'     :latin,
-                                        'homonym_id':homonym_id}
+            results_dict[lemma] = form_list
 
         if not results_dict:
             raise Http404("No result matches the given query.")
@@ -77,7 +71,7 @@ def ajax_view(request):
         context['group'] = group
 
         response = render(request, "query.html", context, status = status)
-
+        print(time()-s)
         return response
 
 def search_view(request):
