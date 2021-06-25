@@ -38,7 +38,7 @@
 		{% endfor %}
 		{% for item in not_found_items_set %}
 		<li class="lemma-item-not-found">
-			{{ item }} -- not found
+			{{ item }} not found
 		</li>
 		{% endfor %}
 	</ol>
@@ -58,7 +58,7 @@
 			{% for form in form_list %}
 			<li class="form-item" data-lemma="{{lemma}}" data-group="{{group}}" style="display:none">
 				<input type="checkbox" name="{{lemma}}@{{value.latin}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" value="{{group}}@{{form}} "id="{{lemma}}@{{group}}@{{form}}" checked>
-				<label for="{{lemma}}@{{group}}@{{form}}">{{form}}</label>
+				<label for="{{lemma}}@{{group}}@{{form}}">{{ form }}</label>
 			</li>
 			{% endfor %}
 		{% endfor %}
