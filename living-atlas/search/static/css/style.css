@@ -31,7 +31,11 @@ body {
 }
 
 #title {
-    font-size: 2.5rem;
+    color: var(--darkcyan);
+    font-size: 2.8rem;
+    text-shadow: 1px 1px #444, 
+                 2px 2px #444, 
+                 3px 3px #444;
     margin-bottom: -1.3rem;
     text-align: center;
 }
