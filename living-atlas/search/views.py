@@ -23,8 +23,6 @@ def ajax_view(request):
     context = {}
     status = 200
 
-
-
     if request.method == 'GET':
 
         lemma_queryset = Lemma.objects.prefetch_related('form_set').all()
@@ -55,14 +53,14 @@ def ajax_view(request):
             filter_args = {f'{lang}__regex': raw_query}
             lemma_queryset = lemma_queryset.filter(**filter_args)
 
-        lemma_queryset = lemma_queryset[:500]
+        lemma_queryset = lemma_queryset[:250]
         results_dict = {}
 
         for lemma in lemma_queryset:
 
             form_queryset = lemma.form_set.all()
 
-            form_list = [form.name for form in form_queryset if form_filter.match(form.name)]
+            form_list = [form.name for form in form_queryset if form_filter.search(form.name)]
 
             if form_list:
                 results_dict[lemma] = form_list

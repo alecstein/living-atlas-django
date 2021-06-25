@@ -25,7 +25,6 @@ function checkAllLemmas(group, bool) {
 }
 
 function checkAllForms(group, bool) {
-  let activeLemmaName;
 
   if (group === "A") {
     lemma = activeLemmaA.dataset.lemma;
@@ -212,7 +211,7 @@ function getAJAXQueryURL(group) {
   let query = cleanQuery(document.getElementById("searchbox-main").value);
   let formFilter = cleanQuery(document.getElementById("searchbox-form").value);
   let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
-  let lang = document.querySelector(  `input[name="lang"][type="radio"]:checked`).value;
+  let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
   let url = `/ajax/?`+
             `query=${query}`+
             `&group=${group}`+

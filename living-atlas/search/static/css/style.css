@@ -11,6 +11,16 @@ html {
     font-size: 15px; 
     background-color: var(--manilla);
     padding-bottom: 18rem;
+
+    /*https://doodad.dev/pattern-generator/*/
+    --stripe:  #d2dbe0;
+    --bg: #e1e1e1;
+    background: linear-gradient(135deg, var(--bg) 25%, transparent 25%) -50px 0,
+                linear-gradient(225deg, var(--bg) 25%, transparent 25%) -50px 0,
+                linear-gradient(315deg, var(--bg) 25%, transparent 25%),
+                linear-gradient(45deg,  var(--bg) 25%, transparent 25%);
+    background-size: 80px 70px;
+    background-color: var(--stripe);
 }
 
 body {
@@ -30,20 +40,20 @@ body {
     margin-bottom: -1rem;
 }
 
-#title {
+#title, #title a {
+    text-decoration: none;
     color: var(--darkcyan);
-    font-size: 2.8rem;
-    text-shadow: 1px 1px #444, 
-                 2px 2px #444, 
-                 3px 3px #444;
-    margin-bottom: -1.3rem;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: #111;
+    font-size: 2.9rem;
     text-align: center;
+    margin-bottom: -1.3rem;
 }
 
 #subtitle {
     text-align: center;
     font-size: 1.3rem;
-    color: #555;
+    color: #333;
 }
 
 nav {
@@ -260,6 +270,7 @@ textarea {
 }
 
 .error {
+    background-color: white;
     font-family: var(--font-family-mono);
     display: inline-block;
     border: 2px solid var(--error-color);

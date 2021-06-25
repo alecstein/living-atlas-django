@@ -56,7 +56,7 @@ def render_to_excel_response(request):
             continue
 
         row_values = {'form'      : form,
-                      'lemma'     : lemma, 
+                      'lemma'     : lemma_name, 
                       'latin'     : latin,
                       'homonym_id': homonym_id,
                       'group'     : group,}
