@@ -36,7 +36,7 @@ def ajax_view(request):
         if query_type == 'list':
             query_items_set = set(raw_query.split(' '))
             if lang == 'lemma':
-                lemma_queryset = lemma_queryset.filter(lemma__in = query_items_set)
+                lemma_queryset = lemma_queryset.filter(name__in = query_items_set)
             elif lang == 'latin':
                 lemma_queryset = lemma_queryset.filter(latin__in = query_items_set)
 
@@ -49,35 +49,39 @@ def ajax_view(request):
                 raw_query = raw_query.replace(key, sub)
 
             if lang == 'lemma':
-                lemma_queryset = lemma_queryset.filter(lemma__regex = raw_query)
+                lemma_queryset = lemma_queryset.filter(name__regex = raw_query)
             elif lang == 'latin':
                 lemma_queryset = lemma_queryset.filter(latin__regex = raw_query)
 
-        if not lemma_queryset:
-            raise Http404("No Lemma matches the given query.")
-
+        
         results_dict = {}
+
         start_time = time()
+        for lemma in tqdm(lemma_queryset):
 
-        for lemma_obj in tqdm(lemma_queryset):
+            # if time() - start_time > timeout:
+                # status = 408
+                # break
 
-            if time() - start_time > timeout:
-                status = 408
-                break
+            lemma_name = lemma.name
+            latin      = lemma.latin
+            homonym_id = lemma.homonym_id
 
-            lemma = lemma_obj.lemma
-            latin = lemma_obj.latin
-            homonym_id = lemma_obj.homonym_id
-
-            form_queryset = lemma_obj.form_set
+            form_queryset = lemma.form_set
             if form_filter:
-                form_queryset.filter(form__regex = form_filter)
-            form_list = form_queryset.values_list("form", flat=True)
-            form_list = list(form_list) + [lemma]
+                form_queryset = form_queryset.filter(name__regex = form_filter)
+            form_list = form_queryset.values_list("name", flat=True)
 
-            results_dict[lemma] = {'form_list':form_list,
-                                    'latin':latin,
-                                    'homonym_id':homonym_id}
+            results_dict[lemma_name] = {'form_list':form_list,
+                                        'latin':latin,
+                                        'homonym_id':homonym_id}
+
+        end_time = time()
+        print('old way')
+        print(end_time - start_time)
+
+        if not results_dict:
+            raise Http404("No result matches the given query.")
 
         context['results_dict'] = results_dict
         context['group'] = group

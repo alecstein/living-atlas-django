@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pages',
     'search',
-    'cachalot',
+#    'cachalot',
 ]
 
 MIDDLEWARE = [
@@ -91,15 +91,15 @@ DATABASES = {
 # Adjust these settings if needed
 # https://docs.djangoproject.com/en/3.2/topics/cache/
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/tmp/django-cache',
-        'OPTIONS': {
-        'MAX_ENTRIES': 10_000
-        }
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#         'LOCATION': '/tmp/django-cache',
+#         'OPTIONS': {
+#         'MAX_ENTRIES': 10_000
+#         }
+#     }
+# }
 
 
 # Password validation

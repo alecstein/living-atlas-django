@@ -8,10 +8,10 @@
 from django.db import models
 
 class Form(models.Model):
-    form = models.CharField(max_length=100, db_index = True)
+    name = models.CharField(max_length=100, db_index = True)
     lemma = models.ForeignKey("Lemma", on_delete=models.CASCADE)
 
 class Lemma(models.Model):
-    lemma = models.CharField(max_length=100, db_index = True)
+    name = models.CharField(max_length=100, db_index = True)
     latin = models.CharField(max_length=100, db_index = True, blank = True, null = True)
     homonym_id = models.IntegerField(null = True)
