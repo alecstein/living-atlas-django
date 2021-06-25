@@ -52,6 +52,8 @@ def ajax_view(request):
         lemma_queryset = lemma_queryset[:300]
         results_dict = {}
 
+        # https://github.com/nyergler/effective-django/blob/master/orm.rst#query-performance
+        
         for lemma in tqdm(lemma_queryset):
 
             lemma_name    = lemma.name
@@ -92,5 +94,5 @@ def search_view(request):
         if post_to == "export":
             return render_to_excel_response(request)
 
-        elif post_to == "carto":
+        if post_to == "carto":
             return render_to_carto_response(request)
