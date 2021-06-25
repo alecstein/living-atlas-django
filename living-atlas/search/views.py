@@ -33,35 +33,26 @@ def ajax_view(request):
 
             query_items_set = set(raw_query.split(' '))
 
-            if lang == 'lemma':
+            filter_args = {f'{lang}__in': query_items_set}
+            lemma_queryset = Lemma.objects.filter(**filter_args)
 
-                lemma_queryset = Lemma.objects.filter(name__in = query_items_set)
-                found_items_set = set(lemma_queryset.values_list('name', flat = True))
-
-            elif lang == 'latin':
-
-                lemma_queryset = Lemma.objects.filter(latin__in = query_items_set)
-                found_items_set = set(lemma_queryset.values_list('latin', flat = True))
+            found_items_set = set(lemma_queryset.values_list(lang, flat = True))
 
             not_found_items_set = query_items_set.difference(found_items_set)
             context['not_found_items_set'] = not_found_items_set
 
         elif query_type == 'regex':
-            
+
             for key, sub in regex_substitutions.items():
                 raw_query = raw_query.replace(key, sub)
 
-            if lang == 'lemma':
-                lemma_queryset = Lemma.objects.filter(name__regex = raw_query)
+            filter_args = {f'{lang}__regex': raw_query}
+            lemma_queryset = Lemma.objects.filter(**filter_args)
 
-            elif lang == 'latin':
-                lemma_queryset = Lemma.objects.filter(latin__regex = raw_query)
-
-        
         lemma_queryset = lemma_queryset[:300]
         results_dict = {}
 
-        for lemma in lemma_queryset:
+        for lemma in tqdm(lemma_queryset):
 
             lemma_name    = lemma.name
             latin         = lemma.latin
@@ -73,8 +64,8 @@ def ajax_view(request):
 
             form_list = form_queryset.values_list("name", flat=True)
 
-            results_dict[lemma_name] = {'form_list':form_list,
-                                        'latin':latin,
+            results_dict[lemma_name] = {'form_list' :form_list,
+                                        'latin'     :latin,
                                         'homonym_id':homonym_id}
 
         if not results_dict:

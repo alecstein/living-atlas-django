@@ -18,11 +18,8 @@ def render_to_carto_response(request):
         if "@" not in value:
             continue
         group, form = value.split("@")
-        if json_data.get(group):
-            json_data[group].append(form)
-        else:
-            json_data[group] = [form]
-
+        
+        json_data.setdefault(group, []).append(form)
 
     return JsonResponse(json_data, status=200)
 
@@ -51,10 +48,11 @@ def render_to_excel_response(request):
     # Insert the row values
     row_idx = 2
     for key in request.POST:
-        if len(key.split("@")) != 4:
+        data = key.split("@")
+        if data != 4:
             continue
 
-        lemma, latin, group, form = key.split("@")
+        lemma, latin, group, form = data
         row_values = {'form':form, 'lemma':lemma, 'latin':latin, 'group':group}
 
         for col_name, row_value in row_values.items():
