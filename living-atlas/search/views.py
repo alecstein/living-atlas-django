@@ -42,7 +42,7 @@ def ajax_view(request):
             filter_args = {f'{lang}__in': query_items_set}
             lemma_queryset = lemma_queryset.filter(**filter_args)
 
-            found_items_set = set(lemma_queryset.values_list(lang, flat = True))
+            found_items_set = set([lemma.name for lemma in lemma_queryset])
 
             not_found_items_set = query_items_set.difference(found_items_set)
             context['not_found_items_set'] = not_found_items_set
