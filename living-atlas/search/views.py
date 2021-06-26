@@ -16,16 +16,16 @@ regex_substitutions = {
 def ajax_view(request):
     """
     Server API endpoint for fetching data
+    Any variable labeled *_qs is a Queryset
     Note that 'form' is a linguistic object -- it does NOT have
     anything to do with a Django Form.
     """
 
     context = {}
-    status = 200
 
     if request.method == 'GET':
 
-        lemma_queryset = Lemma.objects.prefetch_related('form_set').all()
+        lemma_qs = Lemma.objects.prefetch_related('form_set')
 
         raw_query = request.GET.get('query')
         query_type = request.GET.get('type')
@@ -38,9 +38,9 @@ def ajax_view(request):
             query_items_set = set(raw_query.split(' '))
 
             filter_args = {f'{lang}__in': query_items_set}
-            lemma_queryset = lemma_queryset.filter(**filter_args)
+            lemma_qs = lemma_qs.filter(**filter_args)
 
-            found_items_set = set([lemma.name for lemma in lemma_queryset])
+            found_items_set = set([lemma.name for lemma in lemma_qs])
 
             not_found_items_set = query_items_set.difference(found_items_set)
             context['not_found_items_set'] = not_found_items_set
@@ -51,16 +51,16 @@ def ajax_view(request):
                 raw_query = raw_query.replace(key, sub)
 
             filter_args = {f'{lang}__regex': raw_query}
-            lemma_queryset = lemma_queryset.filter(**filter_args)
+            lemma_qs = lemma_qs.filter(**filter_args)
 
-        lemma_queryset = lemma_queryset[:250]
+        lemma_qs = lemma_qs[:250]
         results_dict = {}
 
-        for lemma in lemma_queryset:
+        for lemma in lemma_qs:
 
-            form_queryset = lemma.form_set.all()
+            form_qs = lemma.form_set.all()
 
-            form_list = [form.name for form in form_queryset if form_filter.search(form.name)]
+            form_list = [form.name for form in form_qs if form_filter.search(form.name)]
 
             if form_list:
                 results_dict[lemma] = form_list
@@ -71,7 +71,7 @@ def ajax_view(request):
         context['results_dict'] = results_dict
         context['group'] = group
 
-        response = render(request, "query.html", context, status = status)
+        response = render(request, "query.html", context)
 
         return response
 

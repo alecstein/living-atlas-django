@@ -1,3 +1,4 @@
+{% autoescape off %}
 <div class="lemma-box">
 	<ol>
 		<li class="lemma-title">
@@ -18,8 +19,8 @@
 		{% for lemma, form_list in results_dict.items %}
 		<li class="lemma-item" data-lemma="{{lemma.id}}" data-group="{{group}}" onclick="activateLemma(this)">
 			<div class="lemma-col-1">
-				<input type="checkbox" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" id="{{lemma.id}}@{{group}}" checked></input>
-				<label for="{{lemma.id}}@{{group}}">
+				<label>
+				<input type="checkbox" onchange="countCheckboxes(this)" onclick="lemmaToggleAll(this)" checked></input>
 				{{ lemma.name }}
 				</label>
 			</div>
@@ -57,10 +58,13 @@
 		{% for lemma, form_list in results_dict.items %}
 			{% for form in form_list %}
 			<li class="form-item" data-lemma="{{lemma.id}}" data-group="{{group}}" style="display:none">
-				<input type="checkbox" name="{{lemma.name}}@{{lemma.latin}}@{{lemma.homonym_id}}@{{group}}@{{form}}" onchange="countCheckboxes(this)" id="{{lemma.id}}@{{group}}@{{form}}" checked>
-				<label for="{{lemma.id}}@{{group}}@{{form}}">{{ form }}</label>
+				<label>
+				<input type="checkbox" name="{{lemma.name}}@{{lemma.latin}}@{{lemma.homonym_id}}@{{group}}@{{form}}" onchange="countCheckboxes(this)"checked>
+				{{ form }}
+				</label>
 			</li>
 			{% endfor %}
 		{% endfor %}
 	</ol>
 </div>
+{% endautoescape %}
