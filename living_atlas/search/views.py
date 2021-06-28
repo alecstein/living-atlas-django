@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
+
 from search.models import Form, Lemma
-from time import time
-from .utils.view_utils import timer, render_to_excel_response, render_to_carto_response
+from search.utils.view_utils import timer, render_to_excel_response,\
+                                    render_to_carto_response
 import re
-from django.db import connection
+
 # Create your views here.
 
 regex_substitutions = {

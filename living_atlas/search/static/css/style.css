@@ -1,4 +1,3 @@
-/*Test number 2!*/
 html {
     --font-family-sans: "Tahoma", "Helvetica", "Arial", sans-serif;
     --font-family-mono: "Menlo", "Courier New", "Courier", monospace;
@@ -12,7 +11,7 @@ html {
     background-color: var(--manilla);
     padding-bottom: 18rem;
 
-    /*https://doodad.dev/pattern-generator/*/
+    /*https://doodad.dev/pattern-generator/ for alternate backgrounds*/
     --stripe:  #d2dbe0;
     --bg: #e1e1e1;
     background: linear-gradient(135deg, var(--bg) 25%, transparent 25%) -50px 0,
@@ -24,7 +23,6 @@ html {
 }
 
 body {
-    font-size: 1rem;
     font-family: var(--font-family-sans);
     width: 65rem;
     margin: auto;
@@ -32,7 +30,6 @@ body {
 
 .top {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
     width: 80%;
@@ -88,7 +85,6 @@ hr {
 
 .flex-container {
     display: flex;
-    justify-content: flex-grow;
 }
 
 .flex-container[data-group="B"] {
@@ -96,16 +92,15 @@ hr {
 }
 
 .lemma-box {
-    flex-basis: 85%;
+    width: 65%;
 }
 
-.forms-box {
-    flex-basis: 15%;
+.form-box {
+    width: 35%;
 }
 
 .lemma-box, .form-box {
     background-color: white;
-    width: 50%;
     overflow: auto;
     height: 18rem;
     border: 2px solid #444;
@@ -130,7 +125,6 @@ hr {
 
 .lemma-item, .lemma-title {
     display: flex;
-    justify-content: flex-grow;
     align-items: center;
 }
 
@@ -196,15 +190,16 @@ hr {
     font-family: var(--font-family-mono);
     display: flex;
     justify-content: center;
-    margin-bottom: .5rem;
 }
 
 .radio-group {
-    margin: .5rem 2rem .5rem 2rem;
+    margin: .5rem 1.5rem 1rem 1.5rem;
+    display: flex;
 }
 
 input[type='radio'] { 
-   transform: scale(1.5); 
+    transform: scale(1.7); 
+    margin: 0rem .5rem 0rem 1rem;
 }
 
 .button-array {
@@ -242,9 +237,10 @@ input[type='radio'] {
     height: 1.8rem;
     width: 24rem;
 }
+
 textarea {
     font-size: 1rem;
-    width: 24rem;
+    width: 29rem;
 }
 
 #textinput-form-regex-title {

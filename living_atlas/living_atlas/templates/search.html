@@ -26,7 +26,7 @@
 		filter forms by regex (optional)
 	</div>
 	<div id="textinput-form-regex">
-		<input type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)"></input>
+		<input type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)">
 	</div>
 	<div class="button-array">
 		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "send query to group A"/>
@@ -35,25 +35,25 @@
 	</div>
 </div>
 
-<div class="error-container" id="invalid-submission" style="display:none">
+<div class="error-container" id="invalid-submission" style="display:none;">
 	<div class="error">
 		to compare results you must select from both groups
 	</div>
 </div>
 
-<div class="error-container" id="no-results" style="display:none">
+<div class="error-container" id="no-results" style="display:none;">
 	<div class="error">
 		no results were found for that search
 	</div>
 </div>
 
-<div class="error-container" id="timeout" style="display:none">
+<div class="error-container" id="timeout" style="display:none;">
 	<div class="error">
 		search is taking too long. try refining your query
 	</div>
 </div>
 
-<div class="error-container" id="export-failed" style="display:none">
+<div class="error-container" id="export-failed" style="display:none;">
 	<div class="error">
 		select at least one item to export
 	</div>
@@ -65,17 +65,10 @@
 		<div class="lemma-box">
 			<ol>
 				<li class="lemma-title">
-					<div class="lemma-col-1">
-						lemma (group A)
-					</div>
-					<div class="lemma-col-2">
-						latin
-					</div>
-					<div class="lemma-col-3">
-						homonym id.
-					</div>
-					<div class="lemma-col-4" data-group="A">
-					</div>
+					<div class="lemma-col-1">lemma (group B)</div>
+					<div class="lemma-col-2">latin</div>
+					<div class="lemma-col-3">homonym id.</div>
+					<div class="lemma-col-4"></div>
 				</li>
 			</ol>
 		</div>
@@ -83,11 +76,8 @@
 		<div class="form-box">
 			<ol>
 				<li class="form-title">
-					<div class="form-col-1">
-						forms (group A)
-					</div>
-					<div class="form-col-2" data-group="A">
-					</div>
+					<div class="form-col-1">forms (group A)</div>
+					<div class="form-col-2"></div>
 				</li>	
 			</ol>
 		</div>
@@ -96,14 +86,10 @@
 		<div class="lemma-box">
 			<ol>
 				<li class="lemma-title">
-					<div class="lemma-col-1">
-						lemma (group B)
-					</div>
-					<div class="lemma-col-2">
-						latin
-					</div>
-					<div class="lemma-col-3" data-group="B">
-					</div>
+					<div class="lemma-col-1">lemma (group B)</div>
+					<div class="lemma-col-2">latin</div>
+					<div class="lemma-col-3">homonym id.</div>
+					<div class="lemma-col-4"></div>
 				</li>
 			</ol>
 		</div>
@@ -111,11 +97,8 @@
 		<div class="form-box">
 			<ol>
 				<li class="form-title">
-					<div class="form-col-1">
-						forms (group B)
-					</div>
-					<div class="form-col-2" data-group="B">
-					</div>
+					<div class="form-col-1">forms (group B)</div>
+					<div class="form-col-2"></div>
 				</li>	
 			</ol>
 		</div>

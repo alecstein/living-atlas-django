@@ -11,8 +11,6 @@ sqlite3
 source/
 living-atlas/tmp/
 paperwork/
-Pipfile
-Pipfile.lock
 
 # Python-specific
 *.pyc

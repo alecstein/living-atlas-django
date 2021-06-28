@@ -15,12 +15,23 @@ window.onload = function() {
 };
 
 function checkAllLemmas(group, bool) {
-  let lemmaCheckboxes = document.querySelectorAll(`.lemma-item` + 
-                                                  `[data-group="${group}"] ` +  
-                                                  `input`);
+  let allCheckboxes = document.querySelectorAll(`.form-item[data-group="${group}"] input, ` + 
+                                                `.lemma-item[data-group="${group}"] input`)
+  let allLemmas = document.querySelectorAll(`.lemma-item[data-group="${group}"]`);
 
-  for (var i = 0; i < lemmaCheckboxes.length; i++) {
-    lemmaCheckboxes[i].checked = bool;
+  for (var i = 0; i < allCheckboxes.length; i++) {
+    allCheckboxes[i].checked = bool;
+  }
+
+  for (var i = 0; i < allLemmas.length; i++) {
+    let max = allLemmas[i].querySelector(`.max`);
+    let total = allLemmas[i].querySelector(`.total`);
+    if (bool) {
+      total.innerHTML = max.innerHTML;
+    }
+    else {
+      total.innerHTML = 0;
+    }
   }
 }
 
