@@ -1,5 +1,5 @@
 """
-ASGI config for dees-living-atlas project.
+ASGI config for living_atlas project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dees-living-atlas.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'living_atlas.settings')
 
 application = get_asgi_application()

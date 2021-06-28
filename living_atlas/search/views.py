@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
-from .models import Form, Lemma
-from tqdm import tqdm
+from search.models import Form, Lemma
 from time import time
 from .utils.view_utils import timer, render_to_excel_response, render_to_carto_response
 import re
@@ -25,8 +24,6 @@ def ajax_view(request):
 
     if request.method == 'GET':
 
-        lemma_qs = Lemma.objects.prefetch_related('form_set')
-
         raw_query = request.GET.get('query')
         query_type = request.GET.get('type')
         group = request.GET.get('group')
@@ -38,7 +35,7 @@ def ajax_view(request):
             query_items_set = set(raw_query.split(' '))
 
             filter_args = {f'{lang}__in': query_items_set}
-            lemma_qs = lemma_qs.filter(**filter_args)
+            lemma_qs = Lemma.objects.filter(**filter_args)
 
             found_items_set = set([lemma.name for lemma in lemma_qs])
 
@@ -51,9 +48,10 @@ def ajax_view(request):
                 raw_query = raw_query.replace(key, sub)
 
             filter_args = {f'{lang}__regex': raw_query}
-            lemma_qs = lemma_qs.filter(**filter_args)
+            lemma_qs = Lemma.objects.filter(**filter_args)
 
-        lemma_qs = lemma_qs[:250]
+        lemma_qs = lemma_qs.prefetch_related('form_set')[:250]
+
         results_dict = {}
 
         for lemma in lemma_qs:
