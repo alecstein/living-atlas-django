@@ -216,72 +216,91 @@ function getAJAXQueryURL(group) {
   return url;
 }
 
+function clearBoxes(group) {
+  document.querySelector()
+}
+
+function createBoxTitle(length, group) {
+  let lemmaBoxTitle = document.querySelector(`.half-table[data-group="${group}"] .lemma-title`);
+  lemmaBoxTitle.innerHTML = `
+    <div class="lemma-col-1">lemma [${length}] (group ${group})</div>
+      <div class="lemma-col-2">latin</div>
+      <div class="lemma-col-3">homonym id.</div>
+      <div class="lemma-col-4">
+        <input type="button" class="pushable" value="all" onclick="selectAll('${group}')">
+        <input type="button" class="pushable" value="none" onclick="selectAll('${group}', false)">
+      </div>`
+  let formBoxTitle = document.querySelector(`.half-table[data-group="${group}"] .form-title`);
+  formBoxTitle.innerHTML = `
+    <div class="form-col-1">forms (group ${group})</div>
+    <div class="form-col-2" data-group="${group}">
+      <input type="button" class="pushable" value="all" onclick="selectAllForms('${group}')">
+      <input type="button" class="pushable" value="none" onclick="selectAllForms('${group}', false)">
+    </div>`
+}
+
 function createFormItem(lemma, form) {
   let node = document.createElement("li");
-  let label = document.createElement("label");
-  let input = document.createElement("input");
-  let formTextNode = document.createTextNode(form);
-
-  input.type = "checkbox";
-  input.name = `${lemma.name}@${lemma.latin}@${lemma.homid}@${lemma.group}@${form}`;
-  input.onchange = "changeCount(this)";
-  label.appendChild(input);
-  label.appendChild(formTextNode);
-  node.appendChild(label);
-
-  node.setAttribute("data-lemma-id", lemma.id);
-  node.setAttribute("data-group", lemma.group);
+  node.classList.add("form-item");
+  node.classList.add("hidden");
+  node.dataset.lemmaId = lemma.id;
+  node.dataset.group = lemma.group;
+  node.innerHTML = `
+  <label>
+    <input type="checkbox" name="${lemma.name}@${lemma.latin}@${lemma.homid}@${lemma.group}@${form}" onchange="changeCount(this)"checked>
+    ${form}
+  </label>`
   return node;
 }
 
 function createLemmaItem(lemma) {
+  let total = lemma.forms.length;
   let node = document.createElement("li");
-  let lemmaCol1 = document.createElement("div");
-  let lemmaCol2 = document.createElement("div");
-  let lemmaCol3 = document.createElement("div");
-  let lemmaCol4 = document.createElement("div");
-  let input = document.createElement("input");
-  let label = document.createElement("label");
-  let lemmaTextNode = document.createTextNode(lemma.name);
-  let latinTextNode = document.createTextNode(lemma.latin);
-  let homidTextNode = document.createTextNode(lemma.homid);
-  let spanCounter = document.createElement("span");
-  let spanTotal = document.createElement("span");
-  let spanMax = document.createElement("span");
-  let total = document.createTextNode(lemma.forms.length);
-
   node.classList.add("lemma-item");
-  node.setAttribute("data-lemma-id", lemma.id);
-  node.setAttribute("data-group", lemma.group);
+  node.dataset.lemmaId = lemma.id;
+  node.dataset.group = lemma.group;
   node.setAttribute("onclick", "activateLemma(this)");
-
-  lemmaCol1.classList.add("lemma-col-1");
-  lemmaCol4.classList.add("lemma-col-4");
-  lemmaCol2.appendChild(latinTextNode);
-  lemmaCol2.classList.add("lemma-col-2");
-  lemmaCol3.appendChild(homidTextNode);
-  lemmaCol3.classList.add("lemma-col-3");
-
-  spanTotal.classList.add("total");
-  spanMax.classList.add("max");
-  spanTotal.appendChild(total);
-  spanMax.appendChild(total);
-  spanCounter.appendChild(spanTotal);
-  spanCounter.appendChild(spanMax);
-  lemmaCol4.appendChild(spanCounter);
-
-  input.type = "checkbox";
-  input.onclick = "lemmaToggleAll(this)";
-  input.checked = true;
-  label.appendChild(input);
-  label.appendChild(lemmaTextNode);
-  lemmaCol1.appendChild(label);
-  node.appendChild(lemmaCol1);
-  node.appendChild(lemmaCol2);
-  node.appendChild(lemmaCol3);
-  node.appendChild(lemmaCol4);
-
+  node.innerHTML = `
+  <div class="lemma-col-1">
+    <label>
+      <input type="checkbox" onclick="lemmaToggleAll(this)" checked>
+      ${lemma.name}
+    </label>
+  </div>
+  <div class="lemma-col-2">
+  ${lemma.latin}
+  </div>
+  <div class="lemma-col-3">
+  ${lemma.homid}
+  </div>
+  <div class="lemma-col-4">
+  <span class="counter">(<span class="total">${total}</span>/<span class="max">${total}</span>)</span>
+  </div>`;
   return node;
+}
+
+let lemmaList = {
+  A: [],
+  B: [],
+  get(group) {
+    return (group === "A") ? this.A : this.B
+  },
+};
+
+function deepEqual(obj1, obj2) {
+
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+    return false;
+  }
+
+  for (let key in obj1) {
+    if (key !=='forms') {
+      if (obj1[key] !== obj2[key]){
+      return false;
+      }
+    }  
+  }
+  return true;
 }
 
 async function AJAXQuery(button) {
@@ -301,11 +320,15 @@ async function AJAXQuery(button) {
     let lemmaBox = document.querySelector(`.lemma-box[data-group="${group}"] ol`);
 
     jsonData.lemmas.forEach((lemma) => {
-      lemmaBox.append(createLemmaItem(lemma));
-      lemma.forms.forEach((form) => {
-        formBox.append(createFormItem(lemma, form));
-      });
-    });  
+      if (!lemmaList.get(group).some(s => deepEqual(s,lemma))) {
+        lemmaBox.append(createLemmaItem(lemma));
+        lemmaList.get(group).push(lemma);
+        lemma.forms.forEach((form) => {
+          formBox.append(createFormItem(lemma, form));
+        });
+      }
+    })
+    createBoxTitle(lemmaList.get(group).length, group);
   }
   
   resumePage();

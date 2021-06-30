@@ -14,19 +14,20 @@
 		<li class="lemma-item" data-lemma-id="{{lemma.id}}" data-group="{{group}}" onclick="activateLemma(this)">
 			<div class="lemma-col-1">
 				<label>
-					<input type="checkbox" onclick="lemmaToggleAll(this)" checked>{{ lemma.name }}</label>
-				</div>
-				<div class="lemma-col-2">{{ lemma.latin }}</div>
-				<div class="lemma-col-3">{{ lemma.homonym_id }}</div>
-				{% with form_list|length as total %}
-				<div class="lemma-col-4"><span class="counter">(<span class="total">{{ total }}</span>/<span class="max">{{ total }}</span>)</span>
-				</div>
-				{% endwith %}
-			</li>
-			{% endfor %}
-			{% for item in not_found_items_set %}
-			<li class="lemma-item-not-found">{{ item }} not found</li>
-			{% endfor %}
+					<input type="checkbox" onclick="lemmaToggleAll(this)" checked>{{ lemma.name }}
+				</label>
+			</div>
+			<div class="lemma-col-2">{{ lemma.latin }}</div>
+			<div class="lemma-col-3">{{ lemma.homonym_id }}</div>
+			{% with form_list|length as total %}
+			<div class="lemma-col-4"><span class="counter">(<span class="total">{{ total }}</span>/<span class="max">{{ total }}</span>)</span>
+			</div>
+			{% endwith %}
+		</li>
+		{% endfor %}
+		{% for item in not_found_items_set %}
+		<li class="lemma-item-not-found">{{ item }} not found</li>
+		{% endfor %}
 		</ol>
 	</div>
 	<div class="form-box">

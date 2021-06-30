@@ -51,40 +51,19 @@ def ajax_view(request):
             lemma_qs = Lemma.objects.filter(**filter_args)
 
         lemma_qs = lemma_qs.prefetch_related('form_set')[:250]
-        # results_dict = {}
 
-        # try:
-        #     for lemma in lemma_qs:
-        #         form_qs = lemma.form_set.all()
-        #         form_list = [form.name for form in form_qs if re_filter.search(form.name)]
-        #         if form_list:
-        #             results_dict[lemma] = form_list
-        # except OperationalError:
-        #     raise Http404("No result matches the given query.")
-
-        json_data = {'lemmas':[]}
+        json_data = {'lemmas': []}
         for lemma in lemma_qs:
             form_qs = lemma.form_set.all()
             form_list = [form.name for form in form_qs if re_filter.search(form.name)]
             if form_list:
-                json_data['lemmas'].append(
-                    {'id': lemma.id,
-                     'name': lemma.name,
-                     'latin': lemma.latin,
-                     'homid': lemma.homonym_id,
-                     'forms': form_list,
-                     'group': group,
-                    })
-
+                json_data['lemmas'].append({'id'   : lemma.id,
+                                            'name' : lemma.name,
+                                            'latin': lemma.latin,
+                                            'homid': lemma.homonym_id,
+                                            'forms': form_list,
+                                            'group': group,})
         return JsonResponse(json_data)
-
-        # if not results_dict:
-        #     raise Http404("No result matches the given query.")
-
-        # context['results_dict'] = results_dict
-        # context['group'] = group
-        # response = render(request, "query.html", context)
-        # return response
 
 
 def search_view(request):
