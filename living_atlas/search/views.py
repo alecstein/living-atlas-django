@@ -76,6 +76,11 @@ def search_view(request):
     The app revolves around this view, which is also the homepage.
     """
     if request.method == 'GET':
+        # Test for Internet Explorer
+        user_agent = request.META['HTTP_USER_AGENT']
+        if any(ele in user_agent.lower() for ele in ['msie', 'trident']):
+            return render(request, 'ie.html')
+
         return render(request, 'search.html')
 
     elif request.method == 'POST':
