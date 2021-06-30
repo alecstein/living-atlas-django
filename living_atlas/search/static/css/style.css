@@ -83,11 +83,11 @@ hr {
     height: 1px;
 }
 
-.flex-container {
+.half-table {
     display: flex;
 }
 
-.flex-container[data-group="B"] {
+.half-table[data-group="B"] {
     margin-top: .5rem;
 }
 
@@ -296,4 +296,8 @@ textarea {
 
 .article h2 {
     margin: 0;
+}
+
+.hidden {
+    display: none;
 }
