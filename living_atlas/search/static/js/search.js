@@ -125,7 +125,7 @@ function changeCount(formInput) {
   let lemma = new Lemma(lemmaItem);
   let total = lemma.total;
   total.innerHTML = Number(total.innerHTML) + 2*Number(formInput.checked) - 1;
-  lemma.input.checked = (Number(total.innerHTML) == 0) ? true : false;
+  lemma.input.checked = (total.innerHTML) === 0 ? false : true;
 }
 
 function togglePlaceholderText(element) {
