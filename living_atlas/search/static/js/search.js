@@ -216,14 +216,72 @@ function getAJAXQueryURL(group) {
   return url;
 }
 
-function setHTMLFromQuery(responseHTML, group) {
-  let box = document.querySelector(`.half-table[data-group="${group}"]`);
-  box.innerHTML = responseHTML;
+function createFormItem(lemma, form) {
+  let node = document.createElement("li");
+  let label = document.createElement("label");
+  let input = document.createElement("input");
+  let formTextNode = document.createTextNode(form);
 
-  let lemmas = getLemmasAll(group);
-  if (lemmas.length === 1) {
-    activateLemma(lemmas[0]);
-  }
+  input.type = "checkbox";
+  input.name = `${lemma.name}@${lemma.latin}@${lemma.homid}@${lemma.group}@${form}`;
+  input.onchange = "changeCount(this)";
+  label.appendChild(input);
+  label.appendChild(formTextNode);
+  node.appendChild(label);
+
+  node.setAttribute("data-lemma-id", lemma.id);
+  node.setAttribute("data-group", lemma.group);
+  return node;
+}
+
+function createLemmaItem(lemma) {
+  let node = document.createElement("li");
+  let lemmaCol1 = document.createElement("div");
+  let lemmaCol2 = document.createElement("div");
+  let lemmaCol3 = document.createElement("div");
+  let lemmaCol4 = document.createElement("div");
+  let input = document.createElement("input");
+  let label = document.createElement("label");
+  let lemmaTextNode = document.createTextNode(lemma.name);
+  let latinTextNode = document.createTextNode(lemma.latin);
+  let homidTextNode = document.createTextNode(lemma.homid);
+  let spanCounter = document.createElement("span");
+  let spanTotal = document.createElement("span");
+  let spanMax = document.createElement("span");
+  let total = document.createTextNode(lemma.forms.length);
+
+  node.classList.add("lemma-item");
+  node.setAttribute("data-lemma-id", lemma.id);
+  node.setAttribute("data-group", lemma.group);
+  node.setAttribute("onclick", "activateLemma(this)");
+
+  lemmaCol1.classList.add("lemma-col-1");
+  lemmaCol4.classList.add("lemma-col-4");
+  lemmaCol2.appendChild(latinTextNode);
+  lemmaCol2.classList.add("lemma-col-2");
+  lemmaCol3.appendChild(homidTextNode);
+  lemmaCol3.classList.add("lemma-col-3");
+
+  spanTotal.classList.add("total");
+  spanMax.classList.add("max");
+  spanTotal.appendChild(total);
+  spanMax.appendChild(total);
+  spanCounter.appendChild(spanTotal);
+  spanCounter.appendChild(spanMax);
+  lemmaCol4.appendChild(spanCounter);
+
+  input.type = "checkbox";
+  input.onclick = "lemmaToggleAll(this)";
+  input.checked = true;
+  label.appendChild(input);
+  label.appendChild(lemmaTextNode);
+  lemmaCol1.appendChild(label);
+  node.appendChild(lemmaCol1);
+  node.appendChild(lemmaCol2);
+  node.appendChild(lemmaCol3);
+  node.appendChild(lemmaCol4);
+
+  return node;
 }
 
 async function AJAXQuery(button) {
@@ -233,9 +291,23 @@ async function AJAXQuery(button) {
   clearErrors();
   suspendPage();
 
-  let response = await fetch(url)
-  let text = await response.text()
+  let response = await fetch(url);
+  let json = await response.json()
 
+  jsonData = json;
+
+  if (response.ok) {
+    let formBox = document.querySelector(`.form-box[data-group="${group}"] ol`);
+    let lemmaBox = document.querySelector(`.lemma-box[data-group="${group}"] ol`);
+
+    jsonData.lemmas.forEach((lemma) => {
+      lemmaBox.append(createLemmaItem(lemma));
+      lemma.forms.forEach((form) => {
+        formBox.append(createFormItem(lemma, form));
+      });
+    });  
+  }
+  
   resumePage();
   if (response.status === 404) {
     document.getElementById("no-results").classList.remove("hidden");
@@ -245,7 +317,7 @@ async function AJAXQuery(button) {
     document.getElementById("timeout").classList.remove("hidden");
     return;
   }
-  setHTMLFromQuery(text, group);
+  // setHTMLFromQuery(json, group);
 }
 
 function clearAll() {
