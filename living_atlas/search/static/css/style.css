@@ -137,26 +137,26 @@ hr {
     font-family: var(--font-family-mono);
 }
 
-.lemma-col-1 {
+.lemma-name {
     flex-basis: 35%;
 }
 
-.lemma-col-2 {
+.lemma-latin {
     flex-basis: 25%;
     text-align: left;
 }
 
-.lemma-col-3 {
+.lemma-homonym-id {
     flex-basis: 20%;
     text-align: left;
 }
 
-.lemma-col-4 {
+.lemma-buttons {
     flex-basis: 20%;
     text-align: right;
 }
 
-.lemma-col-4 input {
+.lemma-buttons input {
     margin: 0;
 }
 
@@ -170,10 +170,10 @@ hr {
     align-items: center;
 }
 
-.form-col-1 {
+.form-name {
 }
 
-.form-col-2 input {
+.form-buttons input {
     margin: 0;
 }
 

@@ -65,10 +65,10 @@
 		<div class="lemma-box" data-group="A">
 			<ol>
 				<li class="lemma-title">
-					<div class="lemma-col-1">lemma <span class="running-total hidden">[]</span> (group A)</div>
-					<div class="lemma-col-2">latin</div>
-					<div class="lemma-col-3">homonym id.</div>
-					<div class="lemma-col-4 hidden">
+					<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group A)</div>
+					<div class="lemma-latin">latin</div>
+					<div class="lemma-homonym-id">homonym id.</div>
+					<div class="lemma-buttons hidden">
 						<input type="button" class="pushable" value="all" onclick="selectAll('A')">
 						<input type="button" class="pushable" value="none" onclick="selectAll('A', false)">
 					</div>
@@ -79,8 +79,8 @@
 		<div class="form-box" data-group="A">
 			<ol>
 				<li class="form-title">
-					<div class="form-col-1">forms (group A)</div>
-					<div class="form-col-2 hidden" data-group="A">
+					<div class="form-name">forms (group A)</div>
+					<div class="form-buttons hidden" data-group="A">
 						<input type="button" class="pushable" value="all" onclick="selectAllForms('A')">
 						<input type="button" class="pushable" value="none" onclick="selectAllForms('A', false)">
 					</div>
@@ -92,10 +92,10 @@
 		<div class="lemma-box" data-group="B">
 			<ol>
 				<li class="lemma-title">
-					<div class="lemma-col-1">lemma <span class="running-total hidden">[]</span> (group B)</div>
-					<div class="lemma-col-2">latin</div>
-					<div class="lemma-col-3">homonym id.</div>
-					<div class="lemma-col-4 hidden">
+					<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group B)</div>
+					<div class="lemma-latin">latin</div>
+					<div class="lemma-homonym-id">homonym id.</div>
+					<div class="lemma-buttons hidden">
 						<input type="button" class="pushable" value="all" onclick="selectAll('B')">
 						<input type="button" class="pushable" value="none" onclick="selectAll('B', false)">
 					</div>
@@ -107,8 +107,8 @@
 		<div class="form-box" data-group = "B">
 			<ol>
 				<li class="form-title">
-					<div class="form-col-1">forms (group B)</div>
-					<div class="form-col-2 hidden" data-group="B">
+					<div class="form-name">forms (group B)</div>
+					<div class="form-buttons hidden" data-group="B">
 						<input type="button" class="pushable" value="all" onclick="selectAllForms('B')">
 						<input type="button" class="pushable" value="none" onclick="selectAllForms('B', false)">
 					</div>
@@ -133,16 +133,16 @@
 
 <template id="lemma-item">
 	<li class="lemma-item" data-lemma-id="" data-group="" onclick="activateLemma(this)">
-		<div class="lemma-col-1">
+		<div class="lemma-name">
 			<label>
 				<input type="checkbox" onclick="lemmaToggleAll(this)" checked>
 			</label>
 		</div>
-		<div class="lemma-col-2">
+		<div class="lemma-latin">
 		</div>
-		<div class="lemma-col-3">
+		<div class="lemma-homonym-id">
 		</div>
-		<div class="lemma-col-4"><span class="counter">(<span class="total"></span>/<span class="max"></span>)</span>
+		<div class="lemma-buttons"><span class="counter">(<span class="total"></span>/<span class="max"></span>)</span>
 		</div>
 	</li>
 </template>

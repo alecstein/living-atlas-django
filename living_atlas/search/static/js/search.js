@@ -242,13 +242,13 @@ function createLemmaItem(lemma) {
   li.dataset.lemmaId = lemma.id;
   li.dataset.group = lemma.group;
 
-  let col2 = node.querySelector("div.lemma-col-2");
+  let latinCol = node.querySelector("div.lemma-latin");
   let latin = document.createTextNode(lemma.latin);
-  col2.append(latin);
+  latinCol.append(latin);
 
-  let col3 = node.querySelector("div.lemma-col-3");
+  let homIdCol = node.querySelector("div.lemma-homonym-id");
   let homid = document.createTextNode(lemma.homid);
-  col3.append(homid);
+  homIdCol.append(homid);
 
   let count = lemma.forms.length;
   let max = node.querySelector(".max");
@@ -260,6 +260,10 @@ function createLemmaItem(lemma) {
 }
 
 let currentLemmas = {
+  // Contains the set of all lemmas that are currently
+  // present on the page. Used for checking if lemmas
+  // exist before adding them
+
   A: new Set(),
   B: new Set(),
   get(group) {
