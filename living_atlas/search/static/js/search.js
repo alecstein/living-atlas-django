@@ -34,7 +34,6 @@ const REGEX_TEXT = `enter a regular expression, such as`
                   + `\n^mun (all words that start with "mun")`;
 
 window.onload = function() {
-  originalHTML = document.getElementById("main-table").innerHTML;
   halfTable.A = document.querySelector(".half-table[data-group='A']").innerHTML;
   halfTable.B = document.querySelector(".half-table[data-group='B']").innerHTML;
 };
@@ -246,6 +245,9 @@ function createFormItem(lemma, form) {
   li.dataset.latin = lemma.latin;
   li.dataset.homid = lemma.homid;
 
+  let input = node.querySelector("input");
+  input.name = form;
+
   return node;
 }
 
@@ -350,6 +352,37 @@ async function AJAXQuery(button) {
     return;
   }
 }
+
+var token = document.getElementsByName("csrf-token").value;
+
+function submit(params) {
+
+  const customForm = document.createElement("form");
+  customForm.method = "post";
+  customForm.action = "";
+
+  let csrfToken = document.querySelector('[name="csrfmiddlewaretoken"');
+  customForm.appendChild(csrfToken);
+
+  let allFormInputs = getFormsAll("", "", "input", "checked");
+
+  for (input of allFormInputs) {
+    let li = input.closest("li");  
+    let data = {"lemma" : li.dataset.lemma,
+                "latin" : li.dataset.latin,
+                "homid" : li.dataset.homid,
+                "group" : li.dataset.group,}
+
+    input.value = JSON.stringify(data);
+    input.type = "hidden";
+
+    customForm.appendChild(input);
+  }
+
+  document.body.appendChild(customForm);
+  customForm.submit();
+}
+
 
 function clearAll(group) {
   (group === "A") ? currentLemmas.A = new Set() : currentLemmas.B = new Set();

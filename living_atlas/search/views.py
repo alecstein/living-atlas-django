@@ -70,6 +70,7 @@ def search_view(request):
     """
     The app revolves around this view, which is also the homepage.
     """
+
     if request.method == 'GET':
         # Test for Internet Explorer
         user_agent = request.META['HTTP_USER_AGENT']
@@ -79,11 +80,14 @@ def search_view(request):
         return render(request, 'search.html')
 
     elif request.method == 'POST':
-        post_to = request.POST['post_to']
 
-        if post_to == "export":
-            return render_to_excel_response(request)
+        print(request.POST)
 
-        if post_to == "carto":
+        return render(request, 'search.html')
 
-            return render_to_carto_response(request)
+        # if post_to == "export":
+        #     return render_to_excel_response(request)
+
+        # if post_to == "carto":
+
+        #     return render_to_carto_response(request)

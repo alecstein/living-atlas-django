@@ -3,7 +3,7 @@
 
 {% block content %}
 <script type="text/javascript" src="{% static 'js/search.js' %}"></script>
-
+{% csrf_token %}
 <div class="radios">
 	<div class="radio-group">
 		<input type="radio" name="lang" value="latin" id="radio-latin">
@@ -58,71 +58,70 @@
 	</div>
 </div>
 
-<form method="post" id="main-table" onsubmit="return validateForm(this.submitted)" action="">
-	{% csrf_token %}
-	<div class="half-table" data-group="A">
-		<div class="lemma-box" data-group="A">
-			<ol>
-				<li class="lemma-title">
-					<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group A)</div>
-					<div class="lemma-latin">latin</div>
-					<div class="lemma-homonym-id">homonym id.</div>
-					<div class="lemma-buttons hidden">
-						<input type="button" class="pushable" value="all" onclick="selectAll('A')">
-						<input type="button" class="pushable" value="none" onclick="selectAll('A', false)">
-						<input type="button" class="pushable cancel" value="X" onclick="clearAll('A')">
-					</div>
-				</li>
-			</ol>
-		</div>
-
-		<div class="form-box" data-group="A">
-			<ol>
-				<li class="form-title">
-					<div class="form-name">forms (group A)</div>
-					<div class="form-buttons hidden" data-group="A">
-						<input type="button" class="pushable" value="all" onclick="selectAllForms('A')">
-						<input type="button" class="pushable" value="none" onclick="selectAllForms('A', false)">
-					</div>
-				</li>	
-			</ol>
-		</div>
+<div class="half-table" data-group="A">
+	<div class="lemma-box" data-group="A">
+		<ol>
+			<li class="lemma-title">
+				<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group A)</div>
+				<div class="lemma-latin">latin</div>
+				<div class="lemma-homonym-id">homonym id.</div>
+				<div class="lemma-buttons hidden">
+					<input type="button" class="pushable" value="all" onclick="selectAll('A')">
+					<input type="button" class="pushable" value="none" onclick="selectAll('A', false)">
+					<input type="button" class="pushable cancel" value="X" onclick="clearAll('A')">
+				</div>
+			</li>
+		</ol>
 	</div>
-	<div class="half-table" data-group="B">
-		<div class="lemma-box" data-group="B">
-			<ol>
-				<li class="lemma-title">
-					<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group B)</div>
-					<div class="lemma-latin">latin</div>
-					<div class="lemma-homonym-id">homonym id.</div>
-					<div class="lemma-buttons hidden">
-						<input type="button" class="pushable" value="all" onclick="selectAll('B')">
-						<input type="button" class="pushable" value="none" onclick="selectAll('B', false)">
-						<input type="button" class="pushable cancel" value="X" onclick="clearAll('B')">
-					</div>
-				</li>
-				<!-- Lemma elements go here -->
-			</ol>
-		</div>
 
-		<div class="form-box" data-group = "B">
-			<ol>
-				<li class="form-title">
-					<div class="form-name">forms (group B)</div>
-					<div class="form-buttons hidden" data-group="B">
-						<input type="button" class="pushable" value="all" onclick="selectAllForms('B')">
-						<input type="button" class="pushable" value="none" onclick="selectAllForms('B', false)">
-					</div>
-				</li>
-				<!-- Form elements go here -->
-			</ol>
-		</div>
+	<div class="form-box" data-group="A">
+		<ol>
+			<li class="form-title">
+				<div class="form-name">forms (group A)</div>
+				<div class="form-buttons hidden" data-group="A">
+					<input type="button" class="pushable" value="all" onclick="selectAllForms('A')">
+					<input type="button" class="pushable" value="none" onclick="selectAllForms('A', false)">
+				</div>
+			</li>	
+		</ol>
 	</div>
-</form>
-<div id="base-buttons">
-	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "export"/>export to MS Excel</button>
-	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "carto"/>send to carto</button>
 </div>
+<div class="half-table" data-group="B">
+	<div class="lemma-box" data-group="B">
+		<ol>
+			<li class="lemma-title">
+				<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group B)</div>
+				<div class="lemma-latin">latin</div>
+				<div class="lemma-homonym-id">homonym id.</div>
+				<div class="lemma-buttons hidden">
+					<input type="button" class="pushable" value="all" onclick="selectAll('B')">
+					<input type="button" class="pushable" value="none" onclick="selectAll('B', false)">
+					<input type="button" class="pushable cancel" value="X" onclick="clearAll('B')">
+				</div>
+			</li>
+			<!-- Lemma elements go here -->
+		</ol>
+	</div>
+
+	<div class="form-box" data-group = "B">
+		<ol>
+			<li class="form-title">
+				<div class="form-name">forms (group B)</div>
+				<div class="form-buttons hidden" data-group="B">
+					<input type="button" class="pushable" value="all" onclick="selectAllForms('B')">
+					<input type="button" class="pushable" value="none" onclick="selectAllForms('B', false)">
+				</div>
+			</li>
+			<!-- Form elements go here -->
+		</ol>
+	</div>
+</div>
+<div id="base-buttons">
+	<button class="pushable" type="submit" onclick="submit()"/>export to MS Excel</button>
+	<button class="pushable" type="submit" onclick="submit()"/>send to carto</button>
+</div>
+
+
 
 <template id="form-item">
 	<li class="form-item hidden" data-lemma-id="" data-group="">
