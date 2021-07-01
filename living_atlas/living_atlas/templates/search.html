@@ -20,7 +20,7 @@
 </div>
 <div class="wrap-searchbox">
 	<div id="textarea-main">
-		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire&#10;pecine" rows="5"></textarea>
+		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire" rows="5"></textarea>
 	</div>
 	<div id="textinput-form-regex-title">
 		filter forms by regex (optional)
@@ -65,10 +65,13 @@
 		<div class="lemma-box" data-group="A">
 			<ol>
 				<li class="lemma-title">
-					<div class="lemma-col-1">lemma (group B)</div>
+					<div class="lemma-col-1">lemma <span class="running-total hidden">[]</span> (group A)</div>
 					<div class="lemma-col-2">latin</div>
 					<div class="lemma-col-3">homonym id.</div>
-					<div class="lemma-col-4"></div>
+					<div class="lemma-col-4 hidden">
+						<input type="button" class="pushable" value="all" onclick="selectAll('A')">
+						<input type="button" class="pushable" value="none" onclick="selectAll('A', false)">
+					</div>
 				</li>
 			</ol>
 		</div>
@@ -77,7 +80,10 @@
 			<ol>
 				<li class="form-title">
 					<div class="form-col-1">forms (group A)</div>
-					<div class="form-col-2"></div>
+					<div class="form-col-2 hidden" data-group="A">
+						<input type="button" class="pushable" value="all" onclick="selectAllForms('A')">
+						<input type="button" class="pushable" value="none" onclick="selectAllForms('A', false)">
+					</div>
 				</li>	
 			</ol>
 		</div>
@@ -86,11 +92,15 @@
 		<div class="lemma-box" data-group="B">
 			<ol>
 				<li class="lemma-title">
-					<div class="lemma-col-1">lemma (group B)</div>
+					<div class="lemma-col-1">lemma <span class="running-total hidden">[]</span> (group B)</div>
 					<div class="lemma-col-2">latin</div>
 					<div class="lemma-col-3">homonym id.</div>
-					<div class="lemma-col-4"></div>
+					<div class="lemma-col-4 hidden">
+						<input type="button" class="pushable" value="all" onclick="selectAll('B')">
+						<input type="button" class="pushable" value="none" onclick="selectAll('B', false)">
+					</div>
 				</li>
+				<!-- Lemma elements go here -->
 			</ol>
 		</div>
 
@@ -98,8 +108,12 @@
 			<ol>
 				<li class="form-title">
 					<div class="form-col-1">forms (group B)</div>
-					<div class="form-col-2"></div>
-				</li>	
+					<div class="form-col-2 hidden" data-group="B">
+						<input type="button" class="pushable" value="all" onclick="selectAllForms('B')">
+						<input type="button" class="pushable" value="none" onclick="selectAllForms('B', false)">
+					</div>
+				</li>
+				<!-- Form elements go here -->
 			</ol>
 		</div>
 	</div>
@@ -108,6 +122,31 @@
 	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "export"/>export to MS Excel</button>
 	<button class="pushable" form="main-table" onclick="this.form.submitted=this.value;" name="post_to" type="submit" value = "carto"/>send to carto</button>
 </div>
+
+<template id="form-item">
+	<li class="form-item hidden" data-lemma-id="" data-group="">
+		<label>
+			<input type="checkbox" onchange="changeCount(this)" checked>
+		</label>
+	</li>
+</template>
+
+<template id="lemma-item">
+	<li class="lemma-item" data-lemma-id="" data-group="" onclick="activateLemma(this)">
+		<div class="lemma-col-1">
+			<label>
+				<input type="checkbox" onclick="lemmaToggleAll(this)" checked>
+			</label>
+		</div>
+		<div class="lemma-col-2">
+		</div>
+		<div class="lemma-col-3">
+		</div>
+		<div class="lemma-col-4"><span class="counter">(<span class="total"></span>/<span class="max"></span>)</span>
+		</div>
+	</li>
+</template>
+
 {%endblock content%}
 
 

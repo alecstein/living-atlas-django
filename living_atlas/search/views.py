@@ -50,7 +50,7 @@ def ajax_view(request):
 
             lemma_qs = Lemma.objects.filter(**filter_args)
 
-        lemma_qs = lemma_qs.prefetch_related('form_set')[:250]
+        lemma_qs = lemma_qs.prefetch_related('form_set')[:500]
 
         json_data = {'lemmas': []}
         for lemma in lemma_qs:

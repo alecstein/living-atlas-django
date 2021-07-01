@@ -216,92 +216,56 @@ function getAJAXQueryURL(group) {
   return url;
 }
 
-function clearBoxes(group) {
-  document.querySelector()
-}
-
-function createBoxTitle(length, group) {
-  let lemmaBoxTitle = document.querySelector(`.half-table[data-group="${group}"] .lemma-title`);
-  lemmaBoxTitle.innerHTML = `
-    <div class="lemma-col-1">lemma [${length}] (group ${group})</div>
-      <div class="lemma-col-2">latin</div>
-      <div class="lemma-col-3">homonym id.</div>
-      <div class="lemma-col-4">
-        <input type="button" class="pushable" value="all" onclick="selectAll('${group}')">
-        <input type="button" class="pushable" value="none" onclick="selectAll('${group}', false)">
-      </div>`
-  let formBoxTitle = document.querySelector(`.half-table[data-group="${group}"] .form-title`);
-  formBoxTitle.innerHTML = `
-    <div class="form-col-1">forms (group ${group})</div>
-    <div class="form-col-2" data-group="${group}">
-      <input type="button" class="pushable" value="all" onclick="selectAllForms('${group}')">
-      <input type="button" class="pushable" value="none" onclick="selectAllForms('${group}', false)">
-    </div>`
-}
-
 function createFormItem(lemma, form) {
-  let node = document.createElement("li");
-  node.classList.add("form-item");
-  node.classList.add("hidden");
-  node.dataset.lemmaId = lemma.id;
-  node.dataset.group = lemma.group;
-  node.innerHTML = `
-  <label>
-    <input type="checkbox" name="${lemma.name}@${lemma.latin}@${lemma.homid}@${lemma.group}@${form}" onchange="changeCount(this)"checked>
-    ${form}
-  </label>`
+  let template = document.querySelector("#form-item");
+  let node = template.content.cloneNode(true);
+
+  let name = document.createTextNode(form);
+  node.querySelector("label").append(name);
+
+  let li = node.querySelector("li");
+  li.dataset.lemmaId = lemma.id;
+  li.dataset.group = lemma.group;
+  li.dataset.latin = lemma.latin;
+  li.dataset.homid = lemma.homid;
   return node;
 }
 
 function createLemmaItem(lemma) {
-  let total = lemma.forms.length;
-  let node = document.createElement("li");
-  node.classList.add("lemma-item");
-  node.dataset.lemmaId = lemma.id;
-  node.dataset.group = lemma.group;
-  node.setAttribute("onclick", "activateLemma(this)");
-  node.innerHTML = `
-  <div class="lemma-col-1">
-    <label>
-      <input type="checkbox" onclick="lemmaToggleAll(this)" checked>
-      ${lemma.name}
-    </label>
-  </div>
-  <div class="lemma-col-2">
-  ${lemma.latin}
-  </div>
-  <div class="lemma-col-3">
-  ${lemma.homid}
-  </div>
-  <div class="lemma-col-4">
-  <span class="counter">(<span class="total">${total}</span>/<span class="max">${total}</span>)</span>
-  </div>`;
+  let template = document.querySelector("#lemma-item");
+  let node = template.content.cloneNode(true);
+
+  let name = document.createTextNode(lemma.name);
+  node.querySelector("label").append(name);
+
+  let li = node.querySelector(".lemma-item");
+  li.dataset.lemmaId = lemma.id;
+  li.dataset.group = lemma.group;
+
+  let col2 = node.querySelector("div.lemma-col-2");
+  let latin = document.createTextNode(lemma.latin);
+  col2.append(latin);
+
+  let col3 = node.querySelector("div.lemma-col-3");
+  let homid = document.createTextNode(lemma.homid);
+  col3.append(homid);
+
+  let count = lemma.forms.length;
+  let max = node.querySelector(".max");
+  let total = node.querySelector(".total");
+  max.innerHTML = count;
+  total.innerHTML = count;
+
   return node;
 }
 
-let lemmaList = {
-  A: [],
-  B: [],
+let currentLemmas = {
+  A: new Set(),
+  B: new Set(),
   get(group) {
     return (group === "A") ? this.A : this.B
   },
 };
-
-function deepEqual(obj1, obj2) {
-
-  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
-    return false;
-  }
-
-  for (let key in obj1) {
-    if (key !=='forms') {
-      if (obj1[key] !== obj2[key]){
-      return false;
-      }
-    }  
-  }
-  return true;
-}
 
 async function AJAXQuery(button) {
   let group = button.getAttribute("group");
@@ -313,25 +277,48 @@ async function AJAXQuery(button) {
   let response = await fetch(url);
   let json = await response.json()
 
-  jsonData = json;
+  resumePage();
 
   if (response.ok) {
-    let formBox = document.querySelector(`.form-box[data-group="${group}"] ol`);
-    let lemmaBox = document.querySelector(`.lemma-box[data-group="${group}"] ol`);
 
-    jsonData.lemmas.forEach((lemma) => {
-      if (!lemmaList.get(group).some(s => deepEqual(s,lemma))) {
-        lemmaBox.append(createLemmaItem(lemma));
-        lemmaList.get(group).push(lemma);
-        lemma.forms.forEach((form) => {
-          formBox.append(createFormItem(lemma, form));
-        });
+    let lemmaBox = document.querySelector(`.lemma-box[data-group="${group}"]`);
+    let formBox = document.querySelector(`.form-box[data-group="${group}"]`);
+
+    let lemmaList = lemmaBox.querySelector("ol");
+    let formList = formBox.querySelector("ol");
+
+    for (lemma of json.lemmas) {
+      if (!currentLemmas.get(group).has(lemma.id)) {
+        currentLemmas.get(group).add(lemma.id);
+        lemmaList.append(createLemmaItem(lemma));
+        for (form of lemma.forms) {
+          formList.append(createFormItem(lemma, form));
+        }
       }
-    })
-    createBoxTitle(lemmaList.get(group).length, group);
+    }
+
+    let lemmaHidden = lemmaBox.querySelectorAll(`.hidden`);
+    let formHidden = formBox.querySelectorAll(`div.hidden`);
+
+    let allLemmas = getLemmasAll(group);
+    let allLemmasCount = allLemmas.length;
+
+    if (allLemmasCount === 0) {
+      return;
+    }
+
+    lemmaHidden.forEach(node => node.classList.remove("hidden"));
+    formHidden.forEach(node => node.classList.remove("hidden"));
+
+    if (allLemmasCount === 1) {
+      let lemma = new Lemma(allLemmas[0]);
+      lemma.activate();
+    }
+
+    let runningTotal = lemmaBox.querySelector(".running-total");
+    runningTotal.innerHTML = `[${allLemmasCount}]`;
   }
   
-  resumePage();
   if (response.status === 404) {
     document.getElementById("no-results").classList.remove("hidden");
     return;
@@ -340,7 +327,6 @@ async function AJAXQuery(button) {
     document.getElementById("timeout").classList.remove("hidden");
     return;
   }
-  // setHTMLFromQuery(json, group);
 }
 
 function clearAll() {
