@@ -92,4 +92,6 @@ def cartography_view(request):
     if request.method == 'POST':
         request_data = json.loads(request.body)
         json_data = json.dumps(request_data)
-        return JsonResponse(json_data, safe = False)
+        response = JsonResponse(json_data, safe = False)
+        response['message'] = 'submitted'
+        return response

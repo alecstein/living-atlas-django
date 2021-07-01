@@ -380,22 +380,22 @@ async function submitFormInputs(url) {
     },
   })
 
-  let result = await response;
-
-  if (url === "/excel/") {
-    let fileBlob = response.blob();
+  if (url.source === "excel") {
+    let result = await response.blob();
 
     var a = document.createElement("a");
     document.body.appendChild(a);
-    a.classList.add("hidden");
-
-    objectUrl = URL.createObjectURL(fileBlob);
+    a.style = "display: none";
+    objectUrl = URL.createObjectURL(result);
     a.href = objectUrl;
     a.download = "living-atlas.xlsx";
     a.click();
     URL.revokeObjectURL(objectUrl);
-
   }
+
+  let result = await response;
+  alert(result.message);
+
 }
 
 
