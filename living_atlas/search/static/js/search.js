@@ -1,6 +1,18 @@
 /*jshint esversion: 6 */
 
 let originalHTML;
+
+let halfTable = {
+  A: undefined,
+  B: undefined,
+  get(group) {
+    return (group === "A") ? this.A : this.B
+  },
+  set(group, lemma) {
+    (group === "A") ? this.A = lemma : this.B = lemma;
+  },
+}
+
 let activeLemma = {
   A: undefined,
   B: undefined,
@@ -23,6 +35,8 @@ const REGEX_TEXT = `enter a regular expression, such as`
 
 window.onload = function() {
   originalHTML = document.getElementById("main-table").innerHTML;
+  halfTable.A = document.querySelector(".half-table[data-group='A']").innerHTML;
+  halfTable.B = document.querySelector(".half-table[data-group='B']").innerHTML;
 };
 
 function getFormsAll(lemmaId, group, input=false, checked=false) {
@@ -55,12 +69,15 @@ Lemma.prototype.forms = function() {
 };
 
 Lemma.prototype.activate = function() {
-  this.forms().forEach(node => node.classList.toggle("hidden"));
+  this.forms().forEach(node => node.classList.remove("hidden"));
   this.item.style.backgroundColor = "#ffe600";
+
+  let group = this.group;
+  activeLemma.set(group, this);
 };
 
 Lemma.prototype.deactivate = function() {
-  this.forms().forEach(node => node.classList.toggle("hidden"));
+  this.forms().forEach(node => node.classList.add("hidden"));
   this.item.style.backgroundColor = "";
 };
 
@@ -85,7 +102,7 @@ function selectAll(group, bool=true) {
 }
 
 function selectAllForms(group, bool=true) {
-  let lemma = activeLemma.get(group)
+  let lemma = activeLemma.get(group);
   if (lemma === undefined) {
     return false; 
   }
@@ -228,6 +245,7 @@ function createFormItem(lemma, form) {
   li.dataset.group = lemma.group;
   li.dataset.latin = lemma.latin;
   li.dataset.homid = lemma.homid;
+
   return node;
 }
 
@@ -333,7 +351,7 @@ async function AJAXQuery(button) {
   }
 }
 
-function clearAll() {
-  clearErrors();
-  document.getElementById("main-table").innerHTML = originalHTML;
+function clearAll(group) {
+  (group === "A") ? currentLemmas.A = new Set() : currentLemmas.B = new Set();
+  document.querySelector(`.half-table[data-group="${group}"]`).innerHTML = halfTable.get(group);
 }

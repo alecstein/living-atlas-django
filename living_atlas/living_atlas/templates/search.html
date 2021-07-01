@@ -29,9 +29,8 @@
 		<input type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)">
 	</div>
 	<div class="button-array">
-		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "send query to group A"/>
-		<input class="pushable" group="B" type="submit" onclick="AJAXQuery(this)" value = "send query to group B"/>
-		<input class="pushable" id="clear" type="submit" onclick="clearAll()" value = "clear all ❌"/>
+		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "add query to group A"/>
+		<input class="pushable" group="B" type="submit" onclick="AJAXQuery(this)" value = "add query to group B"/>
 	</div>
 </div>
 
@@ -71,6 +70,7 @@
 					<div class="lemma-buttons hidden">
 						<input type="button" class="pushable" value="all" onclick="selectAll('A')">
 						<input type="button" class="pushable" value="none" onclick="selectAll('A', false)">
+						<input type="button" class="pushable cancel" value="X" onclick="clearAll('A')">
 					</div>
 				</li>
 			</ol>
@@ -98,6 +98,7 @@
 					<div class="lemma-buttons hidden">
 						<input type="button" class="pushable" value="all" onclick="selectAll('B')">
 						<input type="button" class="pushable" value="none" onclick="selectAll('B', false)">
+						<input type="button" class="pushable cancel" value="X" onclick="clearAll('B')">
 					</div>
 				</li>
 				<!-- Lemma elements go here -->
