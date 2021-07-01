@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block content %}
-<script type="text/javascript" src="{% static 'js/search.js' %}"></script>
 {% csrf_token %}
+<script type="text/javascript" src="{% static 'js/search.js' %}"></script>
 <div class="radios">
 	<div class="radio-group">
 		<input type="radio" name="lang" value="latin" id="radio-latin">
@@ -117,8 +117,8 @@
 	</div>
 </div>
 <div id="base-buttons">
-	<button class="pushable" type="submit" onclick="submit()"/>export to MS Excel</button>
-	<button class="pushable" type="submit" onclick="submit()"/>send to carto</button>
+	<button class="pushable" onclick="submitFormInputs(/excel/)"/>export to MS Excel</button>
+	<button class="pushable" onclick="submitFormInputs(/cartography/)"/>send to carto</button>
 </div>
 
 

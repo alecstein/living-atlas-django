@@ -241,6 +241,7 @@ function createFormItem(lemma, form) {
 
   let li = node.querySelector("li");
   li.dataset.lemmaId = lemma.id;
+  li.dataset.lemma = lemma.name;
   li.dataset.group = lemma.group;
   li.dataset.latin = lemma.latin;
   li.dataset.homid = lemma.homid;
@@ -353,34 +354,48 @@ async function AJAXQuery(button) {
   }
 }
 
-var token = document.getElementsByName("csrf-token").value;
+let csrfToken = document.querySelector('[name="csrfmiddlewaretoken"');
 
-function submit(params) {
-
-  const customForm = document.createElement("form");
-  customForm.method = "post";
-  customForm.action = "";
-
-  let csrfToken = document.querySelector('[name="csrfmiddlewaretoken"');
-  customForm.appendChild(csrfToken);
+async function submitFormInputs(url) {
 
   let allFormInputs = getFormsAll("", "", "input", "checked");
 
+  let data = {"forms" : []};
   for (input of allFormInputs) {
     let li = input.closest("li");  
-    let data = {"lemma" : li.dataset.lemma,
-                "latin" : li.dataset.latin,
-                "homid" : li.dataset.homid,
-                "group" : li.dataset.group,}
-
-    input.value = JSON.stringify(data);
-    input.type = "hidden";
-
-    customForm.appendChild(input);
+    let values = {"lemma" : li.dataset.lemma,
+                 "latin" : li.dataset.latin,
+                 "homid" : li.dataset.homid,
+                 "group" : li.dataset.group,}
+    let form = input.name;
+    data.forms.push(JSON.stringify({form: form, values : values}));
   }
 
-  document.body.appendChild(customForm);
-  customForm.submit();
+  let response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      "X-CSRFToken" : csrfToken.value,
+    },
+  })
+
+  let result = await response;
+
+  if (url === "/excel/") {
+    let fileBlob = response.blob();
+
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.classList.add("hidden");
+
+    objectUrl = URL.createObjectURL(fileBlob);
+    a.href = objectUrl;
+    a.download = "living-atlas.xlsx";
+    a.click();
+    URL.revokeObjectURL(objectUrl);
+
+  }
 }
 
 

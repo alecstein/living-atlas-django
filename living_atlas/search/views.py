@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponse, JsonResponse
 from search.models import Form, Lemma
-from search.utils.view_utils import timer, render_to_excel_response,\
-                                    render_to_carto_response
+from search.utils.view_utils import timer, render_to_excel_response
 from django.db.utils import OperationalError
 import re
+import json
 
 # Create your views here.
 
@@ -79,15 +79,17 @@ def search_view(request):
 
         return render(request, 'search.html')
 
-    elif request.method == 'POST':
+    if request.method == 'POST':
+        return cartography_view(request)
 
-        print(request.POST)
+def excel_view(request):
 
-        return render(request, 'search.html')
+    if request.method == 'POST':
+        return render_to_excel_response(request)
 
-        # if post_to == "export":
-        #     return render_to_excel_response(request)
+def cartography_view(request):
 
-        # if post_to == "carto":
-
-        #     return render_to_carto_response(request)
+    if request.method == 'POST':
+        request_data = json.loads(request.body)
+        json_data = json.dumps(request_data)
+        return JsonResponse(json_data, safe = False)
