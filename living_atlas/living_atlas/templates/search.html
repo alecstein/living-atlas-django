@@ -29,8 +29,8 @@
 		<input type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)">
 	</div>
 	<div class="button-array">
-		<input class="pushable" group="A" type="submit" onclick="AJAXQuery(this)" value = "add query to group A"/>
-		<input class="pushable" group="B" type="submit" onclick="AJAXQuery(this)" value = "add query to group B"/>
+		<input class="pushable" data-group="a" type="submit" onclick="submitQuery(this)" value = "add query to group A"/>
+		<input class="pushable" data-group="b" type="submit" onclick="submitQuery(this)" value = "add query to group B"/>
 	</div>
 </div>
 
@@ -58,91 +58,92 @@
 	</div>
 </div>
 
-<div class="half-table" data-group="A">
-	<div class="lemma-box" data-group="A">
+<div class="frame" data-group="a">
+	<div class="lemma-frame" data-group="a">
 		<ol>
-			<li class="lemma-title">
-				<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group A)</div>
-				<div class="lemma-latin">latin</div>
-				<div class="lemma-homonym-id">homonym id.</div>
-				<div class="lemma-buttons hidden">
-					<input type="button" class="pushable" value="all" onclick="selectAll('A')">
-					<input type="button" class="pushable" value="none" onclick="selectAll('A', false)">
-					<input type="button" class="pushable cancel" value="X" onclick="clearAll('A')">
+			<h3 class="list-title">
+				<div class="lemma-name">lemma <span class="running-total resettable hidden">[]</span> (group A)</div>
+				<div class="latin">latin</div>
+				<div class="homonym-id">homonym id.</div>
+				<div class="lemma-buttons resettable hidden">
+					<input type="button" class="pushable" value="all" onclick="views['a'].selectAll(true)">
+					<input type="button" class="pushable" value="none" onclick="views['a'].selectAll(false)">
+					<input type="button" class="pushable cancel" value="X" onclick="views['a'].reset()">
 				</div>
-			</li>
+			</h3>
 		</ol>
 	</div>
 
-	<div class="form-box" data-group="A">
+	<div class="form-frame" data-group="a">
 		<ol>
-			<li class="form-title">
+			<h3 class="list-title">
 				<div class="form-name">forms (group A)</div>
-				<div class="form-buttons hidden" data-group="A">
-					<input type="button" class="pushable" value="all" onclick="selectAllForms('A')">
-					<input type="button" class="pushable" value="none" onclick="selectAllForms('A', false)">
+				<div class="form-buttons resettable hidden" data-group="a">
+					<input type="button" class="pushable" value="all" onclick="views['a'].selectAllForms(true)">
+					<input type="button" class="pushable" value="none" onclick="views['a'].selectAllForms(false)">
 				</div>
-			</li>	
+			</h3>	
 		</ol>
 	</div>
 </div>
-<div class="half-table" data-group="B">
-	<div class="lemma-box" data-group="B">
+<div class="frame" data-group="b">
+	<div class="lemma-frame" data-group="b">
 		<ol>
-			<li class="lemma-title">
-				<div class="lemma-name">lemma <span class="running-total hidden">[]</span> (group B)</div>
-				<div class="lemma-latin">latin</div>
-				<div class="lemma-homonym-id">homonym id.</div>
-				<div class="lemma-buttons hidden">
-					<input type="button" class="pushable" value="all" onclick="selectAll('B')">
-					<input type="button" class="pushable" value="none" onclick="selectAll('B', false)">
-					<input type="button" class="pushable cancel" value="X" onclick="clearAll('B')">
+			<h3 class="list-title">
+				<div class="lemma-name">lemma <span class="running-total resettable hidden">[]</span> (group B)</div>
+				<div class="latin">latin</div>
+				<div class="homonym-id">homonym id.</div>
+				<div class="lemma-buttons resettable hidden">
+					<input type="button" class="pushable" value="all" onclick="views['b'].selectAll(true)">
+					<input type="button" class="pushable" value="none" onclick="views['b'].selectAll(false)">
+					<input type="button" class="pushable cancel" value="X" onclick="views['b'].reset()">
 				</div>
-			</li>
+			</h3>
 			<!-- Lemma elements go here -->
 		</ol>
 	</div>
 
-	<div class="form-box" data-group = "B">
+	<div class="form-frame" data-group = "b">
 		<ol>
-			<li class="form-title">
+			<h3 class="list-title">
 				<div class="form-name">forms (group B)</div>
-				<div class="form-buttons hidden" data-group="B">
-					<input type="button" class="pushable" value="all" onclick="selectAllForms('B')">
-					<input type="button" class="pushable" value="none" onclick="selectAllForms('B', false)">
+				<div class="form-buttons resettable hidden" data-group="b">
+					<input type="button" class="pushable" value="all" onclick="views['b'].selectAllForms(true)">
+					<input type="button" class="pushable" value="none" onclick="views['b'].selectAllForms(false)">
 				</div>
-			</li>
+			</h3>
 			<!-- Form elements go here -->
 		</ol>
 	</div>
 </div>
 <div id="base-buttons">
-	<button class="pushable" onclick="submitFormInputs(/excel/)"/>export to MS Excel</button>
-	<button class="pushable" onclick="submitFormInputs(/cartography/)"/>send to carto</button>
+	<button class="pushable" onclick="postInputs(/excel/)"/>export to MS Excel</button>
+	<button class="pushable" onclick="postInputs(/cartography/)"/>send to carto</button>
 </div>
 
+<!-- Templates used in the generation of form and lemma elements  -->
 
-
-<template id="form-item">
-	<li class="form-item hidden" data-lemma-id="" data-group="">
+<template id="form">
+	<li class="form hidden">
 		<label>
-			<input type="checkbox" onchange="changeCount(this)" checked>
+			<input type="checkbox" checked>
 		</label>
 	</li>
 </template>
 
-<template id="lemma-item">
-	<li class="lemma-item" data-lemma-id="" data-group="" onclick="activateLemma(this)">
+<template id="lemma">
+	<li class="lemma">
 		<div class="lemma-name">
 			<label>
-				<input type="checkbox" onclick="lemmaToggleAll(this)" checked>
+				<input type="checkbox" checked>
 			</label>
 		</div>
-		<div class="lemma-latin">
+		<div class="latin">
 		</div>
-		<div class="lemma-homonym-id">
+		<div class="homonym-id">
 		</div>
-		<div class="lemma-buttons"><span class="counter">(<span class="total"></span>/<span class="max"></span>)</span>
+		<div class="counter">
+			(<span></span>/<span></span>)
 		</div>
 	</li>
 </template>
