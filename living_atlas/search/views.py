@@ -21,7 +21,9 @@ def ajax_view(request):
     Note that 'form' is a linguistic object -- it does NOT have
     anything to do with a Django Form.
     """
-    context = {}
+    json_data = {'lemmas': []}
+    limit = 400
+    hard_limit = 1000
 
     if request.method == 'GET':
 
@@ -40,7 +42,7 @@ def ajax_view(request):
 
             found_items_set = set([lemma.name for lemma in lemma_qs])
             not_found_items_set = query_items_set.difference(found_items_set)
-            context['not_found_items_set'] = not_found_items_set
+            json_data['not_found_items_set'] = list(not_found_items_set)
 
         elif query_type == 'regex':
             for key, sub in regex_substitutions.items():
@@ -50,10 +52,13 @@ def ajax_view(request):
 
             lemma_qs = Lemma.objects.filter(**filter_args)
 
-        lemma_qs = lemma_qs.prefetch_related('form_set')[:250]
+        lemma_qs = lemma_qs.prefetch_related('form_set')
 
-        json_data = {'lemmas': []}
-        for lemma in lemma_qs:
+        if len(lemma_qs) > hard_limit:
+            # 413 = Payload Too Large
+            return HttpResponse(status = 413)
+        
+        for lemma in lemma_qs[:limit]:
             form_qs = lemma.form_set.all()
             form_list = [form.name for form in form_qs if re_filter.search(form.name)]
             if form_list:
@@ -63,6 +68,10 @@ def ajax_view(request):
                                             'homid': lemma.homonym_id,
                                             'forms': form_list,
                                             'group': group,})
+        if not json_data['lemmas']:
+            # 204 No Content
+            return HttpResponse(status = 204)
+
         return JsonResponse(json_data)
 
 

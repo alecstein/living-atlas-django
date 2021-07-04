@@ -12,8 +12,6 @@ const REGEX_TEXT = `enter a regular expression, such as`
 
 const CSRF_TOKEN = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 
-const YELLOW = "#ffe600";
-
 // TODOS
 /*
 1. Not-found items
@@ -72,12 +70,12 @@ function createLemma(lemma) {
 
   let input = node.querySelector("input");
   input.onclick = function() {
+    console.log(this);
     views[lemma.group].toggleForms(lemma.id);
   }
 
   return node;
 }
-
 
 function selectById(view, id) {
   let selector = `[data-id="${id}"]`;
@@ -85,6 +83,15 @@ function selectById(view, id) {
           view.doc.querySelector(".lemma" + selector)];
 }
 
+function getCounter(lemma) {
+  return lemma.querySelector(".counter").children;
+}
+
+function updateCounter(lemma, condition) {
+  let [selected, total] = getCounter(lemma);
+  selected.innerText = (condition) ? total.innerText : "0";
+}
+  
 /* "views" holds the main logic for operating the UI */
 
 let views = {};
@@ -101,83 +108,71 @@ let views = {};
     },
 
     reset() {
-      this.doc.querySelectorAll("li").forEach(node => node.remove());
-      this.doc.querySelectorAll(".resettable").forEach(e => e.classList.add("hidden"));
+      this.doc.querySelectorAll("li")
+        .forEach(node => node.remove());
+      this.doc.querySelectorAll(".resettable")
+        .forEach(e => e.classList.add("hidden"));
       this.ids = new Set();
     },
 
     activate(id) {
-      this.active.lemma?.style.removeProperty("background-color");
+      this.active.lemma?.style
+        .removeProperty("background-color");
       this.active.forms?.forEach(e => e.classList.add("hidden"));
 
       [this.active.forms, this.active.lemma] = selectById(this, id);
 
-      this.active.lemma.style.setProperty("background-color", YELLOW);
-      this.active.forms.forEach(e => e.classList.remove("hidden"));
+      const yellow = "#ffe600";
+      this.active.lemma.style
+        .setProperty("background-color", yellow);
+      this.active.forms
+        .forEach(e => e.classList.remove("hidden"));
     },
 
-    add(lemmasJSON) {
+    add(jsonLemmas) {
       let lemmaFragment = new DocumentFragment();
       let formsFragment = new DocumentFragment();
 
-      for (let lemmaJSON of lemmasJSON) {
-        if (this.ids.has(lemmaJSON.id)) continue;
+      for (let jsonLemma of jsonLemmas) {
+        if (this.ids.has(jsonLemma.id)) continue;
 
-        this.ids.add(lemmaJSON.id);
+        this.ids.add(jsonLemma.id);
 
-        lemmaFragment.append(createLemma(lemmaJSON));
+        lemmaFragment.append(createLemma(jsonLemma));
 
-        for (let form of lemmaJSON.forms) {
-          formsFragment.append(createForm(lemmaJSON, form));
+        for (let form of jsonLemma.forms) {
+          formsFragment.append(createForm(jsonLemma, form));
         }       
       }
 
-      let lemmaOl = this.doc.querySelector(".lemma-frame ol");
-      let formOl = this.doc.querySelector(".form-frame ol");
+      let lemmaList = this.doc.querySelector(".lemma-list");
+      let formList = this.doc.querySelector(".form-list");
 
-      let lemmaTitle = lemmaOl.children[0];
-
-      formOl.append(formsFragment);
-      lemmaOl.insertBefore(lemmaFragment, lemmaTitle.nextSibling);
+      formList.append(formsFragment);
+      lemmaList.insertBefore(lemmaFragment, lemmaList.firstChild);
     },
 
     selectAllForms(bool) {
-      if (this.active.forms === undefined) {
-        return;
-      }
+      this.active.forms.forEach(node => node.checked = bool);
 
-      for (let form of this.active.forms) {
-        form.querySelector("input").checked = bool;
-      }
-
-      let counter = this.active.lemma.querySelector(".counter");
-      let [selected, total] = counter.children;
-
-      selected.innerText = (bool) ? total.innerText : 0;
       let lemmaInput = this.active.lemma.querySelector("input");
       lemmaInput.checked = bool;
+
+      updateCounter(this.active.lemma, bool);
     },
 
     selectAll(bool) {
-      let inputs = this.doc.getElementsByTagName("input");
+      let inputs = this.doc.querySelectorAll(".input");
+      inputs.forEach(input => input.checked = bool);
 
-      for (let input of inputs) {
-        input.checked = bool;
-      }
-
-      let lemmas = this.doc.getElementsByClassName("lemma");
-      for (let lemma of lemmas) {
-        let counter = lemma.querySelector(".counter");
-        let [selected, total] = counter.children;
-        selected.innerText = (bool) ? total.innerText : 0;
-      }
+      let lemmas = this.doc.querySelectorAll(".lemma");
+      lemmas.forEach(lemma => updateCounter(lemma, bool));
     },
 
     toggleCounter(formInput) {
-      let counter = this.active.lemma.querySelector(".counter");
-      let [selected, total] = counter.children;
+      let [selected, _] = getCounter(this.active.lemma);
 
-      selected.innerText =  Number(selected.innerText)
+      selected.innerText =    Number(selected.innerText)
                           + 2*Number(formInput.checked) 
                           - 1;
 
@@ -187,17 +182,15 @@ let views = {};
 
     toggleForms(id) {
       let [forms, lemma] = selectById(this, id);
+      let bool = lemma.querySelector("input").checked;
 
-      let lemmaInput = lemma.querySelector("input");
+      forms
+        .forEach(form => {
+          let input = form.querySelector("input");
+          input.checked = bool;
+        });
 
-      for (form of forms) {
-        form.querySelector("input").checked = lemmaInput.checked;
-      }
-
-      let counter = this.active.lemma.querySelector(".counter");
-      let [selected, total] = counter.children;
-
-      selected.innerText = (lemmaInput.checked) ? total.innerText : "0";
+      updateCounter(this.active.lemma, bool);
     },
   };
 });
@@ -256,11 +249,14 @@ async function submitQuery(button) {
   suspendPage(true);
 
   let response = await fetch(url);
-  let json = await response.json()
+  
 
   suspendPage(false);
 
-  if (response.ok) {
+  console.log(response.status);
+
+  if (response.status === 200) {
+    let json = await response.json()
 
     views[group].add(json.lemmas);
 
@@ -278,21 +274,50 @@ async function submitQuery(button) {
 
     let runningTotal = views[group].doc.querySelector(".running-total");
     runningTotal.innerText = `[${allLemmas.length}]`;
-  } else if (response.status === 404) {
+  } else if (response.status === 204) {
+    console.log("got a 404");
     document.getElementById("no-results").classList.remove("hidden");
     return;
-  } else if (response.status === 408) {
+  } else if (response.status === 413) {
     document.getElementById("timeout").classList.remove("hidden");
     return;
   }
 }
 
-async function postInputs(url) {
+function getSelected(group) {
+  if (group) {
+    let selector = `.form-frame[data-group="${group}"] input:checked`;
+    return document.querySelectorAll(selector);
+  } else {
+    return document.querySelectorAll(".form-frame input:checked");
+  }
+}
 
-  let allFormInputs = document.querySelectorAll(".form input:checked");
+async function postInputs(url, button) {
+
+  let [aInputs, bInputs] = [getSelected("a"), getSelected("b")]
+
+  if (button.name == "excel") {
+    if (!(aInputs.length + bInputs.length)) {
+    document.getElementById("export-failed").classList.remove("hidden");
+    return;
+    }
+  }
+
+  if (button.name == "carto") {
+    if (!aInputs.length || !bInputs.length) {
+    document.getElementById("select-from-both").classList.remove("hidden");
+    return;
+    }
+  }
+
+  let allInputs = [...aInputs, ...bInputs];
+
+  // TODO 
+  // Logic should depend on which button was pressed
 
   let data = {"forms" : []};
-  for (let input of allFormInputs) {
+  for (let input of allInputs) {
     let li = input.closest("li");
     let values = {"lemma" : li.dataset.lemma,
                   "latin" : li.dataset.latin,
