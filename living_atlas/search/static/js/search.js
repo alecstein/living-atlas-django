@@ -1,24 +1,82 @@
 /*jshint esversion: 6 */
-"use strict"
-
-const LEMMA_TEXT = `enter one lemma per line,`
-+ `as in`
-+ `\naccommoder`
-+ `\nmobiliaire`
-
-const REGEX_TEXT = `enter a regular expression, such as`
-+ `\n.deg. (all words containing "deg")`
-+ `\n^mun (all words that start with "mun")`;
+"use strict";
 
 const CSRF_TOKEN = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 
-// TODOS
-/*
-1. Not-found items
-2. Error messages
-*/
+const LEMMA_TEXT = `enter one lemma per line,`
+                  + `as in`
+                  + `\naccommoder`
+                  + `\nmobiliaire`
+                  + `\npecine`;
 
-/* rendering templates */
+const REGEX_TEXT = `enter a regular expression, such as`
+                  + `\n.deg. (all words containing "deg")`
+                  + `\n^mun (all words that start with "mun")`;
+
+function show(node) {
+  node.classList.remove("hidden");
+}
+
+function hide(node) {
+  node.classList.add("hidden");
+}
+
+function togglePlaceholderText(element) {
+  let searchBox = document.getElementById("searchbox-main");
+  searchBox.placeholder = (element.value === "regex") ? REGEX_TEXT : LEMMA_TEXT;
+}
+
+function isLemma(li) {
+  return (li !== null && li.classList.contains("lemma"));
+}
+
+function changeFocus(event, frame) {
+  let li = event.target.closest("li");
+  if (isLemma(li)) {
+    frame.unsetFocus();
+    frame.setFocus(li);
+  }
+}
+
+function toggleForms(event,frame) {
+  (event.target.checked) ? frame.selectAllForms() : frame.selectAllForms(false);
+}
+
+function changeLemmaCounter(event, frame) {
+  let selected = getCounter(frame.focus.lemma)[0];
+
+  let currentCount = Number(selected.innerText);
+  (event.target.checked) ? currentCount += 1 : currentCount -= 1;
+  selected.innerText = currentCount;
+
+  let input = frame.focus.lemma.querySelector("input");
+  input.checked = (currentCount === 0) ? false : true;
+}
+
+function createLemma(lemma) {
+  let template = document.querySelector("#lemma");
+  let node = template.content.cloneNode(true);
+  
+  node.querySelector("label").append(lemma.name);
+
+  let li = node.querySelector(".lemma");
+  li.dataset.id    = lemma.id;
+  li.dataset.group = lemma.group;
+  li.dataset.total = lemma.forms.length;
+
+  let latinCol = node.querySelector(".latin");
+  latinCol.append(lemma.latin);
+
+  let homIdCol = node.querySelector(".homonym-id");
+  homIdCol.append(lemma.homid);
+
+  let [selected, total] = getCounter(node);
+
+  total.innerText = lemma.forms.length;
+  selected.innerText = lemma.forms.length;
+
+  return node;
+}
 
 function createForm(lemma, form) {
   let template = document.querySelector("#form");
@@ -34,193 +92,49 @@ function createForm(lemma, form) {
   li.dataset.latin = lemma.latin;
   li.dataset.homid = lemma.homid;
 
-  let input = node.querySelector("input");
-  input.onchange = function() {
-    views[lemma.group].toggleCounter(this)
-  }
-
   return node;
 }
 
-function createLemma(lemma) {
-  let template = document.querySelector("#lemma");
-  let node = template.content.cloneNode(true);
-  
-  node.querySelector("label").append(lemma.name);
+function createListFragments(view, jsonList) {
+  let lemmaFragment = new DocumentFragment();
+  let formsFragment = new DocumentFragment();
 
-  let li = node.querySelector(".lemma");
-  li.dataset.id    = lemma.id;
-  li.dataset.group = lemma.group;
-  li.dataset.total = lemma.forms.length;
-  li.onclick = function() {
-    views[lemma.group].activate(lemma.id);
+  for (let lemma of jsonList) {
+    if (view.ids.has(lemma.id)) continue;
+
+    view.ids.add(lemma.id);
+
+    lemmaFragment.append(createLemma(lemma));
+
+    for (let form of lemma.forms) {
+      formsFragment.append(createForm(lemma, form));
+    }       
   }
 
-  let latinCol = node.querySelector(".latin");
-  latinCol.append(lemma.latin);
-
-  let homIdCol = node.querySelector(".homonym-id");
-  homIdCol.append(lemma.homid);
-
-  let counter = node.querySelector(".counter");
-  let [selected, total] = counter.children;
-
-  total.innerText = lemma.forms.length;
-  selected.innerText = lemma.forms.length;
-
-  let input = node.querySelector("input");
-  input.onclick = function() {
-    console.log(this);
-    views[lemma.group].toggleForms(lemma.id);
-  }
-
-  return node;
-}
-
-function selectById(view, id) {
-  let selector = `[data-id="${id}"]`;
-  return [view.doc.querySelectorAll(".form" + selector),
-          view.doc.querySelector(".lemma" + selector)];
+  return [formsFragment, lemmaFragment];
 }
 
 function getCounter(lemma) {
   return lemma.querySelector(".counter").children;
 }
 
-function updateCounter(lemma, condition) {
-  let [selected, total] = getCounter(lemma);
-  selected.innerText = (condition) ? total.innerText : "0";
-}
-  
-/* "views" holds the main logic for operating the UI */
-
-let views = {};
-
-["a", "b"].forEach(group => {
-
-  views[group] = {
-
-    ids: new Set(),
-    active: {},
-
-    init() {
-      this.doc = document.querySelector(`.frame[data-group="${group}"]`);
-    },
-
-    reset() {
-      this.doc.querySelectorAll("li")
-        .forEach(node => node.remove());
-      this.doc.querySelectorAll(".resettable")
-        .forEach(e => e.classList.add("hidden"));
-      this.ids = new Set();
-    },
-
-    activate(id) {
-      this.active.lemma?.style
-        .removeProperty("background-color");
-      this.active.forms?.forEach(e => e.classList.add("hidden"));
-
-      [this.active.forms, this.active.lemma] = selectById(this, id);
-
-      const yellow = "#ffe600";
-      this.active.lemma.style
-        .setProperty("background-color", yellow);
-      this.active.forms
-        .forEach(e => e.classList.remove("hidden"));
-    },
-
-    add(jsonLemmas) {
-      let lemmaFragment = new DocumentFragment();
-      let formsFragment = new DocumentFragment();
-
-      for (let jsonLemma of jsonLemmas) {
-        if (this.ids.has(jsonLemma.id)) continue;
-
-        this.ids.add(jsonLemma.id);
-
-        lemmaFragment.append(createLemma(jsonLemma));
-
-        for (let form of jsonLemma.forms) {
-          formsFragment.append(createForm(jsonLemma, form));
-        }       
-      }
-
-      let lemmaList = this.doc.querySelector(".lemma-list");
-      let formList = this.doc.querySelector(".form-list");
-
-      formList.append(formsFragment);
-      lemmaList.insertBefore(lemmaFragment, lemmaList.firstChild);
-    },
-
-    selectAllForms(bool) {
-      this.active.forms.forEach(node => node.checked = bool);
-
-      let lemmaInput = this.active.lemma.querySelector("input");
-      lemmaInput.checked = bool;
-
-      updateCounter(this.active.lemma, bool);
-    },
-
-    selectAll(bool) {
-      let inputs = this.doc.querySelectorAll(".input");
-      inputs.forEach(input => input.checked = bool);
-
-      let lemmas = this.doc.querySelectorAll(".lemma");
-      lemmas.forEach(lemma => updateCounter(lemma, bool));
-    },
-
-    toggleCounter(formInput) {
-      let [selected, _] = getCounter(this.active.lemma);
-
-      selected.innerText =    Number(selected.innerText)
-                          + 2*Number(formInput.checked) 
-                          - 1;
-
-      let input = this.active.lemma.querySelector("input");
-      input.checked = (selected.innerText) === '0' ? false : true;
-    },
-
-    toggleForms(id) {
-      let [forms, lemma] = selectById(this, id);
-      let bool = lemma.querySelector("input").checked;
-
-      forms
-        .forEach(form => {
-          let input = form.querySelector("input");
-          input.checked = bool;
-        });
-
-      updateCounter(this.active.lemma, bool);
-    },
-  };
-});
-
-window.onload = function() {
-  ["a", "b"].forEach(group => views[group].init());
-};
-
-function togglePlaceholderText(element) {
-  let searchBox = document.getElementById("searchbox-main");
-  searchBox.placeholder = (element.value === "regex") ? REGEX_TEXT : LEMMA_TEXT;
-}
-
 function suspendPage(bool) {
-  let allButtons = document.querySelectorAll(".pushable");
+  let buttons = document.querySelectorAll(".pushable");
 
   if (bool) {
-    allButtons.forEach(node => node.setAttribute("style", `cursor:wait`));
-    allButtons.forEach(node => node.setAttribute("disabled", true));
     document.body.style.cursor = "wait";
+    for (let button of buttons) {
+      button.style.setProperty("cursor", "wait");
+      button.setAttribute("disabled", true);
+    }
+    
   } else {
-    allButtons.forEach(node => node.removeAttribute("disabled"));
-    allButtons.forEach(node => node.setAttribute("style", `cursor:pointer`));
     document.body.style.cursor="default";
+    for (let button of buttons) {
+      button.removeAttribute("disabled");
+      button.style.removeProperty("cursor");
+    }
   }
-}
-
-function clearErrors() {
-  let allErrors = document.querySelectorAll(".error-container");
-  allErrors.forEach(node => node.classList.add("hidden"));
 }
 
 function cleanQuery(text) {
@@ -241,72 +155,59 @@ function getQueryURL(group) {
   return url;
 }
 
-async function submitQuery(button) {
-  let group = button.dataset.group;
+async function submitQuery(button, group) {
   let url = getQueryURL(group);
 
-  clearErrors();
+  document.querySelectorAll(".error-container").forEach(node => hide(node));
+
   suspendPage(true);
-
   let response = await fetch(url);
-  
-
   suspendPage(false);
 
-  console.log(response.status);
-
   if (response.status === 200) {
-    let json = await response.json()
+    let json = await response.json();
+    frame[group].add(json.lemmas);
 
-    views[group].add(json.lemmas);
+    let lemmaCount = frame[group].lemmaList.children.length;
 
-    let allLemmas = views[group].doc.querySelectorAll(".lemma");
-    if (allLemmas.length === 0) {
-      return;
+    if (lemmaCount === 1) {
+      frame[group].setFocus(frame[group].lemmaList.firstElementChild);
     }
 
-    if (allLemmas.length === 1) {
-      views[group].activate(allLemmas[0].dataset.id);
-    }
+    frame[group].resettable.forEach(node => show(node));
 
-    let resetviews = views[group].doc.querySelectorAll(".resettable");
-    resetviews.forEach(e => e.classList.remove("hidden"));
+    let runningTotal = frame[group].doc.querySelector(".running-total");
+    runningTotal.innerText = `[${lemmaCount}]`;
 
-    let runningTotal = views[group].doc.querySelector(".running-total");
-    runningTotal.innerText = `[${allLemmas.length}]`;
   } else if (response.status === 204) {
-    console.log("got a 404");
-    document.getElementById("no-results").classList.remove("hidden");
+    show(document.getElementById("no-results"));
     return;
   } else if (response.status === 413) {
-    document.getElementById("timeout").classList.remove("hidden");
+    show(document.getElementById("timeout"));
     return;
-  }
-}
-
-function getSelected(group) {
-  if (group) {
-    let selector = `.form-frame[data-group="${group}"] input:checked`;
-    return document.querySelectorAll(selector);
-  } else {
-    return document.querySelectorAll(".form-frame input:checked");
   }
 }
 
 async function postInputs(url, button) {
 
-  let [aInputs, bInputs] = [getSelected("a"), getSelected("b")]
+  document.querySelectorAll(".error-container").forEach(node => hide(node));
+
+  let aInputs = frame["a"].doc.querySelectorAll("input:checked");
+  let bInputs = frame["b"].doc.querySelectorAll("input:checked");
+
+  let invalidExportExcel = aInputs.length > 0 && bInputs.length > 0;
+  let invalidExportCarto = aInputs.length > 0 || bInputs.length > 0;
 
   if (button.name == "excel") {
-    if (!(aInputs.length + bInputs.length)) {
-    document.getElementById("export-failed").classList.remove("hidden");
+    if ( invalidExportExcel ) {
+    show(document.getElementById("export-failed"));
     return;
     }
   }
 
   if (button.name == "carto") {
-    if (!aInputs.length || !bInputs.length) {
-    document.getElementById("select-from-both").classList.remove("hidden");
+    if ( invalidExportCarto ) {
+    show(document.getElementById("select-from-both"));
     return;
     }
   }
@@ -354,4 +255,88 @@ async function postInputs(url, button) {
     // do stuff
     alert("submitted");
   }
+}
+
+
+let frame = {};
+
+["a", "b"].forEach(group => {
+
+  frame[group] = {
+
+    init: function() {
+      this.doc = document.querySelector(`.frame[data-group="${group}"]`); // impure
+      this.focus = {};
+      this.ids = new Set();
+      this.formList = this.doc.querySelector(".form-list");
+      this.lemmaList = this.doc.querySelector(".lemma-list");
+      this.resettable = this.doc.querySelectorAll(".reset");
+
+      this.doc.addEventListener("click", event => changeFocus(event, this));
+      this.formList.addEventListener("change", event => changeLemmaCounter(event, this));
+      this.lemmaList.addEventListener("change", event => toggleForms(event, this));
+    },
+
+    reset: function() {
+      this.focus = {};
+      this.ids = new Set();
+
+      this.resettable.forEach(node => hide(node));
+
+      while ( this.lemmaList.firstChild ) {
+        this.lemmaList.lastChild.remove();
+      }
+      while ( this.formList.firstChild ) {
+        this.formList.lastChild.remove();
+      }
+    },
+
+    unsetFocus: function() {
+      this.focus.lemma?.style.removeProperty("background-color");
+      this.focus.forms?.forEach(node => hide(node));
+    },
+
+    setFocus: function(lemma) {
+      const yellow = "#ffe600";
+
+      lemma.style.setProperty("background-color", yellow);
+      this.focus.lemma = lemma;
+
+      let id = lemma.dataset.id;
+      this.focus.forms = this.doc.querySelectorAll(`.form[data-id="${id}"]`);
+      this.focus.forms.forEach(node => show(node));
+    },
+
+    add: function(json) {
+      let [formsFragment, lemmaFragment] = createListFragments(this, json);
+
+      this.formList.append(formsFragment);
+      this.lemmaList.insertBefore(lemmaFragment, this.lemmaList.firstElementChild);
+    },
+
+    selectAllForms: function(bool = true) {
+      for ( let form of this.focus.forms ) {
+        let input = form.querySelector("input");
+        input.checked = bool; 
+      }
+
+      this.focus.lemma.querySelector("input").checked = bool;
+      let [selected, total] = getCounter(this.focus.lemma);
+      selected.innerText = (bool) ? total.innerText : "0";
+    },
+
+    selectAllLemmas: function(bool = true) {
+      for ( let input of this.doc.querySelectorAll("input") ) {
+        input.checked = bool;
+      }
+      for ( let lemma of this.lemmaList.children ) {
+        let [selected, total] = getCounter(lemma);
+        selected.innerText = (bool) ? total.innerText : "0";
+      }
+    },
+  }
+});
+
+window.onload = function() {
+  ["a", "b"].forEach(group => frame[group].init());
 }
