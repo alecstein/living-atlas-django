@@ -29,8 +29,8 @@
 		<input type="text" id="searchbox-form" placeholder=".[mn]ica$ (example)">
 	</div>
 	<div class="button-array">
-		<input class="pushable" type="submit" onclick="submitQuery(this, 'a')" value = "add query to group A"/>
-		<input class="pushable" type="submit" onclick="submitQuery(this, 'b')" value = "add query to group B"/>
+		<input class="pushable" type="submit" onclick="submitQuery('a')" value = "add query to group A"/>
+		<input class="pushable" type="submit" onclick="submitQuery('b')" value = "add query to group B"/>
 	</div>
 </div>
 
@@ -120,8 +120,8 @@
 	</div>
 </div>
 <div id="base-buttons">
-	<button class="pushable" name="excel" onclick="postInputs(/excel/, this)"/>export to MS Excel</button>
-	<button class="pushable" name="carto" onclick="postInputs(/cartography/, this)"/>send to carto</button>
+	<button class="pushable" name="excel" onclick="postInputs('/excel/', 'excel')"/>export to MS Excel</button>
+	<button class="pushable" name="carto" onclick="postInputs('/cartography/', 'carto')"/>send to carto</button>
 </div>
 
 <!-- Templates used in the generation of form and lemma elements  -->

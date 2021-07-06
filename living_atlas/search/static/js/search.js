@@ -38,14 +38,14 @@ function changeFocus(event, frame) {
   }
 }
 
-function toggleForms(event,frame) {
+function toggleForms(event, frame) {
   (event.target.checked) ? frame.selectAllForms() : frame.selectAllForms(false);
 }
 
 function changeLemmaCounter(event, frame) {
   let selected = getCounter(frame.focus.lemma)[0];
 
-  let currentCount = Number(selected.innerText);
+  let currentCount = +selected.innerText;
   (event.target.checked) ? currentCount += 1 : currentCount -= 1;
   selected.innerText = currentCount;
 
@@ -108,7 +108,7 @@ function createListFragments(view, jsonList) {
 
     for (let form of lemma.forms) {
       formsFragment.append(createForm(lemma, form));
-    }       
+    }
   }
 
   return [formsFragment, lemmaFragment];
@@ -155,70 +155,70 @@ function getQueryURL(group) {
   return url;
 }
 
-async function submitQuery(button, group) {
-  let url = getQueryURL(group);
-
+async function submitQuery(group) {
   document.querySelectorAll(".error-container").forEach(node => hide(node));
 
   suspendPage(true);
-  let response = await fetch(url);
+  let response = await fetch(getQueryURL(group));
   suspendPage(false);
 
   if (response.status === 200) {
     let json = await response.json();
-    frame[group].add(json.lemmas);
-
-    let lemmaCount = frame[group].lemmaList.children.length;
-
-    if (lemmaCount === 1) {
-      frame[group].setFocus(frame[group].lemmaList.firstElementChild);
-    }
-
-    frame[group].resettable.forEach(node => show(node));
-
-    let runningTotal = frame[group].doc.querySelector(".running-total");
-    runningTotal.innerText = `[${lemmaCount}]`;
-
+    render(json, frame[group]);
   } else if (response.status === 204) {
     show(document.getElementById("no-results"));
-    return;
   } else if (response.status === 413) {
     show(document.getElementById("timeout"));
-    return;
   }
 }
 
-async function postInputs(url, button) {
+function render(json, frame) {
 
+  frame.add(json.lemmas);
+
+  if (frame.lemmas.length === 1) {
+    frame.setFocus(frame.lemmas[0]);
+  }
+
+  frame.resettable.forEach(node => show(node));
+
+  let runningTotal = frame.doc.querySelector(".running-total");
+  runningTotal.innerText = `[${frame.lemmas.length}]`;
+}
+
+function getValidPostInputs(frame, where) {
   document.querySelectorAll(".error-container").forEach(node => hide(node));
 
-  let aInputs = frame["a"].doc.querySelectorAll("input:checked");
-  let bInputs = frame["b"].doc.querySelectorAll("input:checked");
+  let aInputs = frame.a.selectedForms;
+  let bInputs = frame.b.selectedForms;
 
-  let invalidExportExcel = aInputs.length > 0 && bInputs.length > 0;
-  let invalidExportCarto = aInputs.length > 0 || bInputs.length > 0;
+  let invalidExportExcel = aInputs.length === 0 && bInputs.length === 0;
+  let invalidExportCarto = aInputs.length === 0 || bInputs.length === 0;
 
-  if (button.name == "excel") {
+  if (where === "excel") {
     if ( invalidExportExcel ) {
     show(document.getElementById("export-failed"));
-    return;
+    return false;
     }
   }
 
-  if (button.name == "carto") {
+  if (where === "carto") {
     if ( invalidExportCarto ) {
     show(document.getElementById("select-from-both"));
-    return;
+    return false;
     }
   }
+  return [...aInputs, ...bInputs];
+}
 
-  let allInputs = [...aInputs, ...bInputs];
+async function postInputs(url, where) {
 
-  // TODO 
-  // Logic should depend on which button was pressed
+  let validPostInputs = getValidPostInputs(frame, where);
+  if ( !validPostInputs ) return;
 
   let data = {"forms" : []};
-  for (let input of allInputs) {
+
+  for (let input of validPostInputs) {
     let li = input.closest("li");
     let values = {"lemma" : li.dataset.lemma,
                   "latin" : li.dataset.latin,
@@ -228,35 +228,34 @@ async function postInputs(url, button) {
     data.forms.push(JSON.stringify({form: form, values : values}));
   }
 
-  let response = await fetch(url, {
+  let options = {
     method: 'POST',
     body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json;charset=utf-8",
       "X-CSRFToken" : CSRF_TOKEN,
-    },
-  })
+    }}
 
-  if (url.source === "excel") {
-    let result = await response.blob();
+  let response = await fetch(url, options);
 
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    let objectUrl = URL.createObjectURL(result);
-    a.href = objectUrl;
-    a.download = "living-atlas.xlsx";
-    a.click();
-    URL.revokeObjectURL(objectUrl);
-  }
-
-  else {
-    let result = await response;
-    // do stuff
+  if (where === "excel") {
+    let blob = await response.blob();
+    downloadExcelFile(blob);
+  } else if (where === "carto") {
+    let json = await response.json();
     alert("submitted");
   }
 }
 
+function downloadExcelFile(blob) {
+  let a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  a.href = URL.createObjectURL(blob);
+  a.download = "living-atlas.xlsx";
+  a.click();
+  URL.revokeObjectURL(objectUrl);
+}
 
 let frame = {};
 
@@ -266,7 +265,10 @@ let frame = {};
 
     init: function() {
       this.doc = document.querySelector(`.frame[data-group="${group}"]`); // impure
-      this.focus = {};
+      this.focus = {
+        lemma: undefined,
+        forms: undefined,
+      };
       this.ids = new Set();
       this.formList = this.doc.querySelector(".form-list");
       this.lemmaList = this.doc.querySelector(".lemma-list");
@@ -275,6 +277,14 @@ let frame = {};
       this.doc.addEventListener("click", event => changeFocus(event, this));
       this.formList.addEventListener("change", event => changeLemmaCounter(event, this));
       this.lemmaList.addEventListener("change", event => toggleForms(event, this));
+    },
+
+    get lemmas() {
+      return this.lemmaList.children;
+    },
+
+    get selectedForms() {
+      return this.formList.querySelectorAll("input:checked");
     },
 
     reset: function() {
@@ -286,6 +296,7 @@ let frame = {};
       while ( this.lemmaList.firstChild ) {
         this.lemmaList.lastChild.remove();
       }
+
       while ( this.formList.firstChild ) {
         this.formList.lastChild.remove();
       }
@@ -311,7 +322,7 @@ let frame = {};
       let [formsFragment, lemmaFragment] = createListFragments(this, json);
 
       this.formList.append(formsFragment);
-      this.lemmaList.insertBefore(lemmaFragment, this.lemmaList.firstElementChild);
+      this.lemmaList.insertBefore(lemmaFragment, this.lemmas[0]);
     },
 
     selectAllForms: function(bool = true) {
@@ -329,7 +340,7 @@ let frame = {};
       for ( let input of this.doc.querySelectorAll("input") ) {
         input.checked = bool;
       }
-      for ( let lemma of this.lemmaList.children ) {
+      for ( let lemma of this.lemmas ) {
         let [selected, total] = getCounter(lemma);
         selected.innerText = (bool) ? total.innerText : "0";
       }
