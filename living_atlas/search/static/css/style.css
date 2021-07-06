@@ -320,6 +320,9 @@ textarea {
 .resettable {
 }
 
+.highlight, .highlight:hover {
+    background-color: var(--yellow);
+}
 .hidden {
     display: none;
 }

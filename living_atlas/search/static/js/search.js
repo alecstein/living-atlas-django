@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 "use strict";
 
-const CSRF_TOKEN = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+const CSRF_TOKEN = document.querySelector("[name='csrfmiddlewaretoken']").value;
 
 const LEMMA_TEXT = `enter one lemma per line,`
                   + `as in`
@@ -18,7 +18,7 @@ function show(node) {
 }
 
 function hide(node) {
-  node.classList.add("hidden");
+  node.classList.add("hidden"); 
 }
 
 function togglePlaceholderText(element) {
@@ -95,14 +95,15 @@ function createForm(lemma, form) {
   return node;
 }
 
-function createListFragments(view, jsonList) {
+function createListFragments(ids, json) {
+  let lemmas = json.lemmas;
   let lemmaFragment = new DocumentFragment();
   let formsFragment = new DocumentFragment();
 
-  for (let lemma of jsonList) {
-    if (view.ids.has(lemma.id)) continue;
+  for (let lemma of lemmas) {
+    if (ids.has(lemma.id)) continue;
 
-    view.ids.add(lemma.id);
+    ids.add(lemma.id);
 
     lemmaFragment.append(createLemma(lemma));
 
@@ -163,18 +164,27 @@ async function submitQuery(group) {
   suspendPage(false);
 
   if (response.status === 200) {
+
     let json = await response.json();
     render(json, frame[group]);
+
   } else if (response.status === 204) {
+
     show(document.getElementById("no-results"));
+
   } else if (response.status === 413) {
+
     show(document.getElementById("timeout"));
   }
 }
 
 function render(json, frame) {
 
-  frame.add(json.lemmas);
+  let [formsFragment, lemmaFragment] = createListFragments(frame.ids, json);
+
+  frame.formList.append(formsFragment);
+  frame.lemmaList.insertBefore(lemmaFragment, frame.lemmas[0]);
+
 
   if (frame.lemmas.length === 1) {
     frame.setFocus(frame.lemmas[0]);
@@ -238,12 +248,18 @@ async function postInputs(url, where) {
 
   let response = await fetch(url, options);
 
-  if (where === "excel") {
-    let blob = await response.blob();
-    downloadExcelFile(blob);
-  } else if (where === "carto") {
-    let json = await response.json();
-    alert("submitted");
+  if (response.status === 200) {
+    if (where === "excel") {
+      let blob = await response.blob();
+      downloadExcelFile(blob);
+    } else if (where === "carto") {
+      let json = await response.json();
+      alert("submitted");
+    }
+  } else if (response.status === 204) {
+    show(document.getElementById("no-results"));
+  } else if (response.status === 413) {
+    show(document.getElementById("timeout"));
   }
 }
 
@@ -303,26 +319,17 @@ let frame = {};
     },
 
     unsetFocus: function() {
-      this.focus.lemma?.style.removeProperty("background-color");
+      this.focus.lemma?.classList.remove("highlight");
       this.focus.forms?.forEach(node => hide(node));
     },
 
     setFocus: function(lemma) {
-      const yellow = "#ffe600";
-
-      lemma.style.setProperty("background-color", yellow);
+      lemma.classList.add("highlight");
       this.focus.lemma = lemma;
 
       let id = lemma.dataset.id;
       this.focus.forms = this.doc.querySelectorAll(`.form[data-id="${id}"]`);
       this.focus.forms.forEach(node => show(node));
-    },
-
-    add: function(json) {
-      let [formsFragment, lemmaFragment] = createListFragments(this, json);
-
-      this.formList.append(formsFragment);
-      this.lemmaList.insertBefore(lemmaFragment, this.lemmas[0]);
     },
 
     selectAllForms: function(bool = true) {
@@ -350,4 +357,4 @@ let frame = {};
 
 window.onload = function() {
   ["a", "b"].forEach(group => frame[group].init());
-}
+};
