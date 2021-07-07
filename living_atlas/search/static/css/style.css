@@ -289,7 +289,8 @@ textarea {
     font-family: var(--font-family-mono);
     display: inline-block;
     border: 2px solid var(--error-color);
-    margin-bottom: .5rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0rem;
     padding: .5rem;
 }
 
