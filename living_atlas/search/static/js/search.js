@@ -3,15 +3,15 @@
 
 const CSRF_TOKEN = document.querySelector("[name='csrfmiddlewaretoken']").value;
 
-const LEMMA_TEXT = `enter one lemma per line,`
-                  + `as in`
-                  + `\naccommoder`
-                  + `\nmobiliaire`
-                  + `\npecine`;
+const LEMMA_TEXT = 
+`enter one lemma per line, as in
+accommoder
+mobiliaire`;
 
-const REGEX_TEXT = `enter a regular expression, such as`
-                  + `\n.deg. (all words containing "deg")`
-                  + `\n^mun (all words that start with "mun")`;
+const REGEX_TEXT = 
+`enter a regular expression, such as
+.deg. (all words containing "deg")
+^mun (all words that start with "mun")`;
 
 function show(node) {
   node.classList.remove("hidden");
@@ -151,8 +151,8 @@ function cleanQuery(text) {
 function getQueryURL(group) {
   let query = cleanQuery(document.getElementById("searchbox-main").value);
   let formFilter = cleanQuery(document.getElementById("searchbox-form").value);
-  let type = document.querySelector(`input[name="type"][type="radio"]:checked`).value;
-  let lang = document.querySelector(`input[name="lang"][type="radio"]:checked`).value;
+  let type = document.querySelector("input[name='type'][type='radio']:checked").value;
+  let lang = document.querySelector("input[name='lang'][type='radio']:checked").value;
   let url = `/ajax/?query=${query}&group=${group}&type=${type}&lang=${lang}`;
 
   if (formFilter) {
