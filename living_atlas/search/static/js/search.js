@@ -30,7 +30,7 @@ function isLemma(li) {
   return (li !== null && li.classList.contains("lemma"));
 }
 
-function changeFocus(event, frame) {
+function changeFocusLemma(event, frame) {
   let li = event.target.closest("li");
   if (isLemma(li)) {
     frame.unsetFocus();
@@ -63,6 +63,7 @@ function createLemma(lemma) {
   li.dataset.id    = lemma.id;
   li.dataset.group = lemma.group;
   li.dataset.total = lemma.forms.length;
+  li.tabIndex = "-1";
 
   let latinCol = node.querySelector(".latin");
   latinCol.append(lemma.latin);
@@ -290,7 +291,8 @@ let frame = {};
       this.lemmaList = this.doc.querySelector(".lemma-list");
       this.resettable = this.doc.querySelectorAll(".reset");
 
-      this.doc.addEventListener("click", event => changeFocus(event, this));
+      this.doc.addEventListener("click", event => changeFocusWindow(event));
+      this.doc.addEventListener("click", event => changeFocusLemma(event, this));
       this.formList.addEventListener("change", event => changeLemmaCounter(event, this));
       this.lemmaList.addEventListener("change", event => toggleForms(event, this));
     },
@@ -355,6 +357,46 @@ let frame = {};
   }
 });
 
+let focusWindow;
+
+function changeFocusWindow(event) {
+  return;
+}
+
+function scrollList(event) {
+
+  let key = event.key;
+
+  let keyIsUpOrDown = (key === "ArrowUp") || (key === "ArrowDown");
+  if (!keyIsUpOrDown) return;
+
+  let element = document.activeElement;
+  let li = element.closest("li");
+  if (!isLemma(li)) {
+    return;
+  }
+
+  event.preventDefault();
+
+  // get the right frame
+  let group = li.parentNode.dataset.group;
+  let thisFrame = frame[group];
+  thisFrame.unsetFocus();
+
+  let target;
+  if (key === "ArrowDown") {
+    target = thisFrame.focus.lemma.nextElementSibling;
+  }
+  else if (key === "ArrowUp") {
+    target = thisFrame.focus.lemma.previousElementSibling;
+  } else {return;}
+  
+  target.scrollIntoView({block: "nearest"});
+  thisFrame.setFocus(target);
+  // target.focus();
+}
+
 window.onload = function() {
   ["a", "b"].forEach(group => frame[group].init());
+  document.addEventListener("keydown", event => scrollList(event));
 };

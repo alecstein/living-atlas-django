@@ -12,15 +12,15 @@
 		<label for="radio-lemma">lemma</label>
 	</div>
 	<div class="radio-group">
-		<input type="radio" name="type" value="regex" id="radio-regex" onclick="togglePlaceholderText(this)">
+		<input type="radio" name="type" value="regex" id="radio-regex" onclick="togglePlaceholderText(this)" checked>
 		<label for="radio-regex">regex</label>
-		<input type="radio" name="type" value="list" id="radio-list" onclick="togglePlaceholderText(this)" checked>
+		<input type="radio" name="type" value="list" id="radio-list" onclick="togglePlaceholderText(this)">
 		<label for="radio-list">list</label>
 	</div>
 </div>
 <div class="wrap-searchbox">
 	<div id="textarea-main">
-		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire" rows="5"></textarea>
+		<textarea type="text" id="searchbox-main" placeholder="enter one lemma per line, as in&#10;accommoder&#10;mobiliaire" rows="5">^acco</textarea>
 	</div>
 	<div id="textinput-form-regex-title">
 		filter forms by regex (optional)
@@ -58,67 +58,82 @@
 	</div>
 </div>
 
-
 <div class="frame" data-group="a">
-	<div class="lemma-frame" data-group="a">
-		<h3 class="list-title">
-			<div class="lemma-name">lemmas A <span class="running-total reset hidden">[]</span></div>
-			<div class="latin">latin</div>
-			<div class="homonym-id">homonym id.</div>
-			<div class="lemma-buttons reset hidden">
-				<input type="button" class="pushable" value="all" onclick="frame['a'].selectAllLemmas()">
-				<input type="button" class="pushable" value="none" onclick="frame['a'].selectAllLemmas(false)">
-				<input type="button" class="pushable cancel" value="X" onclick="frame['a'].reset()">
-			</div>
-		</h3>
-		<ol class="lemma-list">
-			<!-- Lemma elements go here -->
-		</ol>
+	<div class="header-pane">
+		<div class="left-pane">
+			<h3 class="list-header">
+				<div class="lemma-name">lemmas A <span class="running-total reset hidden">[]</span></div>
+				<div class="latin">latin</div>
+				<div class="homonym-id">homonym id.</div>
+				<div class="lemma-buttons reset hidden">
+					<input type="button" class="pushable" value="all" onclick="frame['a'].selectAllLemmas()">
+					<input type="button" class="pushable" value="none" onclick="frame['a'].selectAllLemmas(false)">
+					<input type="button" class="pushable cancel" value="X" onclick="frame['a'].reset()">
+				</div>
+			</h3>
+		</div>
+		<div class="right-pane">
+			<h3 class="list-header">
+				<div class="form-name">forms A</div>
+				<div class="form-buttons reset hidden" data-group="a">
+					<input type="button" class="pushable" value="all" onclick="frame['a'].selectAllForms()">
+					<input type="button" class="pushable" value="none" onclick="frame['a'].selectAllForms(false)">
+				</div>
+			</h3>
+		</div>
 	</div>
-
-	<div class="form-frame" data-group="a">
-		<h3 class="list-title">
-			<div class="form-name">forms A</div>
-			<div class="form-buttons reset hidden" data-group="a">
-				<input type="button" class="pushable" value="all" onclick="frame['a'].selectAllForms()">
-				<input type="button" class="pushable" value="none" onclick="frame['a'].selectAllForms(false)">
-			</div>
-		</h3>
-		<ol class="form-list">
+	<div class="data-pane">
+		<div class="left-pane">
+			<ol class="lemma-list" data-group="a">
+			<!-- Lemma elements go here -->
+			</ol>
+		</div>
+		<div class="right-pane">
+			<ol class="form-list">
 			<!-- Form elements go here -->
-		</ol>
+			</ol>
+		</div>
 	</div>
 </div>
+
 <div class="frame" data-group="b">
-	<div class="lemma-frame" data-group="b">
-		<h3 class="list-title">
-			<div class="lemma-name">lemmas B <span class="running-total reset hidden">[]</span></div>
-			<div class="latin">latin</div>
-			<div class="homonym-id">homonym id.</div>
-			<div class="lemma-buttons reset hidden">
-				<input type="button" class="pushable" value="all" onclick="frame['b'].selectAllLemmas()">
-				<input type="button" class="pushable" value="none" onclick="frame['b'].selectAllLemmas(false)">
-				<input type="button" class="pushable cancel" value="X" onclick="frame['b'].reset()">
-			</div>
-		</h3>
-		<ol class="lemma-list">
-			<!-- Lemma elements go here -->
-		</ol>
+	<div class="header-pane">
+		<div class="left-pane">
+			<h3 class="list-header">
+				<div class="lemma-name">lemmas B <span class="running-total reset hidden">[]</span></div>
+				<div class="latin">latin</div>
+				<div class="homonym-id">homonym id.</div>
+				<div class="lemma-buttons reset hidden">
+					<input type="button" class="pushable" value="all" onclick="frame['b'].selectAllLemmas()">
+					<input type="button" class="pushable" value="none" onclick="frame['b'].selectAllLemmas(false)">
+					<input type="button" class="pushable cancel" value="X" onclick="frame['b'].reset()">
+				</div>
+			</h3>
+		</div>
+		<div class="right-pane">
+			<h3 class="list-header">
+				<div class="form-name">forms B</div>
+				<div class="form-buttons reset hidden" data-group="b">
+					<input type="button" class="pushable" value="all" onclick="frame['b'].selectAllForms()">
+					<input type="button" class="pushable" value="none" onclick="frame['b'].selectAllForms(false)">
+				</div>
+			</h3>
+		</div>
 	</div>
-
-	<div class="form-frame" data-group = "b">
-		<h3 class="list-title">
-			<div class="form-name">forms B</div>
-			<div class="form-buttons reset hidden" data-group="b">
-				<input type="button" class="pushable" value="all" onclick="frame['b'].selectAllForms()">
-				<input type="button" class="pushable" value="none" onclick="frame['b'].selectAllForms(false)">
-			</div>
-		</h3>
-		<ol class="form-list">
+	<div class="data-pane">
+		<div class="left-pane">
+			<ol class="lemma-list" data-group="b">
+			<!-- Lemma elements go here -->
+			</ol>
+		</div>
+		<div class="right-pane">
+			<ol class="form-list">
 			<!-- Form elements go here -->
-		</ol>
+			</ol>
+		</div>
 	</div>
 </div>
+
 <div id="base-buttons">
 	<button class="pushable" name="excel" onclick="postInputs('/excel/', 'excel')"/>export to MS Excel</button>
 	<button class="pushable" name="carto" onclick="postInputs('/cartography/', 'carto')"/>send to carto</button>
