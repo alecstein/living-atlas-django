@@ -3,6 +3,7 @@ html {
     --font-family-mono: "Menlo", "Courier New", "Courier", monospace;
     --manilla: #fff6da;
     --yellow: #ffe600;
+    --pale-yellow: #fff27f;
     --lightgray: #e4e4e7;
     --gray: #f3f3f3;
     --darkcyan: #237272;
@@ -150,8 +151,8 @@ hr {
     align-items: center;
 }
 
-.lemma:hover {
-    background-color: #fcfcfc;
+.lemma:hover, .form:hover {
+    background-color: #f4f8fc;
 }
 
 .lemma-name {
@@ -319,8 +320,13 @@ textarea {
 .resettable {
 }
 
-.highlight, .highlight:hover {
-    background-color: var(--yellow);
+.highlight {
+    background-color: var(--yellow) !important;
+}
+
+.dim {
+    background-color: var(--pale-yellow) !important;
+
 }
 .hidden {
     display: none;

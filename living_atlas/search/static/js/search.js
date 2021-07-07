@@ -30,6 +30,10 @@ function isLemma(li) {
   return (li !== null && li.classList.contains("lemma"));
 }
 
+function isForm(li) {
+  return (li !== null && li !== undefined && li.classList.contains("form"));
+}
+
 function changeFocusLemma(event, frame) {
   let li = event.target.closest("li");
   if (isLemma(li)) {
@@ -92,6 +96,7 @@ function createForm(lemma, form) {
   li.dataset.group = lemma.group;
   li.dataset.latin = lemma.latin;
   li.dataset.homid = lemma.homid;
+  li.tabIndex = "-1"; 
 
   return node;
 }
@@ -242,7 +247,7 @@ async function postInputs(url, where) {
   }
 
   let options = {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -256,7 +261,7 @@ async function postInputs(url, where) {
       let blob = await response.blob();
       downloadExcelFile(blob);
     } else if (where === "carto") {
-      let json = await response.json();
+      await response.json();      
       alert("submitted");
     }
   } else if (response.status === 204) {
@@ -270,7 +275,8 @@ function downloadExcelFile(blob) {
   let a = document.createElement("a");
   document.body.appendChild(a);
   a.style = "display: none";
-  a.href = URL.createObjectURL(blob);
+  let objectUrl = URL.createObjectURL(blob);
+  a.href = objectUrl;
   a.download = "living-atlas.xlsx";
   a.click();
   URL.revokeObjectURL(objectUrl);
@@ -295,6 +301,8 @@ let frame = {};
 
       this.doc.addEventListener("click", event => changeFocusLemma(event, this));
       this.formList.addEventListener("change", event => changeLemmaCounter(event, this));
+      this.formList.addEventListener("focusout", event => formDehighlight(event, this));
+      this.formList.addEventListener("focusin", event => formHighlight(event, this));
       this.lemmaList.addEventListener("change", event => toggleForms(event, this));
     },
 
@@ -332,7 +340,9 @@ let frame = {};
 
       let id = lemma.dataset.id;
       this.focus.forms = this.doc.querySelectorAll(`.form[data-id="${id}"]`);
-      this.focus.forms.forEach(node => show(node));
+      for (let form of this.focus.forms) {
+        show(form);
+      }
     },
 
     selectAllForms: function(bool = true) {
@@ -355,54 +365,93 @@ let frame = {};
         selected.innerText = (bool) ? total.innerText : "0";
       }
     },
-  }
+  };
 });
 
+function formDehighlight(event) {
+  let relatedTarget = event.relatedTarget?.closest("li");
+  let target = event.target.closest("li");
+  target?.classList.remove("highlight");
+  if (!isForm(relatedTarget)) {
+    frame[target.parentNode.dataset.group].focus.lemma.classList.remove("dim");
+  }
+}
+
+function formHighlight() {
+  let li = document.activeElement.closest("li");
+  if (isForm(li)) {
+    li.classList.add("highlight");
+  }
+}
+
 function scrollList(event) {
-
   let key = event.key;
-
-  if (key !== "ArrowUp" && key !== "ArrowDown") {
+  if (key !== "ArrowUp" && key !== "ArrowDown" && key !== "Tab" && key !== "j" && key !== "k") {
     return;
   }
 
   let li = document.activeElement.closest("li");
-  if (!isLemma(li)) {
+
+  if (li === null) {
     return;
   }
-
-  event.preventDefault();
-
   let group = li.parentNode.dataset.group;
   let thisFrame = frame[group];
 
-  let target = (key === "ArrowDown") ? 
-    thisFrame.focus.lemma.nextElementSibling :
-    thisFrame.focus.lemma.previousElementSibling;
-
-  if (target === null) {
-    return;
+  if (isLemma(li)) {
+    event.preventDefault();
+    let target;
+    if (key === "ArrowDown" || key === "k") {
+      target = thisFrame.focus.lemma.nextElementSibling;
+    } else if (key === "ArrowUp" || key === "j") {
+      target = thisFrame.focus.lemma.previousElementSibling;
+    } else if (key === "Tab") {
+      let form = thisFrame.focus.forms[0];
+      form.focus();
+      // form.classList.add("highlight");
+      // form.addEventListener("blur", deactivateOnBlur);
+      li.classList.add("dim");
+      return;
+    }
+    if (target === null) {
+      return;
+    }
+    thisFrame.unsetFocus();
+    target.scrollIntoView({block: "nearest"});
+    thisFrame.setFocus(target);
+    target.focus();
+  } else if (isForm(li)) {
+    event.preventDefault();
+    let target;
+    if (key === "ArrowDown" || key === "j") {
+      target = document.activeElement.closest("li")?.nextElementSibling;
+      target?.focus();
+    } else if (key === "ArrowUp" || key === "k") {
+      target = document.activeElement.closest("li")?.previousElementSibling;
+      target?.focus();
+    } else if (key === "Tab") {
+      document.activeElement.classList.remove("highlight");
+      thisFrame.focus.lemma.focus();
+      thisFrame.focus.lemma.scrollIntoView({block: "nearest"});
+    }
+    if (target === null || target === undefined || target.classList.contains("hidden")) return;
+    // target.addEventListener("focusout", deactivateOnBlur);
+    // document.activeElement.classList.remove("highlight");
+    // target.classList.add("highlight");
+    // target.focus();
+    target.scrollIntoView({block: "nearest"});
   }
-
-  thisFrame.unsetFocus();
-  target.scrollIntoView({block: "nearest"});
-  thisFrame.setFocus(target);
-  target.focus();
 }
 
 function toggleLemma(event) {
-
   let key = event.key;
-
   let li = document.activeElement.closest("li");
-  if (!isLemma(li)) {
-    return;
-  }
-
+  // if (!isLemma(li)) {
+  //   return;
+  // }
   if (key !== "s") {
     return;
   }
-
   event.preventDefault();
   li.querySelector("input").click();
 }
