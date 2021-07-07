@@ -146,6 +146,13 @@ hr {
     text-align: left;
 }
 
+#nav-helptext {
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: -.5rem;
+    font-style: italic;
+}
+
 .lemma {
     display: flex;
     align-items: center;
@@ -174,19 +181,12 @@ hr {
     text-align: right;
 }
 
-.lemma-buttons input {
+.lemma-buttons input, .form-buttons input {
     margin: 0;
 }
 
 .lemma-item-not-found {
     color: var(--error-color);
-}
-
-.form-name {
-}
-
-.form-buttons input {
-    margin: 0;
 }
 
 .counter {
