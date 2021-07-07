@@ -310,6 +310,12 @@ function manageKeypress(key, li) {
 
   if ( isLemma(li) && key === "Tab") {
     thisFrame.focus.forms[0].focus();
+
+    if (li !== thisFrame.focus.lemma) {
+      thisFrame.unsetFocus();
+      thisFrame.setFocus(li);
+    }
+
     li.classList.add("dim");
     return;
   }
