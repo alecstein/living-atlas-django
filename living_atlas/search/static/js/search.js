@@ -282,6 +282,72 @@ function downloadExcelFile(blob) {
   URL.revokeObjectURL(objectUrl);
 }
 
+function formDehighlight(event) {
+  let relatedTarget = event.relatedTarget?.closest("li");
+  let target = event.target.closest("li");
+  target?.classList.remove("highlight");
+  if (!isForm(relatedTarget)) {
+    frame[target.parentNode.dataset.group].focus.lemma.classList.remove("dim");
+  }
+}
+
+function formHighlight() {
+  let li = document.activeElement.closest("li");
+  if (isForm(li)) {
+    li.classList.add("highlight");
+  }
+}
+
+function manageKeypress(key, li) {
+  if (li === null || li === undefined) return;
+
+  if (key === "s") {
+    li.querySelector("input").click();
+  }
+
+  let group = li.parentNode.dataset.group;
+  let thisFrame = frame[group];
+
+  if ( isLemma(li) && key === "Tab") {
+    thisFrame.focus.forms[0].focus();
+    li.classList.add("dim");
+    return;
+  }
+
+  if ( isForm(li) && key === "Tab" ) {
+    thisFrame.focus.lemma.focus();
+  }
+
+  let target;
+  if ( isLemma(li) || isForm(li) ) {
+    event.preventDefault();
+    if (key === "ArrowUp") {
+      target = li.previousElementSibling;
+    } else if (key === "ArrowDown") {
+      target = li.nextElementSibling;
+    }
+  }
+
+  if (target === undefined || target === null) return;
+
+  if ( isLemma(li) ) {
+    thisFrame.unsetFocus();
+    thisFrame.setFocus(target);
+  }
+
+  target.scrollIntoView({block: "nearest"});
+  target.focus();
+}
+
+function keyboardNav(event) {
+  let validKeypresses = ["ArrowDown", "ArrowUp", "Tab", "s"];
+  let key = event.key;
+  if (!validKeypresses.includes(key)) return;
+  let li = document.activeElement.closest("li");
+
+  manageKeypress(key, li);
+}
+
 let frame = {};
 
 ["a", "b"].forEach(group => {
@@ -368,96 +434,7 @@ let frame = {};
   };
 });
 
-function formDehighlight(event) {
-  let relatedTarget = event.relatedTarget?.closest("li");
-  let target = event.target.closest("li");
-  target?.classList.remove("highlight");
-  if (!isForm(relatedTarget)) {
-    frame[target.parentNode.dataset.group].focus.lemma.classList.remove("dim");
-  }
-}
-
-function formHighlight() {
-  let li = document.activeElement.closest("li");
-  if (isForm(li)) {
-    li.classList.add("highlight");
-  }
-}
-
-function scrollList(event) {
-  let key = event.key;
-  if (key !== "ArrowUp" && key !== "ArrowDown" && key !== "Tab" && key !== "j" && key !== "k") {
-    return;
-  }
-
-  let li = document.activeElement.closest("li");
-
-  if (li === null) {
-    return;
-  }
-  let group = li.parentNode.dataset.group;
-  let thisFrame = frame[group];
-
-  if (isLemma(li)) {
-    event.preventDefault();
-    let target;
-    if (key === "ArrowDown" || key === "k") {
-      target = thisFrame.focus.lemma.nextElementSibling;
-    } else if (key === "ArrowUp" || key === "j") {
-      target = thisFrame.focus.lemma.previousElementSibling;
-    } else if (key === "Tab") {
-      let form = thisFrame.focus.forms[0];
-      form.focus();
-      // form.classList.add("highlight");
-      // form.addEventListener("blur", deactivateOnBlur);
-      li.classList.add("dim");
-      return;
-    }
-    if (target === null) {
-      return;
-    }
-    thisFrame.unsetFocus();
-    target.scrollIntoView({block: "nearest"});
-    thisFrame.setFocus(target);
-    target.focus();
-  } else if (isForm(li)) {
-    event.preventDefault();
-    let target;
-    if (key === "ArrowDown" || key === "j") {
-      target = document.activeElement.closest("li")?.nextElementSibling;
-      target?.focus();
-    } else if (key === "ArrowUp" || key === "k") {
-      target = document.activeElement.closest("li")?.previousElementSibling;
-      target?.focus();
-    } else if (key === "Tab") {
-      document.activeElement.classList.remove("highlight");
-      thisFrame.focus.lemma.focus();
-      thisFrame.focus.lemma.scrollIntoView({block: "nearest"});
-    }
-    if (target === null || target === undefined || target.classList.contains("hidden")) return;
-    // target.addEventListener("focusout", deactivateOnBlur);
-    // document.activeElement.classList.remove("highlight");
-    // target.classList.add("highlight");
-    // target.focus();
-    target.scrollIntoView({block: "nearest"});
-  }
-}
-
-function toggleLemma(event) {
-  let key = event.key;
-  let li = document.activeElement.closest("li");
-  // if (!isLemma(li)) {
-  //   return;
-  // }
-  if (key !== "s") {
-    return;
-  }
-  event.preventDefault();
-  li.querySelector("input").click();
-}
-
 window.onload = function() {
   ["a", "b"].forEach(group => frame[group].init());
-  document.addEventListener("keydown", event => scrollList(event));
-  document.addEventListener("keydown", event => toggleLemma(event));
+  document.addEventListener("keydown", event => keyboardNav(event));
 };
