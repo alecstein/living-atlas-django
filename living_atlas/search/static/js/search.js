@@ -208,15 +208,15 @@ function getValidPostInputs(frame, where) {
 
   if (where === "excel") {
     if ( invalidExportExcel ) {
-    show(document.getElementById("export-failed"));
-    return false;
+      show(document.getElementById("export-failed"));
+      return false;
     }
   }
 
   if (where === "carto") {
     if ( invalidExportCarto ) {
-    show(document.getElementById("select-from-both"));
-    return false;
+      show(document.getElementById("select-from-both"));
+      return false;
     }
   }
   return [...aInputs, ...bInputs];
@@ -231,10 +231,12 @@ async function postInputs(url, where) {
 
   for (let input of validPostInputs) {
     let li = input.closest("li");
-    let values = {"lemma" : li.dataset.lemma,
-                  "latin" : li.dataset.latin,
-                  "homid" : li.dataset.homid,
-                  "group" : li.dataset.group,}
+    let values = {
+      "lemma" : li.dataset.lemma,
+      "latin" : li.dataset.latin,
+      "homid" : li.dataset.homid,
+      "group" : li.dataset.group,
+    };
     let form = li.dataset.name;
     data.forms.push(JSON.stringify({form: form, values : values}));
   }
@@ -245,7 +247,7 @@ async function postInputs(url, where) {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
       "X-CSRFToken" : CSRF_TOKEN,
-    }}
+    }};
 
   let response = await fetch(url, options);
 
@@ -291,7 +293,6 @@ let frame = {};
       this.lemmaList = this.doc.querySelector(".lemma-list");
       this.resettable = this.doc.querySelectorAll(".reset");
 
-      this.doc.addEventListener("click", event => changeFocusWindow(event));
       this.doc.addEventListener("click", event => changeFocusLemma(event, this));
       this.formList.addEventListener("change", event => changeLemmaCounter(event, this));
       this.lemmaList.addEventListener("change", event => toggleForms(event, this));
@@ -357,46 +358,57 @@ let frame = {};
   }
 });
 
-let focusWindow;
-
-function changeFocusWindow(event) {
-  return;
-}
-
 function scrollList(event) {
 
   let key = event.key;
 
-  let keyIsUpOrDown = (key === "ArrowUp") || (key === "ArrowDown");
-  if (!keyIsUpOrDown) return;
+  if (key !== "ArrowUp" && key !== "ArrowDown") {
+    return;
+  }
 
-  let element = document.activeElement;
-  let li = element.closest("li");
+  let li = document.activeElement.closest("li");
   if (!isLemma(li)) {
     return;
   }
 
   event.preventDefault();
 
-  // get the right frame
   let group = li.parentNode.dataset.group;
   let thisFrame = frame[group];
-  thisFrame.unsetFocus();
 
-  let target;
-  if (key === "ArrowDown") {
-    target = thisFrame.focus.lemma.nextElementSibling;
+  let target = (key === "ArrowDown") ? 
+    thisFrame.focus.lemma.nextElementSibling :
+    thisFrame.focus.lemma.previousElementSibling;
+
+  if (target === null) {
+    return;
   }
-  else if (key === "ArrowUp") {
-    target = thisFrame.focus.lemma.previousElementSibling;
-  } else {return;}
-  
+
+  thisFrame.unsetFocus();
   target.scrollIntoView({block: "nearest"});
   thisFrame.setFocus(target);
-  // target.focus();
+  target.focus();
+}
+
+function toggleLemma(event) {
+
+  let key = event.key;
+
+  let li = document.activeElement.closest("li");
+  if (!isLemma(li)) {
+    return;
+  }
+
+  if (key !== "s") {
+    return;
+  }
+
+  event.preventDefault();
+  li.querySelector("input").click();
 }
 
 window.onload = function() {
   ["a", "b"].forEach(group => frame[group].init());
   document.addEventListener("keydown", event => scrollList(event));
+  document.addEventListener("keydown", event => toggleLemma(event));
 };
